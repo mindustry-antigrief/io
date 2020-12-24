@@ -397,9 +397,11 @@ abstract class UnitComp implements Healthc, Physicsc, Hitboxc, Statusc, Teamc, I
         }
 
         //damage if on creeper
-        if(tileOn().team() == CreeperUtils.creeperTeam) {
-            damageContinuous(CreeperUtils.creeperDamage);
-            Call.effect(Fx.bubble, x, y, 0, Color.blue);
+        if(tileOn() != null && tileOn().team() == CreeperUtils.creeperTeam) {
+            damageContinuous(CreeperUtils.creeperDamage * 2f);
+
+            if(Mathf.chance(0.1f))
+                Call.effect(Fx.bubble, x, y, 0, Color.blue);
         }
     }
 
