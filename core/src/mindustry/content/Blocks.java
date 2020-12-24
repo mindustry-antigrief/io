@@ -774,7 +774,7 @@ public class Blocks implements ContentList{
 
         titaniumWall = new Wall("titanium-wall"){{
             requirements(Category.defense, with(Items.titanium, 6));
-            health = 110 * wallHealthMultiplier;
+            health = 100 * wallHealthMultiplier;
         }};
 
         titaniumWallLarge = new Wall("titanium-wall-large"){{
@@ -785,7 +785,7 @@ public class Blocks implements ContentList{
 
         plastaniumWall = new Wall("plastanium-wall"){{
             requirements(Category.defense, with(Items.plastanium, 5, Items.metaglass, 2));
-            health = 130 * wallHealthMultiplier;
+            health = 200 * wallHealthMultiplier;
             insulated = true;
             absorbLasers = true;
         }};
@@ -800,7 +800,7 @@ public class Blocks implements ContentList{
 
         thoriumWall = new Wall("thorium-wall"){{
             requirements(Category.defense, with(Items.thorium, 6));
-            health = 200 * wallHealthMultiplier;
+            health = 150 * wallHealthMultiplier;
         }};
 
         thoriumWallLarge = new Wall("thorium-wall-large"){{
@@ -811,8 +811,8 @@ public class Blocks implements ContentList{
 
         phaseWall = new Wall("phase-wall"){{
             requirements(Category.defense, with(Items.phaseFabric, 6));
-            health = 150 * wallHealthMultiplier;
-            chanceDeflect = 10f;
+            health = 250 * wallHealthMultiplier;
+            chanceDeflect = 0f;
             flashHit = true;
         }};
 
@@ -826,15 +826,15 @@ public class Blocks implements ContentList{
 
         surgeWall = new Wall("surge-wall"){{
             requirements(Category.defense, with(Items.surgeAlloy, 6));
-            health = 230 * wallHealthMultiplier;
-            lightningChance = 0.05f;
+            health = 300 * wallHealthMultiplier;
+            lightningChance = 0f;
         }};
 
         surgeWallLarge = new Wall("surge-wall-large"){{
             requirements(Category.defense, ItemStack.mult(surgeWall.requirements, 4));
             health = 230 * 4 * wallHealthMultiplier;
             size = 2;
-            lightningChance = 0.05f;
+            lightningChance = 0f;
         }};
 
         door = new Door("door"){{
@@ -852,7 +852,7 @@ public class Blocks implements ContentList{
 
         scrapWall = new Wall("scrap-wall"){{
             requirements(Category.defense, BuildVisibility.sandboxOnly, with(Items.scrap, 6));
-            health = 60 * wallHealthMultiplier;
+            health = 75 * wallHealthMultiplier;
             variants = 5;
         }};
 
@@ -968,7 +968,7 @@ public class Blocks implements ContentList{
 
         plastaniumConveyor = new StackConveyor("plastanium-conveyor"){{
             requirements(Category.distribution, with(Items.plastanium, 1, Items.silicon, 1, Items.graphite, 1));
-            health = 75;
+            health = 225;
             speed = 4f / 60f;
             itemCapacity = 10;
         }};

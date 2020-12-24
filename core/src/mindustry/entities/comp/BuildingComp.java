@@ -19,6 +19,7 @@ import mindustry.annotations.Annotations.*;
 import mindustry.audio.*;
 import mindustry.content.*;
 import mindustry.core.*;
+import mindustry.creeper.CreeperUtils;
 import mindustry.ctype.*;
 import mindustry.entities.*;
 import mindustry.game.EventType.*;
@@ -1351,7 +1352,15 @@ abstract class BuildingComp implements Posc, Teamc, Healthc, Buildingc, Timerc, 
 
     @Override
     public void killed(){
+        if(CreeperUtils.creeperBlocks.containsValue(tile.block())) {
+            Events.fire(new CreeperDestroyEvent(tile));
+
+            if(tile.block() != CreeperUtils.creeperBlocks.get(1f))
+                return;
+        }
+
         Events.fire(new BlockDestroyEvent(tile));
+
         block.breakSound.at(tile);
         onDestroyed();
         tile.remove();
