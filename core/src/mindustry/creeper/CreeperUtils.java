@@ -18,6 +18,7 @@ import mindustry.world.Block;
 import mindustry.world.Build;
 import mindustry.world.Tile;
 import mindustry.world.blocks.environment.StaticWall;
+import mindustry.world.blocks.environment.TreeBlock;
 
 import java.util.HashMap;
 
@@ -149,6 +150,9 @@ public class CreeperUtils {
     public static boolean canTransfer(Tile source, Tile target){
         if(source == null || target == null)
             return false;
+
+        if(target.block() instanceof TreeBlock)
+            return true;
 
         if(target.block() instanceof StaticWall || (target.floor() != null && !target.floor().placeableOn || target.floor().isDeep()))
             return false;
