@@ -25,7 +25,7 @@ import static mindustry.Vars.world;
 
 public class CreeperUtils {
     public static float updateInterval = 0.1f;
-    public static float transferRate = 0.5f;
+    public static float transferRate = 0.3f;
     public static float creeperDamage = 0.25f;
     public static Team creeperTeam = Team.blue;
 
@@ -47,9 +47,9 @@ public class CreeperUtils {
         creeperBlocks.put(9, Blocks.phaseWall);
         creeperBlocks.put(10, Blocks.surgeWall);
 
-        emitterBlocks.put(Blocks.coreShard, new Emitter(30, 10));
-        emitterBlocks.put(Blocks.coreFoundation, new Emitter(20, 10));
-        emitterBlocks.put(Blocks.coreNucleus, new Emitter(10, 40));
+        emitterBlocks.put(Blocks.coreShard, new Emitter(30, 1));
+        emitterBlocks.put(Blocks.coreFoundation, new Emitter(20, 2));
+        emitterBlocks.put(Blocks.coreNucleus, new Emitter(10, 3));
 
         Events.on(EventType.GameOverEvent.class, e -> {
             if(runner != null)
@@ -133,7 +133,7 @@ public class CreeperUtils {
                         tile.build.damageContinuous(creeperDamage);
                 });
 
-            }else if (tile.creep >= 1f && tile.block().size == 1){
+            }else if (tile.creep >= 1f && tile.block().size == 1 && tile.block() != creeperBlocks.get(Mathf.clamp(Math.round(tile.creep), 1, 10))){
                 tile.setNet(creeperBlocks.get(Mathf.clamp(Math.round(tile.creep), 1, 10)), creeperTeam, Mathf.random(0, 3));
             }
         }
