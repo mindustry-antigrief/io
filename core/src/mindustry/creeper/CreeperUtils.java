@@ -49,6 +49,9 @@ public class CreeperUtils {
         emitterBlocks.put(Blocks.coreNucleus, new Emitter(15, 15));
 
         Events.on(EventType.GameOverEvent.class, e -> {
+            if(runner != null)
+                runner.cancel();
+
             creeperEmitters.clear();
         });
 
@@ -60,7 +63,7 @@ public class CreeperUtils {
 
                 Seq<Building> iterated = new Seq<>();
                 for(Tile tile : world.tiles){
-                    if(tile.block() != null && emitterBlocks.containsKey(tile.block()) && !iterated.contains(tile.build)){
+                    if(tile.block() != null && emitterBlocks.containsKey(tile.block()) && !iterated.contains(tile.build) && tile.build.team == creeperTeam){
                         iterated.add(tile.build);
                         creeperEmitters.add(new Emitter(tile.build));
                     }
