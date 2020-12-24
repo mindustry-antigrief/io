@@ -33,7 +33,7 @@ public class CreeperUtils {
     public static float evaporationRate = 0f; // Base creeper evaporation
     public static float creeperDamage = 0.1f; // Base creeper damage
 
-    public static float nullifyDamage = 600f; // Damage that needs to be applied for the core to be suspended
+    public static float nullifyDamage = 1000f; // Damage that needs to be applied for the core to be suspended
     public static float nullifyTimeout = 360f; // The amount of time a core remains suspended (resets upon enough damage applied)
 
     public static float nullificationPeriod = 10f; // How many seconds all cores have to be nullified (suspended) in order for the game to end
@@ -123,7 +123,7 @@ public class CreeperUtils {
 
         Timer.schedule(() -> {
 
-            Call.infoPopup("\uE88B [" + getTrafficlightColor(1f - Mathf.clamp((CreeperUtils.nullifiedCount / Math.max(CreeperUtils.creeperEmitters.size, 1)), 0f, 1f)) + "]" + CreeperUtils.nullifiedCount + "/" + CreeperUtils.creeperEmitters.size + "[] emitters suspended", 10f, 20, 50, 20, 450, 0);
+            Call.infoPopup("\uE88B [" + getTrafficlightColor(Mathf.clamp((CreeperUtils.nullifiedCount / Math.max(1, creeperEmitters.size)), 0f, 1f)) + "]" + CreeperUtils.nullifiedCount + "/" + CreeperUtils.creeperEmitters.size + "[] emitters suspended", 10f, 20, 50, 20, 450, 0);
             // check for gameover
             if(CreeperUtils.nullifiedCount == CreeperUtils.creeperEmitters.size){
                 Timer.schedule(() -> {
