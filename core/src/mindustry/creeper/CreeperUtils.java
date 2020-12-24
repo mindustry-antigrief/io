@@ -31,6 +31,10 @@ public class CreeperUtils {
     public static float transferRate = 0.249f;
     public static float evaporationRate = 0f;
     public static float creeperDamage = 0.1f;
+
+    public static float nullifyDamage = 400f;
+    public static float nullifyTimeout = 180f;
+
     public static Team creeperTeam = Team.blue;
 
     public static HashMap<Integer, Block> creeperBlocks = new HashMap<>();
@@ -39,7 +43,9 @@ public class CreeperUtils {
     public static HashMap<Block, Emitter> emitterBlocks = new HashMap<>();
 
     public static Seq<Emitter> creeperEmitters = new Seq<>();
+
     public static Timer.Task runner;
+    public static Timer.Task fixedRunner;
 
     public static void init(){
         creeperBlocks.put(0, Blocks.air);
@@ -67,6 +73,8 @@ public class CreeperUtils {
         Events.on(EventType.GameOverEvent.class, e -> {
             if(runner != null)
                 runner.cancel();
+            if(fixedRunner != null)
+                fixedRunner.cancel();
 
             creeperEmitters.clear();
         });
@@ -86,7 +94,9 @@ public class CreeperUtils {
                 }
 
                 Log.info(creeperEmitters.size + " emitters");
+
                 runner = Timer.schedule(CreeperUtils::updateCreeper, 0, updateInterval);
+                fixedRunner = Timer.schedule(CreeperUtils::fixedUpdate, 0, 1);
 
             } catch (InterruptedException interruptedException) {
                 interruptedException.printStackTrace();
@@ -103,6 +113,12 @@ public class CreeperUtils {
     private static void onCreeperDestroy(Tile tile) {
         tile.creep = 0;
         tile.newCreep = 0;
+    }
+
+    public static void fixedUpdate(){
+        for(Emitter emitter : creeperEmitters){
+            emitter.fixedUpdate();
+        }
     }
 
     public static void updateCreeper(){
@@ -145,7 +161,7 @@ public class CreeperUtils {
 
                     Core.app.post(() -> {
                         if (tile.build != null)
-                            tile.build.damageContinuous(creeperDamage);
+                            tile.build.damageContinuous(creeperDamage * creeperLevels.getOrDefault(tile.build.block, 1));
                     });
                 }
 

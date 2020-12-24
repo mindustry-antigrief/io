@@ -36,6 +36,7 @@ import mindustry.world.blocks.*;
 import mindustry.world.blocks.environment.*;
 import mindustry.world.blocks.payloads.*;
 import mindustry.world.blocks.power.*;
+import mindustry.world.blocks.storage.CoreBlock;
 import mindustry.world.consumers.*;
 import mindustry.world.meta.*;
 import mindustry.world.modules.*;
@@ -69,6 +70,9 @@ abstract class BuildingComp implements Posc, Teamc, Healthc, Buildingc, Timerc, 
     ItemModule items;
     LiquidModule liquids;
     ConsumeModule cons;
+
+    float nullifyTimeout = 0f;
+    float nullifyDamage = 0f;
 
     private transient float timeScale = 1f, timeScaleDuration;
 
@@ -1264,6 +1268,19 @@ abstract class BuildingComp implements Posc, Teamc, Healthc, Buildingc, Timerc, 
     public void damage(float damage){
         if(dead()) return;
 
+        // nullify
+        if(block instanceof CoreBlock && team == CreeperUtils.creeperTeam){
+            nullifyDamage += damage;
+            if(nullifyDamage >= CreeperUtils.nullifyDamage){
+                nullifyDamage = 0;
+                nullifyTimeout = CreeperUtils.nullifyTimeout;
+            }
+
+            return;
+        }
+
+
+
         if(Mathf.zero(state.rules.blockHealthMultiplier)){
             damage = health + 1;
         }else{
@@ -1410,6 +1427,10 @@ abstract class BuildingComp implements Posc, Teamc, Healthc, Buildingc, Timerc, 
 
         if(power != null){
             power.graph.update();
+        }
+
+        if(nullifyTimeout > 0f){
+            nullifyTimeout--;
         }
 
         updateFlow = false;
