@@ -48,8 +48,8 @@ public class CreeperUtils {
         creeperBlocks.put(10, Blocks.surgeWall);
 
         emitterBlocks.put(Blocks.coreShard, new Emitter(30, 10));
-        emitterBlocks.put(Blocks.coreFoundation, new Emitter(15, 10));
-        emitterBlocks.put(Blocks.coreNucleus, new Emitter(15, 40));
+        emitterBlocks.put(Blocks.coreFoundation, new Emitter(20, 10));
+        emitterBlocks.put(Blocks.coreNucleus, new Emitter(10, 40));
 
         Events.on(EventType.GameOverEvent.class, e -> {
             if(runner != null)
@@ -133,7 +133,7 @@ public class CreeperUtils {
                         tile.build.damageContinuous(creeperDamage);
                 });
 
-            }else if (tile.creep >= 1f && tile.block().size == 0){
+            }else if (tile.creep >= 1f && tile.block().size == 1){
                 tile.setNet(creeperBlocks.get(Mathf.clamp(Math.round(tile.creep), 1, 10)), creeperTeam, Mathf.random(0, 3));
             }
         }
