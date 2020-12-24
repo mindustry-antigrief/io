@@ -335,14 +335,6 @@ public class EventType{
         }
     }
 
-    public static class CreeperDestroyEvent{
-        public final Tile tile;
-
-        public CreeperDestroyEvent(Tile tile){
-            this.tile = tile;
-        }
-    }
-
     public static class UnitDestroyEvent{
         public final Unit unit;
 

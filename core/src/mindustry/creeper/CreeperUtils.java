@@ -47,9 +47,9 @@ public class CreeperUtils {
         creeperBlocks.put(9, Blocks.phaseWall);
         creeperBlocks.put(10, Blocks.surgeWall);
 
-        emitterBlocks.put(Blocks.coreShard, new Emitter(30, 15));
-        emitterBlocks.put(Blocks.coreFoundation, new Emitter(10, 25));
-        emitterBlocks.put(Blocks.coreNucleus, new Emitter(15, 65));
+        emitterBlocks.put(Blocks.coreShard, new Emitter(30, 25));
+        emitterBlocks.put(Blocks.coreFoundation, new Emitter(10, 30));
+        emitterBlocks.put(Blocks.coreNucleus, new Emitter(5, 40));
 
         Events.on(EventType.GameOverEvent.class, e -> {
             if(runner != null)
@@ -79,22 +79,26 @@ public class CreeperUtils {
             }
         });
 
-        Events.on(EventType.CreeperDestroyEvent.class, e -> {
-            if(e.tile.creep > 0)
-                e.tile.creep--;
-
-            Core.app.post(() -> {drawCreeper(e.tile);});
+        Events.on(EventType.BlockDestroyEvent.class, e -> {
+            if(CreeperUtils.creeperBlocks.containsValue(e.tile.block()))
+                onCreeperDestroy(e.tile);
         });
 
         runner = Timer.schedule(CreeperUtils::updateCreeper, 0, updateInterval);
     }
 
+    private static void onCreeperDestroy(Tile tile) {
+        tile.creep = Math.min(0, tile.creep - 1);
+
+        Core.app.post(() -> {drawCreeper(tile);});
+    }
 
     public static void updateCreeper(){
 
         // update emitters
         for(Emitter emitter : creeperEmitters){
-            emitter.update();
+            if(!emitter.update())
+                creeperEmitters.remove(emitter);
         }
 
         // update creeper flow
@@ -129,14 +133,17 @@ public class CreeperUtils {
                         tile.build.damageContinuous(creeperDamage);
                 });
 
-            }else if (tile.build == null && tile.creep >= 1f){
+            }else if (tile.creep >= 1f){
                 tile.setNet(creeperBlocks.get(Math.round(tile.creep)), creeperTeam, Mathf.random(0, 3));
             }
         }
     }
 
     public static boolean canTransfer(Tile source, Tile target){
-        if(source == null || target == null || target.block() instanceof StaticWall || target.block() == Blocks.space)
+        if(source == null || target == null)
+            return false;
+
+        if(target.block() instanceof StaticWall || (target.floor() != null && !target.floor().placeableOn))
             return false;
 
         if(source.build != null && source.build.team != creeperTeam)

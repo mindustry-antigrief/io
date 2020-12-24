@@ -1352,13 +1352,6 @@ abstract class BuildingComp implements Posc, Teamc, Healthc, Buildingc, Timerc, 
 
     @Override
     public void killed(){
-        if(CreeperUtils.creeperBlocks.containsValue(tile.block())) {
-            Events.fire(new CreeperDestroyEvent(tile));
-
-            if(tile.block() != CreeperUtils.creeperBlocks.get(1f))
-                return;
-        }
-
         Events.fire(new BlockDestroyEvent(tile));
 
         block.breakSound.at(tile);
