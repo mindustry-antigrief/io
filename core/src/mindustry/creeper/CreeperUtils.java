@@ -118,7 +118,7 @@ public class CreeperUtils {
             if(tile.build != null && tile.build.team != creeperTeam){
                 tile.build.damage(creeperDamage);
                 Call.effect(Fx.bubble, tile.build.x, tile.build.y, 0, Color.acid);
-            }else {
+            }else if (tile.build == null){
                 tile.setNet(creeperBlocks.get(Math.round(tile.creep)), creeperTeam, 0);
             }
         }
