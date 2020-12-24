@@ -150,7 +150,7 @@ public class CreeperUtils {
         if(source == null || target == null)
             return false;
 
-        if(target.block() instanceof StaticWall || (target.floor() != null && !target.floor().placeableOn))
+        if(target.block() instanceof StaticWall || (target.floor() != null && !target.floor().placeableOn || !target.floor().isDeep()))
             return false;
 
         if(source.build != null && source.build.team != creeperTeam) {
