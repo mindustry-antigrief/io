@@ -119,12 +119,15 @@ public class CreeperUtils {
     public static void drawCreeper(Tile tile){
 
         // check if can transfer anyway because weird
-        if(tile.creep >= 1f && canTransfer(tile, tile)) {
+        if(tile.creep >= 1f) {
             if(tile.build != null && tile.build.team != creeperTeam){
-                if(Mathf.chance(0.1f))
+                if(Mathf.chance(0.05f))
                     Call.effect(Fx.bubble, tile.build.x, tile.build.y, 0, Color.blue);
 
-                Core.app.post(() -> {tile.build.damageContinuous(creeperDamage);});
+                Core.app.post(() -> {
+                    if(tile.build != null)
+                        tile.build.damageContinuous(creeperDamage);
+                });
 
             }else if (tile.build == null && tile.creep >= 1f){
                 tile.setNet(creeperBlocks.get(Math.round(tile.creep)), creeperTeam, Mathf.random(0, 3));
@@ -133,14 +136,11 @@ public class CreeperUtils {
     }
 
     public static boolean canTransfer(Tile source, Tile target){
-        return (source != null && target != null && target.block().placeableOn && source.block().placeableOn);
+        return (source != null && target != null && (target.build != null ? target.build.team == creeperTeam && target.block().solid : true) && (source.build != null ? source.build.team == creeperTeam && source.block().solid : true));
     }
 
     public static void transferCreeper(Tile source, Tile target) {
-        if(!canTransfer(source, target))
-            return;
-
-        if(source.creepHeight > -1 && target.creepHeight > -1){
+        if(canTransfer(source, target)){
             float sourceCreeper = source.creep;
 
             if (sourceCreeper > 0){
