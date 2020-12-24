@@ -24,7 +24,7 @@ import java.util.HashMap;
 import static mindustry.Vars.world;
 
 public class CreeperUtils {
-    public static float updateInterval = 0.1f;
+    public static float updateInterval = 0.025f;
     public static float transferRate = 0.249f;
     public static float evaporationRate = 0.001f;
     public static float creeperDamage = 1f;
