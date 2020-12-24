@@ -94,7 +94,7 @@ public class Rules{
     /** team of the player by default */
     public Team defaultTeam = Team.sharded;
     /** team of the enemy in waves/sectors */
-    public Team waveTeam = Team.crux;
+    public Team waveTeam = Team.blue;
     /** name of the custom mode that this ruleset describes, or null. */
     public @Nullable String modeName;
     /** special tags for additional info */

@@ -24,16 +24,20 @@ import mindustry.world.blocks.storage.CoreBlock;
 
 import java.util.HashMap;
 
+import static mindustry.Vars.state;
 import static mindustry.Vars.world;
 
 public class CreeperUtils {
-    public static float updateInterval = 0.05f;
-    public static float transferRate = 0.249f;
-    public static float evaporationRate = 0f;
-    public static float creeperDamage = 0.1f;
+    public static float updateInterval = 0.05f; // Base update interval in seconds
+    public static float transferRate = 0.249f; // Base transfer rate NOTE: keep below 0.25f
+    public static float evaporationRate = 0f; // Base creeper evaporation
+    public static float creeperDamage = 0.1f; // Base creeper damage
 
-    public static float nullifyDamage = 400f;
-    public static float nullifyTimeout = 180f;
+    public static float nullifyDamage = 600f; // Damage that needs to be applied for the core to be suspended
+    public static float nullifyTimeout = 360f; // The amount of time a core remains suspended (resets upon enough damage applied)
+
+    public static float nullificationPeriod = 10f; // How many seconds all cores have to be nullified (suspended) in order for the game to end
+    private static int nullifiedCount = 0;
 
     public static Team creeperTeam = Team.blue;
 
@@ -47,6 +51,10 @@ public class CreeperUtils {
     public static Timer.Task runner;
     public static Timer.Task fixedRunner;
 
+    public static String getTrafficlightColor(double value){
+        return "#"+Integer.toHexString(java.awt.Color.HSBtoRGB((float)value/3f, 1f, 1f)).substring(2);
+    }
+
     public static void init(){
         creeperBlocks.put(0, Blocks.air);
         creeperBlocks.put(1, Blocks.conveyor);
@@ -59,6 +67,11 @@ public class CreeperUtils {
         creeperBlocks.put(8, Blocks.plastaniumWall);
         creeperBlocks.put(9, Blocks.phaseWall);
         creeperBlocks.put(10, Blocks.surgeWall);
+
+        // this is purely for damage multiplication
+        creeperBlocks.put(20, Blocks.coreShard);
+        creeperBlocks.put(35, Blocks.coreFoundation);
+        creeperBlocks.put(50, Blocks.coreNucleus);
 
         for(var set : creeperBlocks.entrySet()){
             creeperLevels.put(set.getValue(), set.getKey());
@@ -108,6 +121,23 @@ public class CreeperUtils {
                 onCreeperDestroy(e.tile);
         });
 
+        Timer.schedule(() -> {
+
+            Call.infoPopup("\uE88B [" + getTrafficlightColor(1f - Mathf.clamp((CreeperUtils.nullifiedCount / Math.max(CreeperUtils.creeperEmitters.size, 1)), 0f, 1f)) + "]" + CreeperUtils.nullifiedCount + "/" + CreeperUtils.creeperEmitters.size + "[] emitters suspended", 10f, 20, 50, 20, 450, 0);
+            // check for gameover
+            if(CreeperUtils.nullifiedCount == CreeperUtils.creeperEmitters.size){
+                Timer.schedule(() -> {
+                    if(CreeperUtils.nullifiedCount == CreeperUtils.creeperEmitters.size){
+                        // gameover
+                        state.gameOver = true;
+                        Events.fire(new EventType.GameOverEvent(Team.sharded));
+                    }
+                    // failed to win, core got unsuspended
+                }, nullificationPeriod);
+            }
+
+            }, 0, 10);
+
     }
 
     private static void onCreeperDestroy(Tile tile) {
@@ -116,9 +146,14 @@ public class CreeperUtils {
     }
 
     public static void fixedUpdate(){
+        int newcount = 0;
         for(Emitter emitter : creeperEmitters){
             emitter.fixedUpdate();
+            if(emitter.nullified)
+                newcount++;
         }
+
+        nullifiedCount = newcount;
     }
 
     public static void updateCreeper(){
@@ -161,7 +196,7 @@ public class CreeperUtils {
 
                     Core.app.post(() -> {
                         if (tile.build != null)
-                            tile.build.damageContinuous(creeperDamage * creeperLevels.getOrDefault(tile.build.block, 1));
+                            tile.build.damageContinuous(creeperDamage * tile.creep);
                     });
                 }
 
