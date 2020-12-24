@@ -140,7 +140,7 @@ public class CreeperUtils {
                         tile.build.damageContinuous(creeperDamage);
                 });
 
-            }else if (tile.creep >= 1f && tile.block().size == 1 && tile.block() != creeperBlocks.get(Mathf.clamp(Math.round(tile.creep), 1, 10)) && creeperLevels.get(tile.block()) < tile.creep){
+            }else if (tile.creep >= 1f && tile.block().size == 1 && tile.block() != creeperBlocks.get(Mathf.clamp(Math.round(tile.creep), 1, 10)) && (creeperLevels.containsKey(tile.block()) ? creeperLevels.get(tile.block()) : 10) < tile.creep){
                 tile.setNet(creeperBlocks.get(Mathf.clamp(Math.round(tile.creep), 0, 10)), creeperTeam, Mathf.random(0, 3));
             }
         }
