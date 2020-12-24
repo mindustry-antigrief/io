@@ -47,9 +47,9 @@ public class CreeperUtils {
         creeperBlocks.put(9, Blocks.phaseWall);
         creeperBlocks.put(10, Blocks.surgeWall);
 
-        emitterBlocks.put(Blocks.coreShard, new Emitter(10, 3));
-        emitterBlocks.put(Blocks.coreFoundation, new Emitter(8, 5));
-        emitterBlocks.put(Blocks.coreNucleus, new Emitter(5, 10));
+        emitterBlocks.put(Blocks.coreShard, new Emitter(15, 10));
+        emitterBlocks.put(Blocks.coreFoundation, new Emitter(8, 10));
+        emitterBlocks.put(Blocks.coreNucleus, new Emitter(5, 20));
 
         Events.on(EventType.GameOverEvent.class, e -> {
             if(runner != null)
