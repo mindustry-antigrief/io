@@ -134,7 +134,6 @@ public class CreeperUtils {
                 });
 
             }else if (tile.creep >= 1f){
-                Log.info(tile.creep);
                 tile.setNet(creeperBlocks.get(Mathf.clamp(Math.round(tile.creep), 1, 10)), creeperTeam, Mathf.random(0, 3));
             }
         }
