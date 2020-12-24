@@ -26,7 +26,7 @@ import static mindustry.Vars.world;
 public class CreeperUtils {
     public static float updateInterval = 0.03333333333f;
     public static float transferRate = 0.1f;
-    public static float creeperDamage = 0.5f;
+    public static float creeperDamage = 0.15f;
     public static Team creeperTeam = Team.blue;
 
     public static HashMap<Integer, Block> creeperBlocks = new HashMap<>();
@@ -83,7 +83,7 @@ public class CreeperUtils {
             if(e.tile.creep > 0)
                 e.tile.creep--;
 
-            drawCreeper(e.tile);
+            Core.app.post(() -> {drawCreeper(e.tile);});
         });
 
         runner = Timer.schedule(CreeperUtils::updateCreeper, 0, updateInterval);
@@ -136,7 +136,13 @@ public class CreeperUtils {
     }
 
     public static boolean canTransfer(Tile source, Tile target){
-        return (source != null && target != null && (!target.block().solid || target.build != null && target.build.team == creeperTeam));
+        if(source == null || target == null || target.block() instanceof StaticWall || target.block() == Blocks.space)
+            return false;
+
+        if(source.build != null && source.build.team != creeperTeam)
+            return false;
+
+        return true;
     }
 
     public static void transferCreeper(Tile source, Tile target) {
