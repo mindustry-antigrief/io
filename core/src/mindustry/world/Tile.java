@@ -33,7 +33,7 @@ public class Tile implements Position, QuadTreeObject, Displayable{
 
     public float creep;
     public float newCreep;
-    public int creepHeight;
+    public int creepHeight = 0;
 
     public Tile(int x, int y){
         this.x = (short)x;

@@ -11,6 +11,7 @@ import arc.util.serialization.*;
 import arc.util.serialization.JsonValue.*;
 import mindustry.core.GameState.*;
 import mindustry.core.*;
+import mindustry.creeper.CreeperUtils;
 import mindustry.game.EventType.*;
 import mindustry.game.*;
 import mindustry.gen.*;
@@ -71,6 +72,8 @@ public class ServerControl implements ApplicationListener{
 
         //update log level
         Config.debug.set(Config.debug.bool());
+
+        CreeperUtils.init();
 
         try{
             lastMode = Gamemode.valueOf(Core.settings.getString("lastServerMode", "survival"));

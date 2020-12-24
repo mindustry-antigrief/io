@@ -16,6 +16,7 @@ public class Emitter {
             counter = 0;
             build.tile.creep += amt;
         }
+        counter++;
     }
 
     public Emitter(int _interval, int _amt){

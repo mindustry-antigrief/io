@@ -2,6 +2,7 @@ package mindustry.creeper;
 
 import arc.Events;
 import arc.graphics.Color;
+import arc.math.Mathf;
 import arc.struct.Seq;
 import arc.util.Log;
 import arc.util.Timer;
@@ -22,31 +23,32 @@ import java.util.HashMap;
 import static mindustry.Vars.world;
 
 public class CreeperUtils {
+    public static float updateInterval = 0.03333333333f;
     public static float transferRate = 0.2f;
     public static float creeperDamage = 5f;
     public static Team creeperTeam = Team.blue;
 
-    public static HashMap<Float, Block> creeperBlocks = new HashMap<>();
+    public static HashMap<Integer, Block> creeperBlocks = new HashMap<>();
     public static HashMap<Block, Emitter> emitterBlocks = new HashMap<>();
 
     public static Seq<Emitter> creeperEmitters = new Seq<>();
     public static Timer.Task runner;
 
     public static void init(){
-        creeperBlocks.put(1f, Blocks.conveyor);
-        creeperBlocks.put(2f, Blocks.titaniumConveyor);
-        creeperBlocks.put(3f, Blocks.armoredConveyor);
-        creeperBlocks.put(4f, Blocks.plastaniumConveyor);
-        creeperBlocks.put(5f, Blocks.scrapWall);
-        creeperBlocks.put(6f, Blocks.titaniumWall);
-        creeperBlocks.put(7f, Blocks.thoriumWall);
-        creeperBlocks.put(8f, Blocks.plastaniumWall);
-        creeperBlocks.put(9f, Blocks.phaseWall);
-        creeperBlocks.put(10f, Blocks.surgeWall);
+        creeperBlocks.put(1, Blocks.conveyor);
+        creeperBlocks.put(2, Blocks.titaniumConveyor);
+        creeperBlocks.put(3, Blocks.armoredConveyor);
+        creeperBlocks.put(4, Blocks.plastaniumConveyor);
+        creeperBlocks.put(5, Blocks.scrapWall);
+        creeperBlocks.put(6, Blocks.titaniumWall);
+        creeperBlocks.put(7, Blocks.thoriumWall);
+        creeperBlocks.put(8, Blocks.plastaniumWall);
+        creeperBlocks.put(9, Blocks.phaseWall);
+        creeperBlocks.put(10, Blocks.surgeWall);
 
-        emitterBlocks.put(Blocks.coreShard, new Emitter(30, 5));
-        emitterBlocks.put(Blocks.coreFoundation, new Emitter(15, 5));
-        emitterBlocks.put(Blocks.coreNucleus, new Emitter(15, 15));
+        emitterBlocks.put(Blocks.coreShard, new Emitter(30, 15));
+        emitterBlocks.put(Blocks.coreFoundation, new Emitter(15, 15));
+        emitterBlocks.put(Blocks.coreNucleus, new Emitter(15, 25));
 
         Events.on(EventType.GameOverEvent.class, e -> {
             if(runner != null)
@@ -83,7 +85,7 @@ public class CreeperUtils {
             drawCreeper(e.tile);
         });
 
-        runner = Timer.schedule(CreeperUtils::updateCreeper, 0, 0.01666666666f);
+        runner = Timer.schedule(CreeperUtils::updateCreeper, 0, updateInterval);
     }
 
 
@@ -118,14 +120,14 @@ public class CreeperUtils {
             if(tile.build != null && tile.build.team != creeperTeam){
                 tile.build.damage(creeperDamage);
                 Call.effect(Fx.bubble, tile.build.x, tile.build.y, 0, Color.acid);
-            }else if (tile.build == null){
-                tile.setNet(creeperBlocks.get(Math.round(tile.creep)), creeperTeam, 0);
+            }else if (tile.build == null && tile.creep >= 1f){
+                tile.setNet(creeperBlocks.get(Math.round(tile.creep)), creeperTeam, Mathf.random(0, 3));
             }
         }
     }
 
     public static boolean canTransfer(Tile source, Tile target){
-        return (source != null && target != null && !(target.block() instanceof StaticWall));
+        return (source != null && target != null && !(target.block() instanceof StaticWall) && !(target.block().solid));
     }
 
     public static void transferCreeper(Tile source, Tile target) {
@@ -147,6 +149,9 @@ public class CreeperUtils {
                     float adjustedDelta = delta * transferRate;
                     source.newCreep -= adjustedDelta;
                     target.newCreep += adjustedDelta;
+
+                    drawCreeper(source);
+                    drawCreeper(target);
                 }
             }
         }
