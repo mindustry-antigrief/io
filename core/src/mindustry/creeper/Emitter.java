@@ -1,6 +1,7 @@
 package mindustry.creeper;
 
 import arc.Events;
+import arc.util.Log;
 import mindustry.game.EventType;
 import mindustry.gen.Building;
 
@@ -12,7 +13,7 @@ public class Emitter {
     protected int counter;
 
     public boolean update(){
-        if(build == null)
+        if(build == null || build != null && build.health <= 1f)
             return false;
 
         if(counter >= interval) {

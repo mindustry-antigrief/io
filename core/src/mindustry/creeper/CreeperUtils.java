@@ -25,17 +25,21 @@ import static mindustry.Vars.world;
 
 public class CreeperUtils {
     public static float updateInterval = 0.1f;
-    public static float transferRate = 0.3f;
-    public static float creeperDamage = 0.25f;
+    public static float transferRate = 0.249f;
+    public static float evaporationRate = 0.001f;
+    public static float creeperDamage = 1f;
     public static Team creeperTeam = Team.blue;
 
     public static HashMap<Integer, Block> creeperBlocks = new HashMap<>();
+    public static HashMap<Block, Integer> creeperLevels = new HashMap<>();
+
     public static HashMap<Block, Emitter> emitterBlocks = new HashMap<>();
 
     public static Seq<Emitter> creeperEmitters = new Seq<>();
     public static Timer.Task runner;
 
     public static void init(){
+        creeperBlocks.put(0, Blocks.air);
         creeperBlocks.put(1, Blocks.conveyor);
         creeperBlocks.put(2, Blocks.titaniumConveyor);
         creeperBlocks.put(3, Blocks.armoredConveyor);
@@ -47,9 +51,13 @@ public class CreeperUtils {
         creeperBlocks.put(9, Blocks.phaseWall);
         creeperBlocks.put(10, Blocks.surgeWall);
 
-        emitterBlocks.put(Blocks.coreShard, new Emitter(30, 1));
-        emitterBlocks.put(Blocks.coreFoundation, new Emitter(20, 2));
-        emitterBlocks.put(Blocks.coreNucleus, new Emitter(10, 3));
+        for(var set : creeperBlocks.entrySet()){
+            creeperLevels.put(set.getValue(), set.getKey());
+        }
+
+        emitterBlocks.put(Blocks.coreShard, new Emitter(15, 10));
+        emitterBlocks.put(Blocks.coreFoundation, new Emitter(8, 20));
+        emitterBlocks.put(Blocks.coreNucleus, new Emitter(3, 30));
 
         Events.on(EventType.GameOverEvent.class, e -> {
             if(runner != null)
@@ -88,13 +96,10 @@ public class CreeperUtils {
     }
 
     private static void onCreeperDestroy(Tile tile) {
-        tile.creep = Math.min(0, tile.creep - 1);
-
-        Core.app.post(() -> {drawCreeper(tile);});
+        tile.creep = 0;
     }
 
     public static void updateCreeper(){
-
         // update emitters
         for(Emitter emitter : creeperEmitters){
             if(!emitter.update())
@@ -116,7 +121,9 @@ public class CreeperUtils {
             else if (tile.newCreep < 0.01)
                 tile.newCreep = 0;
             tile.creep = tile.newCreep;
+            drawCreeper(tile);
         }
+
     }
 
     // creates appropiate blocks for creeper OR damages the tile that it wants to take
@@ -133,8 +140,8 @@ public class CreeperUtils {
                         tile.build.damageContinuous(creeperDamage);
                 });
 
-            }else if (tile.creep >= 1f && tile.block().size == 1 && tile.block() != creeperBlocks.get(Mathf.clamp(Math.round(tile.creep), 1, 10))){
-                tile.setNet(creeperBlocks.get(Mathf.clamp(Math.round(tile.creep), 1, 10)), creeperTeam, Mathf.random(0, 3));
+            }else if (tile.creep >= 1f && tile.block().size == 1 && tile.block() != creeperBlocks.get(Mathf.clamp(Math.round(tile.creep), 1, 10)) && creeperLevels.get(tile.block()) < tile.creep){
+                tile.setNet(creeperBlocks.get(Mathf.clamp(Math.round(tile.creep), 0, 10)), creeperTeam, Mathf.random(0, 3));
             }
         }
     }
@@ -146,8 +153,11 @@ public class CreeperUtils {
         if(target.block() instanceof StaticWall || (target.floor() != null && !target.floor().placeableOn))
             return false;
 
-        if(source.build != null && source.build.team != creeperTeam)
+        if(source.build != null && source.build.team != creeperTeam) {
+            // wall or something, decline transfer but damage the wall
+            drawCreeper(source);
             return false;
+        }
 
         return true;
     }
@@ -157,20 +167,18 @@ public class CreeperUtils {
             float sourceCreeper = source.creep;
 
             if (sourceCreeper > 0){
-                float sourceTotal = source.creepHeight + source.creep;
-                float targetTotal = target.creepHeight + target.creep;
+                float sourceTotal = source.creep;
+                float targetTotal = target.creep;
                 float delta = 0;
 
                 if (sourceTotal > targetTotal) {
                     delta = sourceTotal - targetTotal;
                     if (delta > sourceCreeper)
                         delta = sourceCreeper;
+
                     float adjustedDelta = delta * transferRate;
                     source.newCreep -= adjustedDelta;
-                    target.newCreep += adjustedDelta;
-
-                    drawCreeper(source);
-                    drawCreeper(target);
+                    target.newCreep += adjustedDelta - evaporationRate;
                 }
             }
         }
