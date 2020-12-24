@@ -1,5 +1,6 @@
 package mindustry.creeper;
 
+import arc.Core;
 import arc.Events;
 import arc.graphics.Color;
 import arc.math.Mathf;
@@ -24,8 +25,8 @@ import static mindustry.Vars.world;
 
 public class CreeperUtils {
     public static float updateInterval = 0.03333333333f;
-    public static float transferRate = 0.2f;
-    public static float creeperDamage = 5f;
+    public static float transferRate = 0.1f;
+    public static float creeperDamage = 0.5f;
     public static Team creeperTeam = Team.blue;
 
     public static HashMap<Integer, Block> creeperBlocks = new HashMap<>();
@@ -47,8 +48,8 @@ public class CreeperUtils {
         creeperBlocks.put(10, Blocks.surgeWall);
 
         emitterBlocks.put(Blocks.coreShard, new Emitter(30, 15));
-        emitterBlocks.put(Blocks.coreFoundation, new Emitter(15, 15));
-        emitterBlocks.put(Blocks.coreNucleus, new Emitter(15, 25));
+        emitterBlocks.put(Blocks.coreFoundation, new Emitter(10, 25));
+        emitterBlocks.put(Blocks.coreNucleus, new Emitter(15, 65));
 
         Events.on(EventType.GameOverEvent.class, e -> {
             if(runner != null)
@@ -116,10 +117,15 @@ public class CreeperUtils {
 
     // creates appropiate blocks for creeper OR damages the tile that it wants to take
     public static void drawCreeper(Tile tile){
-        if(tile.creep >= 1f) {
+
+        // check if can transfer anyway because weird
+        if(tile.creep >= 1f && canTransfer(tile, tile)) {
             if(tile.build != null && tile.build.team != creeperTeam){
-                tile.build.damage(creeperDamage);
-                Call.effect(Fx.bubble, tile.build.x, tile.build.y, 0, Color.acid);
+                if(Mathf.chance(0.1f))
+                    Call.effect(Fx.bubble, tile.build.x, tile.build.y, 0, Color.blue);
+
+                Core.app.post(() -> {tile.build.damageContinuous(creeperDamage);});
+
             }else if (tile.build == null && tile.creep >= 1f){
                 tile.setNet(creeperBlocks.get(Math.round(tile.creep)), creeperTeam, Mathf.random(0, 3));
             }
@@ -127,7 +133,7 @@ public class CreeperUtils {
     }
 
     public static boolean canTransfer(Tile source, Tile target){
-        return (source != null && target != null && !(target.block() instanceof StaticWall) && !(target.block().solid));
+        return (source != null && target != null && target.block().placeableOn && source.block().placeableOn);
     }
 
     public static void transferCreeper(Tile source, Tile target) {
