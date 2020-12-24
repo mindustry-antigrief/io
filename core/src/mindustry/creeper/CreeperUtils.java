@@ -136,7 +136,7 @@ public class CreeperUtils {
     }
 
     public static boolean canTransfer(Tile source, Tile target){
-        return (source != null && target != null && (target.build != null ? target.build.team == creeperTeam && target.block().solid : true) && (source.build != null ? source.build.team == creeperTeam && source.block().solid : true));
+        return (source != null && target != null && (!target.block().solid || target.build != null && target.build.team == creeperTeam));
     }
 
     public static void transferCreeper(Tile source, Tile target) {
