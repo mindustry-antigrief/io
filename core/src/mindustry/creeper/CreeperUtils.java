@@ -55,7 +55,7 @@ public class CreeperUtils {
         return "#"+Integer.toHexString(java.awt.Color.HSBtoRGB((float)value/3f, 1f, 1f)).substring(2);
     }
 
-    static Color HealthToColor(double percentage) {
+    static String HealthToColor(double percentage) {
         if (percentage > 1) {
             percentage = 1;
         }
@@ -65,7 +65,9 @@ public class CreeperUtils {
         int red = (int)(255.0 * (1 - percentage));
         int green = (int)(255.0 * (percentage));
         int blue = 0;
-        return new Color(red, green, blue);
+
+        String str = new Color(red, green, blue).toString();
+        return "#" + str.substring(0, str.length() - 2);
     }
 
     public static void init(){
@@ -214,7 +216,7 @@ public class CreeperUtils {
                 }
 
         }
-        if (tile.creep >= 1f &&
+        if (tile != null && tile.creep >= 1f &&
                 !(tile.block() instanceof CoreBlock) &&
                 (creeperLevels.getOrDefault(tile.block(), 10)) < Math.round(tile.creep) || tile.block() instanceof TreeBlock){
             tile.setNet(creeperBlocks.get(Mathf.clamp(Math.round(tile.creep), 0, 10)), creeperTeam, Mathf.random(0, 3));
