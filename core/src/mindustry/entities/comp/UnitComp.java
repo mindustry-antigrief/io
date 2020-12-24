@@ -2,6 +2,7 @@ package mindustry.entities.comp;
 
 import arc.*;
 import arc.func.*;
+import arc.graphics.Color;
 import arc.graphics.g2d.*;
 import arc.math.*;
 import arc.math.geom.*;
@@ -13,6 +14,7 @@ import mindustry.ai.types.*;
 import mindustry.annotations.Annotations.*;
 import mindustry.content.*;
 import mindustry.core.*;
+import mindustry.creeper.CreeperUtils;
 import mindustry.ctype.*;
 import mindustry.entities.*;
 import mindustry.entities.abilities.*;
@@ -392,6 +394,12 @@ abstract class UnitComp implements Healthc, Physicsc, Hitboxc, Statusc, Teamc, I
         //remove units spawned by the core
         if(spawnedByCore && !isPlayer() && !dead){
             Call.unitDespawn(self());
+        }
+
+        //damage if on creeper
+        if(CreeperUtils.creeperBlocks.containsValue(blockOn())) {
+            damageContinuous(CreeperUtils.creeperDamage);
+            Call.effect(Fx.bubble, x, y, 0, Color.blue);
         }
     }
 
