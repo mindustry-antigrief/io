@@ -30,7 +30,7 @@ public class CreeperUtils {
     public static float updateInterval = 0.05f;
     public static float transferRate = 0.249f;
     public static float evaporationRate = 0f;
-    public static float creeperDamage = 0.2f;
+    public static float creeperDamage = 0.1f;
     public static Team creeperTeam = Team.blue;
 
     public static HashMap<Integer, Block> creeperBlocks = new HashMap<>();
