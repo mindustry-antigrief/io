@@ -19,6 +19,7 @@ import mindustry.world.Build;
 import mindustry.world.Tile;
 import mindustry.world.blocks.environment.StaticWall;
 import mindustry.world.blocks.environment.TreeBlock;
+import mindustry.world.blocks.storage.CoreBlock;
 
 import java.util.HashMap;
 
@@ -56,7 +57,7 @@ public class CreeperUtils {
             creeperLevels.put(set.getValue(), set.getKey());
         }
 
-        emitterBlocks.put(Blocks.coreShard, new Emitter(15, 10));
+        emitterBlocks.put(Blocks.coreShard, new Emitter(20, 20));
         emitterBlocks.put(Blocks.coreFoundation, new Emitter(8, 20));
         emitterBlocks.put(Blocks.coreNucleus, new Emitter(3, 30));
 
@@ -82,6 +83,7 @@ public class CreeperUtils {
                 }
 
                 Log.info(creeperEmitters.size + " emitters");
+                runner = Timer.schedule(CreeperUtils::updateCreeper, 0, updateInterval);
 
             } catch (InterruptedException interruptedException) {
                 interruptedException.printStackTrace();
@@ -92,12 +94,11 @@ public class CreeperUtils {
             if(CreeperUtils.creeperBlocks.containsValue(e.tile.block()))
                 onCreeperDestroy(e.tile);
         });
-
-        runner = Timer.schedule(CreeperUtils::updateCreeper, 0, updateInterval);
     }
 
     private static void onCreeperDestroy(Tile tile) {
         tile.creep = 0;
+        tile.newCreep = 0;
     }
 
     public static void updateCreeper(){
@@ -132,16 +133,23 @@ public class CreeperUtils {
 
         // check if can transfer anyway because weird
         if(tile.creep >= 1f) {
-            if(tile.build != null && tile.build.team != creeperTeam){
-                if(Mathf.chance(0.05f))
-                    Call.effect(Fx.bubble, tile.build.x, tile.build.y, 0, Color.blue);
+            if (tile.touchingCreeper()) {
 
-                Core.app.post(() -> {
-                    if(tile.build != null)
-                        tile.build.damageContinuous(creeperDamage);
-                });
+                // deal continuous damage
+                if (tile.build != null && tile.build.team != creeperTeam) {
+                    if (Mathf.chance(0.05f))
+                        Call.effect(Fx.bubble, tile.build.x, tile.build.y, 0, Color.blue);
 
-            }else if (tile.creep >= 1f && tile.block().size == 1 && tile.block() != creeperBlocks.get(Mathf.clamp(Math.round(tile.creep), 1, 10)) && (creeperLevels.containsKey(tile.block()) ? creeperLevels.get(tile.block()) : 10) < tile.creep){
+                    Core.app.post(() -> {
+                        if (tile.build != null)
+                            tile.build.damageContinuous(creeperDamage);
+                    });
+                }
+
+
+            }else if (tile.creep >= 1f &&
+                    !(tile.block() instanceof CoreBlock) &&
+                    (creeperLevels.getOrDefault(tile.block(), 10)) < Math.round(tile.creep) || tile.block() instanceof TreeBlock){
                 tile.setNet(creeperBlocks.get(Mathf.clamp(Math.round(tile.creep), 0, 10)), creeperTeam, Mathf.random(0, 3));
             }
         }
@@ -173,7 +181,7 @@ public class CreeperUtils {
             if (sourceCreeper > 0){
                 float sourceTotal = source.creep;
                 float targetTotal = target.creep;
-                float delta = 0;
+                float delta;
 
                 if (sourceTotal > targetTotal) {
                     delta = sourceTotal - targetTotal;
