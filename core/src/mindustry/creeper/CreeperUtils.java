@@ -17,6 +17,7 @@ import mindustry.gen.Call;
 import mindustry.world.Block;
 import mindustry.world.Build;
 import mindustry.world.Tile;
+import mindustry.world.blocks.environment.Cliff;
 import mindustry.world.blocks.environment.StaticWall;
 import mindustry.world.blocks.environment.TreeBlock;
 import mindustry.world.blocks.storage.CoreBlock;
@@ -61,6 +62,8 @@ public class CreeperUtils {
         emitterBlocks.put(Blocks.coreFoundation, new Emitter(8, 20));
         emitterBlocks.put(Blocks.coreNucleus, new Emitter(3, 30));
 
+        // todo: add "spore launchers", etc. (yes creeper world ripoff i know)
+
         Events.on(EventType.GameOverEvent.class, e -> {
             if(runner != null)
                 runner.cancel();
@@ -94,6 +97,7 @@ public class CreeperUtils {
             if(CreeperUtils.creeperBlocks.containsValue(e.tile.block()))
                 onCreeperDestroy(e.tile);
         });
+
     }
 
     private static void onCreeperDestroy(Tile tile) {
@@ -133,10 +137,9 @@ public class CreeperUtils {
 
         // check if can transfer anyway because weird
         if(tile.creep >= 1f) {
-            if (tile.touchingCreeper()) {
 
                 // deal continuous damage
-                if (tile.build != null && tile.build.team != creeperTeam) {
+                if (tile.build != null && tile.build.team != creeperTeam && tile.touchingCreeper()) {
                     if (Mathf.chance(0.05f))
                         Call.effect(Fx.bubble, tile.build.x, tile.build.y, 0, Color.blue);
 
@@ -146,12 +149,11 @@ public class CreeperUtils {
                     });
                 }
 
-
-            }else if (tile.creep >= 1f &&
-                    !(tile.block() instanceof CoreBlock) &&
-                    (creeperLevels.getOrDefault(tile.block(), 10)) < Math.round(tile.creep) || tile.block() instanceof TreeBlock){
-                tile.setNet(creeperBlocks.get(Mathf.clamp(Math.round(tile.creep), 0, 10)), creeperTeam, Mathf.random(0, 3));
-            }
+        }
+        if (tile.creep >= 1f &&
+                !(tile.block() instanceof CoreBlock) &&
+                (creeperLevels.getOrDefault(tile.block(), 10)) < Math.round(tile.creep) || tile.block() instanceof TreeBlock){
+            tile.setNet(creeperBlocks.get(Mathf.clamp(Math.round(tile.creep), 0, 10)), creeperTeam, Mathf.random(0, 3));
         }
     }
 
@@ -162,7 +164,7 @@ public class CreeperUtils {
         if(target.block() instanceof TreeBlock)
             return true;
 
-        if(target.block() instanceof StaticWall || (target.floor() != null && !target.floor().placeableOn || target.floor().isDeep()))
+        if(target.block() instanceof StaticWall || (target.floor() != null && !target.floor().placeableOn || target.floor().isDeep() || target.block() instanceof Cliff))
             return false;
 
         if(source.build != null && source.build.team != creeperTeam) {
