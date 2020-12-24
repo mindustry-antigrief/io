@@ -1419,8 +1419,8 @@ public class Blocks implements ContentList{
         duo = new ItemTurret("duo"){{
             requirements(Category.turret, with(Items.copper, 35), true);
             ammo(
-            Items.copper, Bullets.standardCopper,
-            Items.graphite, Bullets.standardDense,
+            Items.copper, Bullets.standardDense,
+            Items.graphite, Bullets.standardThorium,
             Items.pyratite, Bullets.standardIncendiary,
             Items.silicon, Bullets.standardHoming
             );
