@@ -28,12 +28,12 @@ import static mindustry.Vars.state;
 import static mindustry.Vars.world;
 
 public class CreeperUtils {
-    public static float updateInterval = 0.05f; // Base update interval in seconds
+    public static float updateInterval = 0.025f; // Base update interval in seconds
     public static float transferRate = 0.249f; // Base transfer rate NOTE: keep below 0.25f
     public static float evaporationRate = 0f; // Base creeper evaporation
     public static float creeperDamage = 0.1f; // Base creeper damage
 
-    public static float nullifyDamage = 1000f; // Damage that needs to be applied for the core to be suspended
+    public static float nullifyDamage = 1500f; // Damage that needs to be applied for the core to be suspended
     public static float nullifyTimeout = 360f; // The amount of time a core remains suspended (resets upon enough damage applied)
 
     public static float nullificationPeriod = 10f; // How many seconds all cores have to be nullified (suspended) in order for the game to end
@@ -53,6 +53,19 @@ public class CreeperUtils {
 
     public static String getTrafficlightColor(double value){
         return "#"+Integer.toHexString(java.awt.Color.HSBtoRGB((float)value/3f, 1f, 1f)).substring(2);
+    }
+
+    static Color HealthToColor(double percentage) {
+        if (percentage > 1) {
+            percentage = 1;
+        }
+        else if (percentage < 0) {
+            percentage = 0;
+        }
+        int red = (int)(255.0 * (1 - percentage));
+        int green = (int)(255.0 * (percentage));
+        int blue = 0;
+        return new Color(red, green, blue);
     }
 
     public static void init(){
@@ -123,7 +136,7 @@ public class CreeperUtils {
 
         Timer.schedule(() -> {
 
-            Call.infoPopup("\uE88B [" + getTrafficlightColor(Mathf.clamp((CreeperUtils.nullifiedCount / Math.max(1, creeperEmitters.size)), 0f, 1f)) + "]" + CreeperUtils.nullifiedCount + "/" + CreeperUtils.creeperEmitters.size + "[] emitters suspended", 10f, 20, 50, 20, 450, 0);
+            Call.infoPopup("\uE88B [" + HealthToColor((double) Mathf.clamp((CreeperUtils.nullifiedCount / (double) Math.max(1.0, (double) creeperEmitters.size)), 0f, 1f)) + "]" + CreeperUtils.nullifiedCount + "/" + CreeperUtils.creeperEmitters.size + "[] emitters suspended", 10f, 20, 50, 20, 450, 0);
             // check for gameover
             if(CreeperUtils.nullifiedCount == CreeperUtils.creeperEmitters.size){
                 Timer.schedule(() -> {
