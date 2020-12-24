@@ -25,8 +25,8 @@ import static mindustry.Vars.world;
 
 public class CreeperUtils {
     public static float updateInterval = 0.03333333333f;
-    public static float transferRate = 0.1f;
-    public static float creeperDamage = 0.15f;
+    public static float transferRate = 0.2f;
+    public static float creeperDamage = 0.25f;
     public static Team creeperTeam = Team.blue;
 
     public static HashMap<Integer, Block> creeperBlocks = new HashMap<>();
@@ -47,9 +47,9 @@ public class CreeperUtils {
         creeperBlocks.put(9, Blocks.phaseWall);
         creeperBlocks.put(10, Blocks.surgeWall);
 
-        emitterBlocks.put(Blocks.coreShard, new Emitter(30, 25));
-        emitterBlocks.put(Blocks.coreFoundation, new Emitter(10, 30));
-        emitterBlocks.put(Blocks.coreNucleus, new Emitter(5, 40));
+        emitterBlocks.put(Blocks.coreShard, new Emitter(10, 3));
+        emitterBlocks.put(Blocks.coreFoundation, new Emitter(8, 5));
+        emitterBlocks.put(Blocks.coreNucleus, new Emitter(5, 10));
 
         Events.on(EventType.GameOverEvent.class, e -> {
             if(runner != null)
@@ -89,6 +89,8 @@ public class CreeperUtils {
 
     private static void onCreeperDestroy(Tile tile) {
         tile.creep = Math.min(0, tile.creep - 1);
+
+        Core.app.post(() -> {drawCreeper(tile);});
     }
 
     public static void updateCreeper(){
@@ -131,8 +133,9 @@ public class CreeperUtils {
                         tile.build.damageContinuous(creeperDamage);
                 });
 
-            }else if (tile != null && tile.creep >= 1f){
-                tile.setNet(creeperBlocks.get(Math.round(tile.creep)), creeperTeam, Mathf.random(0, 3));
+            }else if (tile.creep >= 1f){
+                Log.info(tile.creep);
+                tile.setNet(creeperBlocks.get(Mathf.clamp(Math.round(tile.creep), 1, 10)), creeperTeam, Mathf.random(0, 3));
             }
         }
     }
