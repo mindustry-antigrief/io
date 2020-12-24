@@ -89,8 +89,6 @@ public class CreeperUtils {
 
     private static void onCreeperDestroy(Tile tile) {
         tile.creep = Math.min(0, tile.creep - 1);
-
-        Core.app.post(() -> {drawCreeper(tile);});
     }
 
     public static void updateCreeper(){
@@ -133,7 +131,7 @@ public class CreeperUtils {
                         tile.build.damageContinuous(creeperDamage);
                 });
 
-            }else if (tile.creep >= 1f){
+            }else if (tile != null && tile.creep >= 1f){
                 tile.setNet(creeperBlocks.get(Math.round(tile.creep)), creeperTeam, Mathf.random(0, 3));
             }
         }
