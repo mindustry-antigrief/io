@@ -252,12 +252,15 @@ public class CreeperUtils {
 
                 // deal continuous damage
                 if (tile.build != null && tile.build.team != creeperTeam && tile.touchingCreeper()) {
-                    if (Mathf.chance(0.05f))
-                        Call.effect(Fx.bubble, tile.build.x, tile.build.y, 0, Color.blue);
 
                     Core.app.post(() -> {
-                        if (tile.build != null)
+                        if (tile.build != null) {
+                            
+                            if (Mathf.chance(0.05f))
+                                Call.effect(Fx.bubble, tile.build.x, tile.build.y, 0, Color.blue);
+
                             tile.build.damageContinuous(creeperDamage * tile.creep);
+                        }
                     });
                 }
 
