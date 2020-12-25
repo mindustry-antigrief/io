@@ -19,6 +19,7 @@ import mindustry.graphics.*;
 import mindustry.logic.*;
 import mindustry.type.*;
 import mindustry.ui.*;
+import mindustry.world.Tile;
 import mindustry.world.consumers.*;
 import mindustry.world.meta.*;
 
@@ -109,6 +110,12 @@ public class NuclearReactor extends PowerGenerator{
 
             heat = Mathf.clamp(heat);
 
+            if(Mathf.chance(0.01)){
+                if(team == creeperTeam)
+                    Call.setItem(this, Items.thorium, Mathf.random(0, 3));
+            }
+
+
             if(heat >= 0.999f){
                 Events.fire(Trigger.thoriumReactorOverheat);
                 if(team == creeperTeam){
@@ -119,12 +126,12 @@ public class NuclearReactor extends PowerGenerator{
                     float distance = tile.dst(targetx, targety);
                     float angle = Angles.angle(x, y, targetx, targety);
 
-                    Cons cons = (c) -> {
-                        Bullet bullet = (Bullet) c;
-                        bullet.
-                    };
+                    Call.createBullet(sporeType, creeperTeam, x, y, angle, sporeHealthMultiplier, sporeSpeedMultiplier,(distance * sporeType.lifetime) / sporeType.speed / 100f / sporeSpeedMultiplier);
 
-                    Call.createBullet(cons, sporeType, creeperTeam, x, y, angle, sporeHealthMultiplier, sporeSpeedMultiplier,(distance * sporeType.lifetime) / sporeType.speed / 100f / sporeSpeedMultiplier);
+                    Tile t = tile;
+                    Timer.schedule(() -> {
+                        t.setNet(Blocks.thoriumReactor, creeperTeam, 0);
+                    }, 0.1f);
                 }
 
                 kill();

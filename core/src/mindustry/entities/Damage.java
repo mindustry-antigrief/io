@@ -46,7 +46,7 @@ public class Damage{
 
             if(fire){
                 for(int i = 0; i < Mathf.clamp(flammability / 4, 0, 30); i++){
-                    Time.run(i / 2f, () -> Call.createBullet(null, Bullets.fireball, Team.derelict, x, y, Mathf.random(360f), Bullets.fireball.damage, 1, 1));
+                    Time.run(i / 2f, () -> Call.createBullet(Bullets.fireball, Team.derelict, x, y, Mathf.random(360f), Bullets.fireball.damage, 1, 1));
                 }
             }
 

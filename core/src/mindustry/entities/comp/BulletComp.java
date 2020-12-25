@@ -8,7 +8,9 @@ import arc.math.geom.*;
 import arc.struct.*;
 import arc.util.*;
 import mindustry.annotations.Annotations.*;
+import mindustry.content.Bullets;
 import mindustry.core.*;
+import mindustry.creeper.CreeperUtils;
 import mindustry.entities.bullet.*;
 import mindustry.game.EventType.*;
 import mindustry.game.*;
@@ -72,10 +74,6 @@ abstract class BulletComp implements Timedc, Damagec, Hitboxc, Teamc, Posc, Draw
         remove();
     }
 
-    public void onAbsorb(Cons cons){
-        cons.get(0);
-    }
-
     @Replace
     public float clipSize(){
         return type.drawSize;
@@ -94,6 +92,11 @@ abstract class BulletComp implements Timedc, Damagec, Hitboxc, Teamc, Posc, Draw
     public void collision(Hitboxc other, float x, float y){
         type.hit(self(), x, y);
         float health = 0f;
+
+        if(team == CreeperUtils.creeperTeam && type == Bullets.heavyCryoShot) {
+            CreeperUtils.sporeCollision(self(), x, y);
+            return;
+        }
 
         if(other instanceof Healthc h){
             health = h.health();

@@ -6,6 +6,7 @@ import arc.func.Cons;
 import arc.func.Intc;
 import arc.graphics.Color;
 import arc.math.Mathf;
+import arc.math.geom.Geometry;
 import arc.struct.Seq;
 import arc.util.Log;
 import arc.util.Timer;
@@ -17,6 +18,7 @@ import mindustry.entities.bullet.BulletType;
 import mindustry.game.EventType;
 import mindustry.game.Team;
 import mindustry.gen.Building;
+import mindustry.gen.Bullet;
 import mindustry.gen.Call;
 import mindustry.gen.Groups;
 import mindustry.world.Block;
@@ -41,8 +43,8 @@ public class CreeperUtils {
     public static float minCreeper = 0.5f; // Minimum amount of creeper required for transfer
 
     public static BulletType sporeType = Bullets.heavyCryoShot;
-    public static float sporeAmount = 10f;
-    public static float sporeRadius = 5f;
+    public static float sporeAmount = 5f;
+    public static float sporeRadius = 3f;
     public static float sporeSpeedMultiplier = 0.2f;
     public static float sporeHealthMultiplier = 10f;
 
@@ -96,6 +98,22 @@ public class CreeperUtils {
         }
 
         return ret;
+    }
+
+    public static void sporeCollision(Bullet bullet, float x, float y){
+        Tile tile = world.tileWorld(x, y);
+        if(!validTile(tile))
+            return;
+
+        Call.effect(Fx.sapExplosion, x, y, sporeRadius, Color.blue);
+
+        Geometry.circle(tile.x, tile.y, (int) sporeRadius, (cx, cy) -> {
+            Tile ct = world.tile(cx, cy);
+            if(!validTile(ct) || (tile.block() instanceof StaticWall || (tile.floor() != null && !tile.floor().placeableOn || tile.floor().isDeep() || tile.block() instanceof Cliff)))
+                return;
+
+            ct.creep = sporeAmount;
+        });
     }
 
     public static void init(){
@@ -254,7 +272,7 @@ public class CreeperUtils {
     public static boolean canTransfer(Tile source, Tile target){
         boolean amountValid = source.creep > minCreeper;
 
-        if(source == null || target == null)
+        if(!validTile(source) || !validTile(target))
             return false;
 
         if(target.block() instanceof TreeBlock && amountValid)
@@ -270,6 +288,13 @@ public class CreeperUtils {
         }
 
         return amountValid;
+    }
+
+    public static boolean validTile(Tile tile){
+        if(tile == null)
+            return false;
+
+        return true;
     }
 
     public static void transferCreeper(Tile source, Tile target) {
