@@ -1,6 +1,7 @@
 package mindustry.world.blocks.power;
 
 import arc.*;
+import arc.func.Cons;
 import arc.graphics.*;
 import arc.graphics.g2d.*;
 import arc.math.*;
@@ -10,6 +11,7 @@ import arc.util.*;
 import arc.util.io.*;
 import mindustry.annotations.Annotations.*;
 import mindustry.content.*;
+import mindustry.creeper.CreeperUtils;
 import mindustry.entities.*;
 import mindustry.game.EventType.*;
 import mindustry.gen.*;
@@ -21,6 +23,7 @@ import mindustry.world.consumers.*;
 import mindustry.world.meta.*;
 
 import static mindustry.Vars.*;
+import static mindustry.creeper.CreeperUtils.*;
 
 public class NuclearReactor extends PowerGenerator{
     public final int timerFuel = timers++;
@@ -108,6 +111,22 @@ public class NuclearReactor extends PowerGenerator{
 
             if(heat >= 0.999f){
                 Events.fire(Trigger.thoriumReactorOverheat);
+                if(team == creeperTeam){
+                    float[] packed = targetSpore();
+                    float targetx = packed[0];
+                    float targety = packed[1];
+
+                    float distance = tile.dst(targetx, targety);
+                    float angle = Angles.angle(x, y, targetx, targety);
+
+                    Cons cons = (c) -> {
+                        Bullet bullet = (Bullet) c;
+                        bullet.
+                    };
+
+                    Call.createBullet(cons, sporeType, creeperTeam, x, y, angle, sporeHealthMultiplier, sporeSpeedMultiplier,(distance * sporeType.lifetime) / sporeType.speed / 100f / sporeSpeedMultiplier);
+                }
+
                 kill();
             }
         }

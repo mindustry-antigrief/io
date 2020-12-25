@@ -72,6 +72,10 @@ abstract class BulletComp implements Timedc, Damagec, Hitboxc, Teamc, Posc, Draw
         remove();
     }
 
+    public void onAbsorb(Cons cons){
+        cons.get(0);
+    }
+
     @Replace
     public float clipSize(){
         return type.drawSize;

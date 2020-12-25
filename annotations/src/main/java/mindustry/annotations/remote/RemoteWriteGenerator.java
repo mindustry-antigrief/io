@@ -1,7 +1,6 @@
 package mindustry.annotations.remote;
 
 import arc.struct.*;
-import arc.util.Log;
 import arc.util.io.*;
 import com.squareup.javapoet.*;
 import mindustry.annotations.Annotations.*;
@@ -64,6 +63,8 @@ public class RemoteWriteGenerator{
     private void writeMethodVariant(TypeSpec.Builder classBuilder, MethodEntry methodEntry, boolean toAll, boolean forwarded){
         ExecutableElement elem = methodEntry.element;
 
+        //create builder
+
         MethodSpec.Builder method = MethodSpec.methodBuilder(elem.getSimpleName().toString() + (forwarded ? "__forward" : "")) //add except suffix when forwarding
         .addModifiers(Modifier.STATIC)
         .returns(void.class);
@@ -91,8 +92,6 @@ public class RemoteWriteGenerator{
         if(!toAll){
             method.addParameter(ClassName.bestGuess("mindustry.net.NetConnection"), "playerConnection");
         }
-        if(elem.getSimpleName().toString().contains("createBullet"))
-            method.addParameter(ClassName.bestGuess("java.lang.Runnable"), "run");
 
         //add sender to ignore
         if(forwarded){
@@ -109,7 +108,6 @@ public class RemoteWriteGenerator{
             //concatenate parameters
             int index = 0;
             StringBuilder results = new StringBuilder();
-
             for(VariableElement var : elem.getParameters()){
                 //special case: calling local-only methods uses the local player
                 if(index == 0 && methodEntry.where == Loc.client){
@@ -124,9 +122,6 @@ public class RemoteWriteGenerator{
             //add the statement to call it
             method.addStatement("$N." + elem.getSimpleName() + "(" + results.toString() + ")",
             ((TypeElement)elem.getEnclosingElement()).getQualifiedName().toString());
-
-            if(elem.getSimpleName().toString().contains("createBullet"))
-                method.addStatement("run.run()");
 
             if(methodEntry.local != Loc.both){
                 method.endControlFlow();

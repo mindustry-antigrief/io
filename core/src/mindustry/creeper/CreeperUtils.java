@@ -11,11 +11,14 @@ import arc.util.Log;
 import arc.util.Timer;
 import mindustry.Vars;
 import mindustry.content.Blocks;
+import mindustry.content.Bullets;
 import mindustry.content.Fx;
+import mindustry.entities.bullet.BulletType;
 import mindustry.game.EventType;
 import mindustry.game.Team;
 import mindustry.gen.Building;
 import mindustry.gen.Call;
+import mindustry.gen.Groups;
 import mindustry.world.Block;
 import mindustry.world.Build;
 import mindustry.world.Tile;
@@ -36,6 +39,12 @@ public class CreeperUtils {
     public static float evaporationRate = 0f; // Base creeper evaporation
     public static float creeperDamage = 0.025f; // Base creeper damage
     public static float minCreeper = 0.5f; // Minimum amount of creeper required for transfer
+
+    public static BulletType sporeType = Bullets.heavyCryoShot;
+    public static float sporeAmount = 10f;
+    public static float sporeRadius = 5f;
+    public static float sporeSpeedMultiplier = 0.2f;
+    public static float sporeHealthMultiplier = 10f;
 
     public static float nullifyDamage = 1500f; // Damage that needs to be applied for the core to be suspended
     public static float nullifyTimeout = 360f; // The amount of time a core remains suspended (resets upon enough damage applied)
@@ -72,6 +81,21 @@ public class CreeperUtils {
 
         String str = new Color(red, green, blue).toString();
         return "#" + str.substring(0, str.length() - 2);
+    }
+
+    public static float[] targetSpore(){
+        float[] ret = new float[]{0,0};
+        int iterations = 0;
+
+        while(ret == null && iterations < 100){
+            iterations++;
+            Building build = Groups.build.index(Mathf.random(0, Groups.build.size()));
+            if(build.team == creeperTeam)
+                continue;
+            ret = new float[]{build.x + Mathf.random(-32f, 32f), build.y + Mathf.random(-32f, 32f)};
+        }
+
+        return ret;
     }
 
     public static void init(){
