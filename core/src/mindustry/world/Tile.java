@@ -66,7 +66,7 @@ public class Tile implements Position, QuadTreeObject, Displayable{
                 (world.tile(x+1, y) != null && world.tile(x+1, y).creep >= 1f) ||
                 (world.tile(x-1, y) != null && world.tile(x-1, y).creep >= 1f) ||
                 (world.tile(x, y+1) != null && world.tile(x, y+1).creep >= 1f) ||
-                (world.tile(x, y-1) != null &&world.tile(x, y-1).creep >= 1f)
+                (world.tile(x, y-1) != null && world.tile(x, y-1).creep >= 1f)
         );
     }
 

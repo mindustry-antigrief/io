@@ -2,6 +2,8 @@ package mindustry.creeper;
 
 import arc.Core;
 import arc.Events;
+import arc.func.Cons;
+import arc.func.Intc;
 import arc.graphics.Color;
 import arc.math.Mathf;
 import arc.struct.Seq;
@@ -23,6 +25,7 @@ import mindustry.world.blocks.environment.TreeBlock;
 import mindustry.world.blocks.storage.CoreBlock;
 
 import java.util.HashMap;
+import java.util.concurrent.CompletableFuture;
 
 import static mindustry.Vars.state;
 import static mindustry.Vars.world;
@@ -31,7 +34,8 @@ public class CreeperUtils {
     public static float updateInterval = 0.025f; // Base update interval in seconds
     public static float transferRate = 0.249f; // Base transfer rate NOTE: keep below 0.25f
     public static float evaporationRate = 0f; // Base creeper evaporation
-    public static float creeperDamage = 0.1f; // Base creeper damage
+    public static float creeperDamage = 0.025f; // Base creeper damage
+    public static float minCreeper = 0.5f; // Minimum amount of creeper required for transfer
 
     public static float nullifyDamage = 1500f; // Damage that needs to be applied for the core to be suspended
     public static float nullifyTimeout = 360f; // The amount of time a core remains suspended (resets upon enough damage applied)
@@ -216,7 +220,7 @@ public class CreeperUtils {
                 }
 
         }
-        if (tile != null && tile.creep >= 1f &&
+        if (tile != null && tile.x < world.width() && tile.y < world.height() && tile.creep >= 1f &&
                 !(tile.block() instanceof CoreBlock) &&
                 (creeperLevels.getOrDefault(tile.block(), 10)) < Math.round(tile.creep) || tile.block() instanceof TreeBlock){
             tile.setNet(creeperBlocks.get(Mathf.clamp(Math.round(tile.creep), 0, 10)), creeperTeam, Mathf.random(0, 3));
@@ -224,10 +228,12 @@ public class CreeperUtils {
     }
 
     public static boolean canTransfer(Tile source, Tile target){
+        boolean amountValid = source.creep > minCreeper;
+
         if(source == null || target == null)
             return false;
 
-        if(target.block() instanceof TreeBlock)
+        if(target.block() instanceof TreeBlock && amountValid)
             return true;
 
         if(target.block() instanceof StaticWall || (target.floor() != null && !target.floor().placeableOn || target.floor().isDeep() || target.block() instanceof Cliff))
@@ -239,7 +245,7 @@ public class CreeperUtils {
             return false;
         }
 
-        return true;
+        return amountValid;
     }
 
     public static void transferCreeper(Tile source, Tile target) {
