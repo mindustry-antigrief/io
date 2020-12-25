@@ -312,7 +312,7 @@ public class UnitTypes implements ContentList{
             mineTier = 2;
             mineSpeed = 5f;
 
-            abilities.add(new ShieldRegenFieldAbility(20f, 40f, 60f * 5, 60f));
+            // abilities.add(new ShieldRegenFieldAbility(20f, 40f, 60f * 5, 60f));
             ammoType = AmmoTypes.power;
 
             weapons.add(new Weapon("heal-shotgun-weapon"){{
@@ -1500,7 +1500,7 @@ public class UnitTypes implements ContentList{
             trailY = -9f;
             trailScl = 1.5f;
 
-            abilities.add(new ShieldRegenFieldAbility(20f, 40f, 60f * 4, 60f));
+            // abilities.add(new ShieldRegenFieldAbility(20f, 40f, 60f * 4, 60f));
 
             weapons.add(new Weapon("large-artillery"){{
                 reload = 65f;
