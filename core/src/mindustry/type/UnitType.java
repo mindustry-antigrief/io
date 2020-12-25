@@ -52,7 +52,7 @@ public class UnitType extends UnlockableContent{
     public float groundLayer = Layer.groundUnit;
     public float payloadCapacity = 8;
     public float aimDst = -1f;
-    public int commandLimit = 8;
+    public int commandLimit = 14;
     public float visualElevation = -1f;
     public boolean allowLegStep = false;
     public boolean hovering = false;
