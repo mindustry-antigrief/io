@@ -913,7 +913,7 @@ public class UnitTypes implements ContentList{
             accel = 0.08f;
             drag = 0.01f;
             flying = true;
-            health = 75;
+            health = 475;
             engineOffset = 5.5f;
             range = 140f;
             targetAir = false;
@@ -938,7 +938,7 @@ public class UnitTypes implements ContentList{
         }};
 
         horizon = new UnitType("horizon"){{
-            health = 340;
+            health = 940;
             speed = 1.7f;
             accel = 0.08f;
             drag = 0.016f;
@@ -977,7 +977,7 @@ public class UnitTypes implements ContentList{
         }};
 
         zenith = new UnitType("zenith"){{
-            health = 700;
+            health = 1400;
             speed = 1.8f;
             accel = 0.04f;
             drag = 0.016f;
