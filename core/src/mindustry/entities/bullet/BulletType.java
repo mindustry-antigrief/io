@@ -352,12 +352,12 @@ public abstract class BulletType extends Content{
     }
 
     public void createNet(Team team, float x, float y, float angle, float damage, float velocityScl, float lifetimeScl){
-        Call.createBullet(this, team, x, y, angle, damage, velocityScl, lifetimeScl);
+        Call.createBullet(null, this, team, x, y, angle, damage, velocityScl, lifetimeScl);
     }
 
     @Remote(called = Loc.server, unreliable = true)
-    public static void createBullet(BulletType type, Team team, float x, float y, float angle, float damage, float velocityScl, float lifetimeScl){
-        if(type == null) return;
-        type.create(null, team, x, y, angle, damage, velocityScl, lifetimeScl, null);
+    public static Bullet createBullet(BulletType type, Team team, float x, float y, float angle, float damage, float velocityScl, float lifetimeScl){
+        if(type == null) return null;
+        return type.create(null, team, x, y, angle, damage, velocityScl, lifetimeScl, null);
     }
 }
