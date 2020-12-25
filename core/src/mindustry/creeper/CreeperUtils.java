@@ -46,6 +46,9 @@ public class CreeperUtils {
     public static float sporeHealthMultiplier = 10f;
     public static float sporeTargetOffset = 256f;
 
+    public static float nullifierRange = 5f;
+
+
     public static float nullifyDamage = 1500f; // Damage that needs to be applied for the core to be suspended
     public static float nullifyTimeout = 360f; // The amount of time a core remains suspended (resets upon enough damage applied)
 
@@ -130,6 +133,7 @@ public class CreeperUtils {
         creeperBlocks.put(10, Blocks.surgeWall);
 
         // this is purely for damage multiplication
+        creeperBlocks.put(12, Blocks.thoriumReactor);
         creeperBlocks.put(20, Blocks.coreShard);
         creeperBlocks.put(35, Blocks.coreFoundation);
         creeperBlocks.put(50, Blocks.coreNucleus);
@@ -255,7 +259,7 @@ public class CreeperUtils {
 
                     Core.app.post(() -> {
                         if (tile.build != null) {
-                            
+
                             if (Mathf.chance(0.05f))
                                 Call.effect(Fx.bubble, tile.build.x, tile.build.y, 0, Color.blue);
 

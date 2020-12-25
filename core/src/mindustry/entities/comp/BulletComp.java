@@ -139,7 +139,7 @@ abstract class BulletComp implements Timedc, Damagec, Hitboxc, Teamc, Posc, Draw
         }
 
         if(team == CreeperUtils.creeperTeam && type == CreeperUtils.sporeType && Mathf.chance(0.1))
-            Call.effect(Fx.lancerLaserChargeBegin, x, y, deltaAngle(), Color.blue);
+            Call.effect(Fx.lancerLaserCharge, x, y, deltaAngle(), Color.blue);
 
         if(type.collidesTiles && type.collides && type.collidesGround){
             world.raycastEach(World.toTile(lastX()), World.toTile(lastY()), tileX(), tileY(), (x, y) -> {

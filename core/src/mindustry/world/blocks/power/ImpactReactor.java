@@ -4,18 +4,25 @@ import arc.*;
 import arc.graphics.*;
 import arc.graphics.g2d.*;
 import arc.math.*;
+import arc.math.geom.Geometry;
+import arc.struct.Seq;
 import arc.util.*;
 import arc.util.io.*;
 import mindustry.annotations.Annotations.*;
 import mindustry.content.*;
+import mindustry.creeper.CreeperUtils;
+import mindustry.creeper.Emitter;
 import mindustry.entities.*;
 import mindustry.game.EventType.*;
 import mindustry.gen.*;
 import mindustry.graphics.*;
 import mindustry.ui.*;
+import mindustry.world.Tile;
+import mindustry.world.blocks.storage.CoreBlock;
 import mindustry.world.meta.*;
 
 import static mindustry.Vars.*;
+import static mindustry.creeper.CreeperUtils.*;
 
 public class ImpactReactor extends PowerGenerator{
     public final int timerUse = timers++;
@@ -24,6 +31,8 @@ public class ImpactReactor extends PowerGenerator{
     public float itemDuration = 60f;
     public int explosionRadius = 50;
     public int explosionDamage = 2000;
+
+    public Seq<Building> builds = new Seq<>();
 
     public Color plasma1 = Color.valueOf("ffd06b"), plasma2 = Color.valueOf("ff361b");
 
@@ -69,12 +78,48 @@ public class ImpactReactor extends PowerGenerator{
 
         @Override
         public void updateTile(){
+
+            builds.clear();
+            Geometry.circle(tile.x, tile.y, (int) nullifierRange, (cx, cy) -> {
+                if(world.tile(cx, cy) != null) {
+                    Tile t = world.tile(cx, cy);
+
+                    if (creeperBlocks.containsValue(t.block()) && t.block() instanceof CoreBlock && t.build != null && t.build.health > 0f && t.build.team == creeperTeam)
+                        builds.add(t.build);
+
+                }
+            });
+
+
             if(consValid() && power.status >= 0.99f){
                 boolean prevOut = getPowerProduction() <= consumes.getPower().requestedPower(this);
 
+                if(builds.size > 0) {
+                    for (Building build : builds) {
+                        Call.effect(Fx.breakBlock, build.x, build.y, Mathf.random(1, 3), Pal.accent);
+                    }
+                }
+
                 warmup = Mathf.lerpDelta(warmup, 1f, warmupSpeed);
+
                 if(Mathf.equal(warmup, 1f, 0.001f)){
                     warmup = 1f;
+                }
+
+                if(builds.size > 0 && Mathf.equal(warmup, 1f, 0.1f)){
+                    if(builds.size > 0) {
+                        Call.effectReliable(Fx.massiveExplosion, x, y, 0.5f, Pal.accentBack);
+                        for (Building build : builds) {
+                            Core.app.post(() -> {
+                                build.tile.removeNet();
+                                for(Emitter et : creeperEmitters){
+                                    if(et.build == build)
+                                        creeperEmitters.remove(et);
+                                }
+                            });
+                        }
+                        Core.app.post(this::kill);
+                    }
                 }
 
                 if(!prevOut && (getPowerProduction() > consumes.getPower().requestedPower(this))){
