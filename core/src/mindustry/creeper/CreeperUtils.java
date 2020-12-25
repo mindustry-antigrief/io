@@ -17,10 +17,7 @@ import mindustry.content.Fx;
 import mindustry.entities.bullet.BulletType;
 import mindustry.game.EventType;
 import mindustry.game.Team;
-import mindustry.gen.Building;
-import mindustry.gen.Bullet;
-import mindustry.gen.Call;
-import mindustry.gen.Groups;
+import mindustry.gen.*;
 import mindustry.world.Block;
 import mindustry.world.Build;
 import mindustry.world.Tile;
@@ -39,14 +36,15 @@ public class CreeperUtils {
     public static float updateInterval = 0.025f; // Base update interval in seconds
     public static float transferRate = 0.249f; // Base transfer rate NOTE: keep below 0.25f
     public static float evaporationRate = 0f; // Base creeper evaporation
-    public static float creeperDamage = 0.025f; // Base creeper damage
+    public static float creeperDamage = 0.015f; // Base creeper damage
     public static float minCreeper = 0.5f; // Minimum amount of creeper required for transfer
 
-    public static BulletType sporeType = Bullets.heavyCryoShot;
-    public static float sporeAmount = 5f;
-    public static float sporeRadius = 3f;
-    public static float sporeSpeedMultiplier = 0.2f;
+    public static BulletType sporeType = Bullets.artilleryDense;
+    public static float sporeAmount = 10f;
+    public static float sporeRadius = 5f;
+    public static float sporeSpeedMultiplier = 0.15f;
     public static float sporeHealthMultiplier = 10f;
+    public static float sporeTargetOffset = 256f;
 
     public static float nullifyDamage = 1500f; // Damage that needs to be applied for the core to be suspended
     public static float nullifyTimeout = 360f; // The amount of time a core remains suspended (resets upon enough damage applied)
@@ -86,18 +84,20 @@ public class CreeperUtils {
     }
 
     public static float[] targetSpore(){
-        float[] ret = new float[]{0,0};
+        float[] ret = null;
         int iterations = 0;
 
-        while(ret == null && iterations < 100){
+        while(ret == null && iterations < 100 && Groups.player.size() > 0){
             iterations++;
-            Building build = Groups.build.index(Mathf.random(0, Groups.build.size()));
-            if(build.team == creeperTeam)
+            Player player = Groups.player.index(Mathf.random(0, Groups.player.size()-1));
+            if(player.unit() == null || player.x == 0 && player.y == 0)
                 continue;
-            ret = new float[]{build.x + Mathf.random(-32f, 32f), build.y + Mathf.random(-32f, 32f)};
+
+            Unit unit = player.unit();
+            ret = new float[]{unit.x + Mathf.random(-sporeTargetOffset, sporeTargetOffset), unit.y + Mathf.random(-sporeTargetOffset, sporeTargetOffset)};
         }
 
-        return ret;
+        return (ret != null ? ret : new float[]{0,0});
     }
 
     public static void sporeCollision(Bullet bullet, float x, float y){
@@ -112,7 +112,7 @@ public class CreeperUtils {
             if(!validTile(ct) || (tile.block() instanceof StaticWall || (tile.floor() != null && !tile.floor().placeableOn || tile.floor().isDeep() || tile.block() instanceof Cliff)))
                 return;
 
-            ct.creep = sporeAmount;
+            ct.creep = Math.max(ct.creep + sporeAmount, 10);
         });
     }
 

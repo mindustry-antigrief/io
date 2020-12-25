@@ -57,7 +57,7 @@ public class StatusEffects implements ContentList{
 
         slow = new StatusEffect("slow"){{
             color = Pal.lightishGray;
-            speedMultiplier = 0.4f;
+            speedMultiplier = 0.1f;
         }};
 
         wet = new StatusEffect("wet"){{

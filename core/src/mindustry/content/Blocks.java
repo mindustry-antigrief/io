@@ -1536,7 +1536,7 @@ public class Blocks implements ContentList{
             targetAir = false;
             shootSound = Sounds.laser;
 
-            shootType = new LaserBulletType(140){{
+            shootType = new LaserBulletType(70){{
                 colors = new Color[]{Pal.lancerLaser.cpy().mul(1f, 1f, 1f, 0.4f), Pal.lancerLaser, Color.white};
                 hitEffect = Fx.hitLancer;
                 despawnEffect = Fx.none;
@@ -1551,8 +1551,8 @@ public class Blocks implements ContentList{
         arc = new PowerTurret("arc"){{
             requirements(Category.turret, with(Items.copper, 50, Items.lead, 50));
             shootType = new LightningBulletType(){{
-                damage = 20;
-                lightningLength = 25;
+                damage = 10;
+                lightningLength = 15;
                 collidesAir = false;
             }};
             reloadTime = 35f;

@@ -2,13 +2,17 @@ package mindustry.entities.comp;
 
 import arc.*;
 import arc.func.*;
+import arc.graphics.Color;
 import arc.graphics.g2d.*;
 import arc.math.*;
 import arc.math.geom.*;
 import arc.struct.*;
 import arc.util.*;
 import mindustry.annotations.Annotations.*;
+import mindustry.annotations.Annotations.Component;
 import mindustry.content.Bullets;
+import mindustry.content.Fx;
+import mindustry.content.StatusEffects;
 import mindustry.core.*;
 import mindustry.creeper.CreeperUtils;
 import mindustry.entities.bullet.*;
@@ -93,17 +97,18 @@ abstract class BulletComp implements Timedc, Damagec, Hitboxc, Teamc, Posc, Draw
         type.hit(self(), x, y);
         float health = 0f;
 
-        if(team == CreeperUtils.creeperTeam && type == Bullets.heavyCryoShot) {
+        if(team == CreeperUtils.creeperTeam && type == CreeperUtils.sporeType)
             CreeperUtils.sporeCollision(self(), x, y);
-            return;
-        }
 
-        if(other instanceof Healthc h){
+        if(other instanceof Healthc h && team != CreeperUtils.creeperTeam){
             health = h.health();
             h.damage(damage);
         }
 
         if(other instanceof Unit unit){
+            if(team == CreeperUtils.creeperTeam && type == CreeperUtils.sporeType)
+                unit.apply(StatusEffects.slow, type.statusDuration * 10f);
+
             unit.impulse(Tmp.v3.set(unit).sub(this.x, this.y).nor().scl(type.knockback * 80f));
             unit.apply(type.status, type.statusDuration);
         }
@@ -125,6 +130,16 @@ abstract class BulletComp implements Timedc, Damagec, Hitboxc, Teamc, Posc, Draw
     @Override
     public void update(){
         type.update(self());
+
+        if(lifetime() - time() <= 3f){
+            if(team == CreeperUtils.creeperTeam && type == CreeperUtils.sporeType) {
+                CreeperUtils.sporeCollision(self(), x, y);
+                remove();
+            }
+        }
+
+        if(team == CreeperUtils.creeperTeam && type == CreeperUtils.sporeType && Mathf.chance(0.1))
+            Call.effect(Fx.ballfire, x, y, Mathf.random(1, 10), Color.blue);
 
         if(type.collidesTiles && type.collides && type.collidesGround){
             world.raycastEach(World.toTile(lastX()), World.toTile(lastY()), tileX(), tileY(), (x, y) -> {
