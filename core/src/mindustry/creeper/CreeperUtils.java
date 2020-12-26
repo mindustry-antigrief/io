@@ -255,6 +255,9 @@ public class CreeperUtils {
         // check if can transfer anyway because weird
         if(tile.creep >= 1f) {
 
+            if(tile.creep < 10f && tile.block() == creeperBlocks.get(10))
+                tile.removeNet();
+
                 // deal continuous damage
                 if (tile.build != null && tile.build.team != creeperTeam && tile.touchingCreeper()) {
 
