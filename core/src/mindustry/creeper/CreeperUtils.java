@@ -36,7 +36,7 @@ public class CreeperUtils {
     public static float updateInterval = 0.025f; // Base update interval in seconds
     public static float transferRate = 0.249f; // Base transfer rate NOTE: keep below 0.25f
     public static float evaporationRate = 0f; // Base creeper evaporation
-    public static float creeperDamage = 0.015f; // Base creeper damage
+    public static float creeperDamage = 0.05f; // Base creeper damage
     public static float minCreeper = 0.5f; // Minimum amount of creeper required for transfer
 
     public static BulletType sporeType = Bullets.artilleryDense;
@@ -264,6 +264,7 @@ public class CreeperUtils {
                                 Call.effect(Fx.bubble, tile.build.x, tile.build.y, 0, Color.blue);
 
                             tile.build.damageContinuous(creeperDamage * tile.creep);
+                            tile.creep = 0;
                         }
                     });
                 }
