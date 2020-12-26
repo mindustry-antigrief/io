@@ -126,7 +126,7 @@ public class NuclearReactor extends PowerGenerator{
                     float distance = tile.dst(targetx, targety);
                     float angle = Angles.angle(x, y, targetx, targety);
 
-                    Call.createBullet(sporeType, creeperTeam, x, y, angle, sporeHealthMultiplier, sporeSpeedMultiplier, (distance * sporeType.lifetime) / (sporeType.speed * sporeSpeedMultiplier) / 8200f);
+                    Call.createBullet(sporeType, creeperTeam, x, y, angle, sporeHealthMultiplier, sporeSpeedMultiplier, Math.min(sporeMaxRangeMultiplier, (distance * sporeType.lifetime) / (sporeType.speed * sporeSpeedMultiplier) / 8200f));
 
                     Tile t = tile;
                     Timer.schedule(() -> {
