@@ -269,6 +269,7 @@ public class CreeperUtils {
 
                             tile.build.damageContinuous(creeperDamage * tile.creep);
                             tile.creep = 0;
+                            tile.newCreep = 0;
                         }
                     });
                 }
