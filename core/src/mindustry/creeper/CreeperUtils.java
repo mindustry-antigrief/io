@@ -185,6 +185,9 @@ public class CreeperUtils {
         Events.on(EventType.BlockDestroyEvent.class, e -> {
             if(CreeperUtils.creeperBlocks.containsValue(e.tile.block()))
                 onCreeperDestroy(e.tile);
+            
+            e.tile.creep = 0;
+            e.tile.newCreep = 0;
         });
 
         Timer.schedule(() -> {
@@ -254,7 +257,7 @@ public class CreeperUtils {
 
         // check if can transfer anyway because weird
         if(tile.creep >= 1f) {
-            
+
             if(tile.creep < 10f && tile.block() == creeperBlocks.get(10))
                 tile.removeNet();
 
