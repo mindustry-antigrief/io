@@ -254,25 +254,25 @@ public class CreeperUtils {
 
         // check if can transfer anyway because weird
         if(tile.creep >= 1f) {
-
+            
             if(tile.creep < 10f && tile.block() == creeperBlocks.get(10))
                 tile.removeNet();
 
                 // deal continuous damage
-                if (tile.build != null && tile.build.team != creeperTeam && tile.touchingCreeper()) {
+            if (tile.build != null && tile.build.team != creeperTeam && tile.touchingCreeper()) {
 
-                    Core.app.post(() -> {
-                        if (tile.build != null) {
+                Core.app.post(() -> {
+                    if (tile.build != null) {
 
-                            if (Mathf.chance(0.05f))
-                                Call.effect(Fx.bubble, tile.build.x, tile.build.y, 0, Color.blue);
+                        if (Mathf.chance(0.05f))
+                            Call.effect(Fx.bubble, tile.build.x, tile.build.y, 0, Color.blue);
 
-                            tile.build.damageContinuous(creeperDamage * tile.creep);
-                            tile.creep = 0;
-                            tile.newCreep = 0;
-                        }
-                    });
-                }
+                        tile.build.damageContinuous(creeperDamage * tile.creep);
+                        tile.creep = 0;
+                        tile.newCreep = 0;
+                    }
+                });
+            }
 
         }
         if (tile != null && tile.x < world.width() && tile.y < world.height() && tile.creep >= 1f &&
