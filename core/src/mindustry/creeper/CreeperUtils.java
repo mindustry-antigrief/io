@@ -33,7 +33,7 @@ import static mindustry.Vars.state;
 import static mindustry.Vars.world;
 
 public class CreeperUtils {
-    public static float updateInterval = 0.025f; // Base update interval in seconds
+    public static float updateInterval = 0.05f; // Base update interval in seconds
     public static float transferRate = 0.249f; // Base transfer rate NOTE: keep below 0.25f
     public static float evaporationRate = 0f; // Base creeper evaporation
     public static float creeperDamage = 4f; // Base creeper damage
