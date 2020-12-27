@@ -282,9 +282,7 @@ public class CreeperUtils {
                 !(tile.block() instanceof CoreBlock) &&
                 (creeperLevels.getOrDefault(tile.block(), 10)) < Math.round(tile.creep) || tile.block() instanceof TreeBlock){
 
-            if(tile.team() == Team.derelict)
                 tile.setNet(creeperBlocks.get(Mathf.clamp(Math.round(tile.creep), 0, 10)), creeperTeam, Mathf.random(0, 3));
-
         }
     }
 
