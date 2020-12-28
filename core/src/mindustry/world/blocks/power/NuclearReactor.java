@@ -128,14 +128,9 @@ public class NuclearReactor extends PowerGenerator{
 
                     Call.createBullet(sporeType, creeperTeam, x, y, angle, sporeHealthMultiplier, sporeSpeedMultiplier, Math.min(sporeMaxRangeMultiplier, (distance * sporeType.lifetime) / (sporeType.speed * sporeSpeedMultiplier) / 8200f));
 
-                    float dmg = maxHealth - health;
-
                     Tile t = tile;
                     Timer.schedule(() -> {
                         t.setNet(Blocks.thoriumReactor, creeperTeam, 0);
-
-                        if(t.build != null)
-                            t.build.damage(dmg);
                     }, 0.1f);
                 }
 
