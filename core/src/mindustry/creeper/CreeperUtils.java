@@ -38,7 +38,7 @@ public class CreeperUtils {
     public static float transferRate = 0.249f; // Base transfer rate NOTE: keep below 0.25f
     public static float evaporationRate = 0f; // Base creeper evaporation
     public static float creeperDamage = 5f; // Base creeper damage
-    public static float creeperEvaporationDamageMultiplier = 10f; // Creeper that will evaporate upon damaging something
+    public static float creeperEvaporationDamageMultiplier = 50f; // Creeper percentage that will remain upon damaging something
     public static float creeperUnitDamage = 3f;
     public static float minCreeper = 0.5f; // Minimum amount of creeper required for transfer
 
