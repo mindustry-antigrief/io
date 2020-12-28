@@ -11,14 +11,11 @@ import arc.util.io.*;
 import mindustry.Vars;
 import mindustry.annotations.Annotations.*;
 import mindustry.content.*;
-import mindustry.creeper.CreeperUtils;
 import mindustry.gen.*;
 import mindustry.graphics.*;
 import mindustry.logic.*;
 import mindustry.ui.*;
 import mindustry.world.*;
-import mindustry.world.blocks.environment.Cliff;
-import mindustry.world.blocks.environment.StaticWall;
 import mindustry.world.consumers.*;
 import mindustry.world.meta.*;
 
@@ -59,8 +56,8 @@ public class ForceProjector extends Block{
 
             paramEntity.hit = 1f;
 
-            paramEntity.buildup += creeperDamage * buildShieldDamage * creeperLevels.getOrDefault(tile.block(), 1) * paramEntity.warmup * Math.max(shieldBoostProtection, 1f - paramEntity.phaseHeat);
-            paramEntity.healthLeft -= creeperDamage * buildShieldDamage * creeperLevels.getOrDefault(tile.block(), 1) * Math.max(shieldBoostProtection, 1f - paramEntity.phaseHeat);
+            paramEntity.buildup += creeperDamage * buildShieldDamageMultiplier * creeperLevels.getOrDefault(tile.block(), 1) * paramEntity.warmup * Math.max(shieldBoostProtectionMultiplier, 1f - paramEntity.phaseHeat);
+            paramEntity.healthLeft -= creeperDamage * buildShieldDamageMultiplier * creeperLevels.getOrDefault(tile.block(), 1) * Math.max(shieldBoostProtectionMultiplier, 1f - paramEntity.phaseHeat);
 
 
             if(tile.build != null && tile.build.team == creeperTeam)
