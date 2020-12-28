@@ -11,6 +11,7 @@ import arc.util.io.*;
 import mindustry.Vars;
 import mindustry.annotations.Annotations.*;
 import mindustry.content.*;
+import mindustry.creeper.CreeperUtils;
 import mindustry.gen.*;
 import mindustry.graphics.*;
 import mindustry.logic.*;
@@ -143,6 +144,7 @@ public class ForceProjector extends Block{
         public void onRemoved(){
             super.onRemoved();
             drawer.remove();
+            dead = true;
         }
 
         @Override

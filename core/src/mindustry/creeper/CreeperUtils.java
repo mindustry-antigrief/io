@@ -43,17 +43,17 @@ public class CreeperUtils {
     public static float minCreeper = 0.5f; // Minimum amount of creeper required for transfer
 
     public static BulletType sporeType = Bullets.artilleryDense;
-    public static float sporeMaxRangeMultiplier = 15f;
+    public static float sporeMaxRangeMultiplier = 25f;
     public static float sporeAmount = 30f;
     public static float sporeRadius = 3f;
-    public static float sporeSpeedMultiplier = 0.15f;
+    public static float sporeSpeedMultiplier = 0.05f;
     public static float sporeHealthMultiplier = 10f;
     public static float sporeTargetOffset = 256f;
 
     public static float unitShieldDamageMultiplier = 1f;
     public static float buildShieldDamageMultiplier = 0.2f;
     public static float shieldBoostProtectionMultiplier = 0.2f;
-    public static float shieldCreeperDropAmount = 10f;
+    public static float shieldCreeperDropAmount = 20f;
     public static float shieldCreeperDropRadius = 1f;
 
     public static float nullifierRange = 10f;
@@ -219,7 +219,7 @@ public class CreeperUtils {
                 newcount++;
         }
         for(ForceProjector.ForceBuild shield : shields){
-            if(shield == null || shield.health <= 0f || shield.healthLeft <= 0f) {
+            if(shield == null || shield.dead || shield.health <= 0f || shield.healthLeft <= 0f) {
                 shields.remove(shield);
 
                 float percentage = 1f - shield.healthLeft / ((ForceProjector) shield.block).shieldHealth;
@@ -235,7 +235,7 @@ public class CreeperUtils {
             }
 
             double percentage = shield.healthLeft / ((ForceProjector) shield.block).shieldHealth;
-            Call.label("[" + getTrafficlightColor(percentage) + "]" + (int) (percentage*100) + "%", 1f, shield.x, shield.y);
+            Call.label("[" + getTrafficlightColor(percentage) + "]" + (int) (percentage*100) + "%" + (shield.phaseHeat > 0.1f ? " [#f4ba6e]\uE86B +" + ((int) ((1f - CreeperUtils.shieldBoostProtectionMultiplier) * 100f)) + "%" : ""), 1f, shield.x, shield.y);
         }
 
         nullifiedCount = newcount;
