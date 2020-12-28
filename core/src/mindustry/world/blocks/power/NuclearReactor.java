@@ -110,7 +110,7 @@ public class NuclearReactor extends PowerGenerator{
 
             heat = Mathf.clamp(heat);
 
-            if(Mathf.chance(0.01)){
+            if(Mathf.chance(0.005)){
                 if(team == creeperTeam)
                     Call.setItem(this, Items.thorium, Mathf.random(0, 3));
             }
@@ -128,9 +128,14 @@ public class NuclearReactor extends PowerGenerator{
 
                     Call.createBullet(sporeType, creeperTeam, x, y, angle, sporeHealthMultiplier, sporeSpeedMultiplier, Math.min(sporeMaxRangeMultiplier, (distance * sporeType.lifetime) / (sporeType.speed * sporeSpeedMultiplier) / 8200f));
 
+                    float dmg = maxHealth - health;
+
                     Tile t = tile;
                     Timer.schedule(() -> {
                         t.setNet(Blocks.thoriumReactor, creeperTeam, 0);
+
+                        if(t.build != null)
+                            t.build.damage(dmg);
                     }, 0.1f);
                 }
 
