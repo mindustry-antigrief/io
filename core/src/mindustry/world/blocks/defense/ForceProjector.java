@@ -57,8 +57,8 @@ public class ForceProjector extends Block{
 
             paramEntity.hit = 1f;
 
-            paramEntity.buildup += creeperDamage * buildShieldDamageMultiplier * creeperLevels.getOrDefault(tile.block(), 1) * paramEntity.warmup * Math.max(shieldBoostProtectionMultiplier, 1f - paramEntity.phaseHeat);
-            paramEntity.healthLeft -= creeperDamage * buildShieldDamageMultiplier * creeperLevels.getOrDefault(tile.block(), 1) * Math.max(shieldBoostProtectionMultiplier, 1f - paramEntity.phaseHeat);
+            paramEntity.buildup += creeperDamage * buildShieldDamageMultiplier * paramEntity.warmup * Math.max(shieldBoostProtectionMultiplier, 1f - paramEntity.phaseHeat);
+            paramEntity.healthLeft -= creeperDamage * buildShieldDamageMultiplier * Math.max(shieldBoostProtectionMultiplier, 1f - paramEntity.phaseHeat);
 
 
             if(tile.build != null && tile.build.team == creeperTeam)

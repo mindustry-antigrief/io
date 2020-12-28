@@ -57,7 +57,7 @@ public class ForceFieldAbility extends Ability{
                 Call.effect(Fx.shieldBreak, paramUnit.x, paramUnit.y, paramField.radius, paramUnit.team.color);
             }
 
-            paramUnit.shield -= CreeperUtils.creeperDamage * CreeperUtils.unitShieldDamageMultiplier * CreeperUtils.creeperLevels.getOrDefault(tile.block(), 1);
+            paramUnit.shield -= CreeperUtils.creeperDamage * CreeperUtils.unitShieldDamageMultiplier;
             paramField.alpha = 1f;
 
             tile.creep = 0f;
