@@ -17,10 +17,13 @@ import mindustry.graphics.*;
 import mindustry.logic.*;
 import mindustry.ui.*;
 import mindustry.world.*;
+import mindustry.world.blocks.environment.Cliff;
+import mindustry.world.blocks.environment.StaticWall;
 import mindustry.world.consumers.*;
 import mindustry.world.meta.*;
 
 import static mindustry.Vars.*;
+import static mindustry.creeper.CreeperUtils.*;
 
 public class ForceProjector extends Block{
     public final int timerUse = timers++;
@@ -47,7 +50,7 @@ public class ForceProjector extends Block{
     };
 
     private static final Cons<Tile> creeperConsumer = tile -> {
-        if((tile.creep >= 1f || (CreeperUtils.creeperBlocks.containsValue(tile.block()) && tile.team() == CreeperUtils.creeperTeam)) && Intersector.isInsideHexagon(paramEntity.x, paramEntity.y, paramEntity.realRadius() * 2f, tile.worldx(), tile.worldy())){
+        if((tile.creep >= 1f || (creeperBlocks.containsValue(tile.block()) && tile.team() == creeperTeam)) && Intersector.isInsideHexagon(paramEntity.x, paramEntity.y, paramEntity.realRadius() * 2f, tile.worldx(), tile.worldy())){
             Call.effect(Fx.absorb, tile.worldx(), tile.worldy(), 1, Color.blue);
 
             tile.creep = 0f;
@@ -56,11 +59,11 @@ public class ForceProjector extends Block{
 
             paramEntity.hit = 1f;
 
-            paramEntity.buildup += CreeperUtils.creeperDamage * CreeperUtils.buildShieldDamage * CreeperUtils.creeperLevels.getOrDefault(tile.block(), 1) * paramEntity.warmup * Math.max(CreeperUtils.shieldBoostProtection, 1f - paramEntity.phaseHeat);
-            paramEntity.healthLeft -= CreeperUtils.creeperDamage * CreeperUtils.buildShieldDamage * CreeperUtils.creeperLevels.getOrDefault(tile.block(), 1) * Math.max(CreeperUtils.shieldBoostProtection, 1f - paramEntity.phaseHeat);
+            paramEntity.buildup += creeperDamage * buildShieldDamage * creeperLevels.getOrDefault(tile.block(), 1) * paramEntity.warmup * Math.max(shieldBoostProtection, 1f - paramEntity.phaseHeat);
+            paramEntity.healthLeft -= creeperDamage * buildShieldDamage * creeperLevels.getOrDefault(tile.block(), 1) * Math.max(shieldBoostProtection, 1f - paramEntity.phaseHeat);
 
 
-            if(tile.build != null && tile.build.team == CreeperUtils.creeperTeam)
+            if(tile.build != null && tile.build.team == creeperTeam)
                 tile.build.damage(Blocks.conveyor.health);
         }
     };
@@ -129,7 +132,9 @@ public class ForceProjector extends Block{
             drawer.build = this;
             drawer.set(x, y);
             drawer.add();
+
             healthLeft = shieldHealth;
+            shields.add(this);
         }
 
         @Override
@@ -141,6 +146,18 @@ public class ForceProjector extends Block{
         public void onRemoved(){
             super.onRemoved();
             drawer.remove();
+
+            // dont need to remove from shields Seq, already handled by "auto-gc" in CreeperUtils.fixedUpdate()
+            // drop creeper
+            // how much to drop
+            float percentage = healthLeft / ((ForceProjector) block).shieldHealth;
+            Geometry.circle(tile.x, tile.y, (int) shieldCreeperDropRadius, (cx, cy) -> {
+                Tile ct = world.tile(cx, cy);
+                if(!validTile(ct) || (tile.block() instanceof StaticWall || (tile.floor() != null && !tile.floor().placeableOn || tile.floor().isDeep() || tile.block() instanceof Cliff)))
+                    return;
+
+                ct.creep = Math.min(ct.creep + shieldCreeperDropAmount, 10);
+            });
         }
 
         @Override

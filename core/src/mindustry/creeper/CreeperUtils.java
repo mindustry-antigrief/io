@@ -21,6 +21,7 @@ import mindustry.gen.*;
 import mindustry.world.Block;
 import mindustry.world.Build;
 import mindustry.world.Tile;
+import mindustry.world.blocks.defense.ForceProjector;
 import mindustry.world.blocks.environment.Cliff;
 import mindustry.world.blocks.environment.StaticWall;
 import mindustry.world.blocks.environment.TreeBlock;
@@ -52,6 +53,8 @@ public class CreeperUtils {
     public static float unitShieldDamage = 1f;
     public static float buildShieldDamage = 0.5f;
     public static float shieldBoostProtection = 0.2f;
+    public static float shieldCreeperDropAmount = 10f;
+    public static float shieldCreeperDropRadius = 1f;
 
     public static float nullifierRange = 10f;
 
@@ -70,6 +73,7 @@ public class CreeperUtils {
     public static HashMap<Block, Emitter> emitterBlocks = new HashMap<>();
 
     public static Seq<Emitter> creeperEmitters = new Seq<>();
+    public static Seq<ForceProjector.ForceBuild> shields = new Seq<>();
 
     public static Timer.Task runner;
     public static Timer.Task fixedRunner;
@@ -122,7 +126,7 @@ public class CreeperUtils {
             if(!validTile(ct) || (tile.block() instanceof StaticWall || (tile.floor() != null && !tile.floor().placeableOn || tile.floor().isDeep() || tile.block() instanceof Cliff)))
                 return;
 
-            ct.creep = Math.max(ct.creep + sporeAmount, 10);
+            ct.creep = Math.min(ct.creep + sporeAmount, 10);
         });
     }
 
@@ -162,6 +166,7 @@ public class CreeperUtils {
                 fixedRunner.cancel();
 
             creeperEmitters.clear();
+            shields.clear();
         });
 
         Events.on(EventType.WorldLoadEvent.class, e -> {
@@ -226,6 +231,15 @@ public class CreeperUtils {
             emitter.fixedUpdate();
             if(emitter.nullified)
                 newcount++;
+        }
+        for(ForceProjector.ForceBuild shield : shields){
+            if(shield == null || shield.health <= 0f || shield.healthLeft <= 0f) {
+                shields.remove(shield);
+                continue;
+            }
+
+            double percentage = shield.healthLeft / ((ForceProjector) shield.block).shieldHealth;
+            Call.label("[" + getTrafficlightColor(percentage) + "]" + (int) (percentage*100) + "%", 1f, shield.x, shield.y);
         }
 
         nullifiedCount = newcount;
