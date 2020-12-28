@@ -53,8 +53,8 @@ public class CreeperUtils {
     public static float unitShieldDamageMultiplier = 1f;
     public static float buildShieldDamageMultiplier = 0.5f;
     public static float shieldBoostProtectionMultiplier = 0.5f;
-    public static float shieldCreeperDropAmount = 40f;
-    public static float shieldCreeperDropRadius = 8f;
+    public static float shieldCreeperDropAmount = 5f;
+    public static float shieldCreeperDropRadius = 3f;
 
     public static float nullifierRange = 10f;
 
@@ -107,13 +107,7 @@ public class CreeperUtils {
 
         Call.effect(Fx.sapExplosion, x, y, sporeRadius, Color.blue);
 
-        Geometry.circle(tile.x, tile.y, (int) sporeRadius, (cx, cy) -> {
-            Tile ct = world.tile(cx, cy);
-            if(!validTile(ct) || (tile.block() instanceof StaticWall || (tile.floor() != null && !tile.floor().placeableOn || tile.floor().isDeep() || tile.block() instanceof Cliff)))
-                return;
-
-            ct.creep = Math.min(ct.creep + sporeAmount, 10);
-        });
+        depositCreeper(tile, sporeRadius, sporeAmount);
     }
 
     public static void init(){
@@ -206,6 +200,17 @@ public class CreeperUtils {
 
     }
 
+    public static void depositCreeper(Tile tile, float radius, float amount){
+        Geometry.circle(tile.x, tile.y, (int) radius, (cx, cy) -> {
+            Tile ct = world.tile(cx, cy);
+            if(!validTile(ct) || (tile.block() instanceof StaticWall || (tile.floor() != null && !tile.floor().placeableOn || tile.floor().isDeep() || tile.block() instanceof Cliff)))
+                return;
+
+            ct.creep = Math.min(ct.creep + amount, 10);
+            ct.newCreep = ct.creep;
+        });
+    }
+
     private static void onCreeperDestroy(Tile tile) {
         tile.creep = 0;
         tile.newCreep = 0;
@@ -221,15 +226,10 @@ public class CreeperUtils {
         for(ForceProjector.ForceBuild shield : shields){
             if(shield == null || shield.dead || shield.health <= 0f || shield.healthLeft <= 0f) {
                 shields.remove(shield);
+                Core.app.post(shield::kill);
 
                 float percentage = 1f - shield.healthLeft / ((ForceProjector) shield.block).shieldHealth;
-                Geometry.circle(shield.tileX(), shield.tileY(), (int) shieldCreeperDropRadius, (cx, cy) -> {
-                    Tile ct = world.tile(cx, cy);
-                    if(!validTile(ct) || (ct.block() instanceof StaticWall || (ct.floor() != null && !ct.floor().placeableOn || ct.floor().isDeep() || ct.block() instanceof Cliff)))
-                        return;
-
-                    ct.creep = Math.min(ct.creep + shieldCreeperDropAmount, 10) * percentage;
-                });
+                depositCreeper(shield.tile, shieldCreeperDropRadius, shieldCreeperDropAmount * percentage);
 
                 continue;
             }
