@@ -146,18 +146,6 @@ public class ForceProjector extends Block{
         public void onRemoved(){
             super.onRemoved();
             drawer.remove();
-
-            // dont need to remove from shields Seq, already handled by "auto-gc" in CreeperUtils.fixedUpdate()
-            // drop creeper
-            // how much to drop
-            float percentage = healthLeft / ((ForceProjector) block).shieldHealth;
-            Geometry.circle(tile.x, tile.y, (int) shieldCreeperDropRadius, (cx, cy) -> {
-                Tile ct = world.tile(cx, cy);
-                if(!validTile(ct) || (tile.block() instanceof StaticWall || (tile.floor() != null && !tile.floor().placeableOn || tile.floor().isDeep() || tile.block() instanceof Cliff)))
-                    return;
-
-                ct.creep = Math.min(ct.creep + shieldCreeperDropAmount, 10);
-            });
         }
 
         @Override

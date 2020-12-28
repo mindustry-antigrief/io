@@ -82,20 +82,6 @@ public class CreeperUtils {
         return "#"+Integer.toHexString(java.awt.Color.HSBtoRGB((float)value/3f, 1f, 1f)).substring(2);
     }
 
-    static String HealthToColor(double percentage) {
-        if (percentage > 1) {
-            percentage = 1;
-        }
-        else if (percentage < 0) {
-            percentage = 0;
-        }
-        int red = (int)(255.0 * (1 - percentage));
-        int green = (int)(255.0 * (percentage));
-        int blue = 0;
-
-        String str = new Color(red, green, blue).toString();
-        return "#" + str.substring(0, str.length() - 2);
-    }
 
     public static float[] targetSpore(){
         float[] ret = null;
@@ -203,7 +189,7 @@ public class CreeperUtils {
 
         Timer.schedule(() -> {
 
-            Call.infoPopup("\uE88B [" + HealthToColor((double) Mathf.clamp((CreeperUtils.nullifiedCount / (double) Math.max(1.0, (double) creeperEmitters.size)), 0f, 1f)) + "]" + CreeperUtils.nullifiedCount + "/" + CreeperUtils.creeperEmitters.size + "[] emitters suspended", 10f, 20, 50, 20, 450, 0);
+            Call.infoPopup("\uE88B [" + getTrafficlightColor(Mathf.clamp((CreeperUtils.nullifiedCount / Math.max(1.0, creeperEmitters.size)), 0f, 1f)) + "]" + CreeperUtils.nullifiedCount + "/" + CreeperUtils.creeperEmitters.size + "[] emitters suspended", 10f, 20, 50, 20, 450, 0);
             // check for gameover
             if(CreeperUtils.nullifiedCount == CreeperUtils.creeperEmitters.size){
                 Timer.schedule(() -> {
@@ -235,6 +221,16 @@ public class CreeperUtils {
         for(ForceProjector.ForceBuild shield : shields){
             if(shield == null || shield.health <= 0f || shield.healthLeft <= 0f) {
                 shields.remove(shield);
+
+                float percentage = 1f - shield.healthLeft / ((ForceProjector) shield.block).shieldHealth;
+                Geometry.circle(shield.tileX(), shield.tileY(), (int) shieldCreeperDropRadius, (cx, cy) -> {
+                    Tile ct = world.tile(cx, cy);
+                    if(!validTile(ct) || (ct.block() instanceof StaticWall || (ct.floor() != null && !ct.floor().placeableOn || ct.floor().isDeep() || ct.block() instanceof Cliff)))
+                        return;
+
+                    ct.creep = Math.min(ct.creep + shieldCreeperDropAmount, 10) * percentage;
+                });
+
                 continue;
             }
 
