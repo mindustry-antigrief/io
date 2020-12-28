@@ -12,7 +12,6 @@ import mindustry.Vars;
 import mindustry.annotations.Annotations.*;
 import mindustry.content.*;
 import mindustry.creeper.CreeperUtils;
-import mindustry.game.Team;
 import mindustry.gen.*;
 import mindustry.graphics.*;
 import mindustry.logic.*;
@@ -54,11 +53,15 @@ public class ForceProjector extends Block{
             tile.creep = 0f;
             tile.newCreep = 0f;
 
-            if(tile.build != null && tile.build.team == CreeperUtils.creeperTeam)
-                tile.build.damage(Blocks.conveyor.health);
 
             paramEntity.hit = 1f;
-            paramEntity.buildup += CreeperUtils.creeperDamage * CreeperUtils.buildShieldDamage * CreeperUtils.creeperLevels.getOrDefault(tile.block(), 1) * paramEntity.warmup;
+
+            paramEntity.buildup += CreeperUtils.creeperDamage * CreeperUtils.buildShieldDamage * CreeperUtils.creeperLevels.getOrDefault(tile.block(), 1) * paramEntity.warmup * Math.max(CreeperUtils.shieldBoostProtection, 1f - paramEntity.phaseHeat);
+            paramEntity.healthLeft -= CreeperUtils.creeperDamage * CreeperUtils.buildShieldDamage * CreeperUtils.creeperLevels.getOrDefault(tile.block(), 1) * Math.max(CreeperUtils.shieldBoostProtection, 1f - paramEntity.phaseHeat);
+
+
+            if(tile.build != null && tile.build.team == CreeperUtils.creeperTeam)
+                tile.build.damage(Blocks.conveyor.health);
         }
     };
 
@@ -111,7 +114,7 @@ public class ForceProjector extends Block{
 
     public class ForceBuild extends Building implements Ranged{
         public boolean broken = true;
-        public float buildup, radscl, hit, warmup, phaseHeat;
+        public float buildup, radscl, hit, warmup, phaseHeat, healthLeft;
         public ForceDraw drawer;
 
         @Override
@@ -126,6 +129,7 @@ public class ForceProjector extends Block{
             drawer.build = this;
             drawer.set(x, y);
             drawer.add();
+            healthLeft = shieldHealth;
         }
 
         @Override
@@ -157,17 +161,6 @@ public class ForceProjector extends Block{
 
             warmup = Mathf.lerpDelta(warmup, efficiency(), 0.1f);
 
-            if(buildup > 0){
-                float scale = !broken ? cooldownNormal : cooldownBrokenBase;
-                ConsumeLiquidFilter cons = consumes.get(ConsumeType.liquid);
-                if(cons.valid(this)){
-                    cons.update(this);
-                    scale *= (cooldownLiquid * (1f + (liquids.current().heatCapacity - 0.4f) * 0.9f));
-                }
-
-                buildup -= delta() * scale;
-            }
-
             if(broken && buildup <= 0){
                 broken = false;
             }
@@ -194,7 +187,7 @@ public class ForceProjector extends Block{
                 });
             }
 
-            if(broken){
+            if(broken || healthLeft <= 0f){
                 Core.app.post(this::kill);
             }
 
