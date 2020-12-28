@@ -43,7 +43,7 @@ public class CreeperUtils {
     public static float minCreeper = 0.5f; // Minimum amount of creeper required for transfer
 
     public static BulletType sporeType = Bullets.artilleryDense;
-    public static float sporeMaxRangeMultiplier = 35f;
+    public static float sporeMaxRangeMultiplier = 40f;
     public static float sporeAmount = 30f;
     public static float sporeRadius = 3f;
     public static float sporeSpeedMultiplier = 0.05f;
