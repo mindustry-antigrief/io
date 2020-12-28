@@ -8,8 +8,11 @@ import arc.math.*;
 import arc.math.geom.*;
 import arc.util.*;
 import arc.util.io.*;
+import mindustry.Vars;
 import mindustry.annotations.Annotations.*;
 import mindustry.content.*;
+import mindustry.creeper.CreeperUtils;
+import mindustry.game.Team;
 import mindustry.gen.*;
 import mindustry.graphics.*;
 import mindustry.logic.*;
@@ -41,6 +44,21 @@ public class ForceProjector extends Block{
             Fx.absorb.at(trait);
             paramEntity.hit = 1f;
             paramEntity.buildup += trait.damage() * paramEntity.warmup;
+        }
+    };
+
+    private static final Cons<Tile> creeperConsumer = tile -> {
+        if((tile.creep >= 1f || (CreeperUtils.creeperBlocks.containsValue(tile.block()) && tile.team() == CreeperUtils.creeperTeam)) && Intersector.isInsideHexagon(paramEntity.x, paramEntity.y, paramEntity.realRadius() * 2f, tile.worldx(), tile.worldy())){
+            Call.effect(Fx.absorb, tile.worldx(), tile.worldy(), 1, Color.blue);
+
+            tile.creep = 0f;
+            tile.newCreep = 0f;
+
+            if(tile.build != null && tile.build.team == CreeperUtils.creeperTeam)
+                tile.build.damage(Blocks.conveyor.health);
+
+            paramEntity.hit = 1f;
+            paramEntity.buildup += CreeperUtils.creeperDamage * CreeperUtils.buildShieldDamage * CreeperUtils.creeperLevels.getOrDefault(tile.block(), 1) * paramEntity.warmup;
         }
     };
 
@@ -169,7 +187,17 @@ public class ForceProjector extends Block{
             if(realRadius > 0 && !broken){
                 paramEntity = this;
                 Groups.bullet.intersect(x - realRadius, y - realRadius, realRadius * 2f, realRadius * 2f, shieldConsumer);
+
+                Geometry.circle(tile.x, tile.y, (int) (((int) realRadius/ Vars.tilesize) * 3), (cx, cy) -> {
+                    if(Intersector.isInsideHexagon(tile.worldx(), tile.worldy(), realRadius * 2f, cx * Vars.tilesize, cy * Vars.tilesize) && Vars.world.tile(cx, cy) != null)
+                        creeperConsumer.get(Vars.world.tile(cx, cy));
+                });
             }
+
+            if(broken){
+                Core.app.post(this::kill);
+            }
+
         }
 
         public float realRadius(){

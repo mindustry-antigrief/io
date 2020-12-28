@@ -929,7 +929,7 @@ public class Blocks implements ContentList{
             size = 3;
             phaseRadiusBoost = 80f;
             radius = 101.7f;
-            shieldHealth = 750f;
+            shieldHealth = 2500f;
             cooldownNormal = 1.5f;
             cooldownLiquid = 1.2f;
             cooldownBrokenBase = 0.35f;
@@ -1235,7 +1235,7 @@ public class Blocks implements ContentList{
             ambientSound = Sounds.hum;
             ambientSoundVolume = 0.24f;
             size = 3;
-            health = 700;
+            health = 1400;
             itemDuration = 360f;
             powerProduction = 15f;
             consumes.item(Items.thorium);

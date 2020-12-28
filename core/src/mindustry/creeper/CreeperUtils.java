@@ -33,11 +33,12 @@ import static mindustry.Vars.state;
 import static mindustry.Vars.world;
 
 public class CreeperUtils {
-    public static float updateInterval = 0.05f; // Base update interval in seconds
+    public static float updateInterval = 0.025f; // Base update interval in seconds
     public static float transferRate = 0.249f; // Base transfer rate NOTE: keep below 0.25f
     public static float evaporationRate = 0f; // Base creeper evaporation
-    public static float creeperDamage = 4f; // Base creeper damage
-    public static float creeperUnitDamage = 1f;
+    public static float creeperDamage = 5f; // Base creeper damage
+    public static float creeperEvaporationDamageMultiplier = 10f; // Creeper that will evaporate upon damaging something
+    public static float creeperUnitDamage = 3f;
     public static float minCreeper = 0.5f; // Minimum amount of creeper required for transfer
 
     public static BulletType sporeType = Bullets.artilleryDense;
@@ -48,7 +49,10 @@ public class CreeperUtils {
     public static float sporeHealthMultiplier = 10f;
     public static float sporeTargetOffset = 256f;
 
-    public static float nullifierRange = 5f;
+    public static float unitShieldDamage = 2f;
+    public static float buildShieldDamage = 1f;
+
+    public static float nullifierRange = 10f;
 
 
     public static float nullifyDamage = 1500f; // Damage that needs to be applied for the core to be suspended
@@ -272,8 +276,8 @@ public class CreeperUtils {
                             Call.effect(Fx.bubble, tile.build.x, tile.build.y, 0, Color.blue);
 
                         tile.build.damageContinuous(creeperDamage * tile.creep);
-                        tile.creep = 0;
-                        tile.newCreep = 0;
+                        tile.creep -= creeperDamage / creeperEvaporationDamageMultiplier;
+                        tile.newCreep -= creeperDamage / creeperEvaporationDamageMultiplier;
                     }
                 });
             }

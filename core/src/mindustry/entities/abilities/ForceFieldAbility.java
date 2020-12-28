@@ -7,9 +7,12 @@ import arc.graphics.g2d.*;
 import arc.math.*;
 import arc.math.geom.*;
 import arc.util.*;
+import mindustry.Vars;
 import mindustry.content.*;
+import mindustry.creeper.CreeperUtils;
 import mindustry.gen.*;
 import mindustry.graphics.*;
+import mindustry.world.Tile;
 
 public class ForceFieldAbility extends Ability{
     /** Shield radius. */
@@ -44,6 +47,26 @@ public class ForceFieldAbility extends Ability{
         }
     };
 
+    private static final Cons<Tile> creeperConsumer = tile -> {
+        if((tile.creep >= 1f || (CreeperUtils.creeperBlocks.containsValue(tile.block()) && tile.team() == CreeperUtils.creeperTeam)) && Intersector.isInsideHexagon(paramUnit.x, paramUnit.y, realRad * 2f, tile.worldx(), tile.worldy()) && paramUnit.shield > 0){
+            Call.effect(Fx.absorb, tile.worldx(), tile.worldy(), 1, Color.blue);
+
+            if(paramUnit.shield <= CreeperUtils.creeperDamage * CreeperUtils.creeperLevels.getOrDefault(tile.block(), 1)){
+                paramUnit.shield -= paramField.cooldown * paramField.regen;
+
+                Call.effect(Fx.shieldBreak, paramUnit.x, paramUnit.y, paramField.radius, paramUnit.team.color);
+            }
+
+            paramUnit.shield -= CreeperUtils.creeperDamage * CreeperUtils.unitShieldDamage * CreeperUtils.creeperLevels.getOrDefault(tile.block(), 1);
+            paramField.alpha = 1f;
+
+            tile.creep = 0f;
+            tile.newCreep = 0f;
+            if(tile.build != null && tile.build.team == CreeperUtils.creeperTeam)
+                tile.build.damage(Blocks.conveyor.health);
+        }
+    };
+
     public ForceFieldAbility(float radius, float regen, float max, float cooldown){
         this.radius = radius;
         this.regen = regen;
@@ -68,6 +91,10 @@ public class ForceFieldAbility extends Ability{
             checkRadius(unit);
 
             Groups.bullet.intersect(unit.x - realRad, unit.y - realRad, realRad * 2f, realRad * 2f, shieldConsumer);
+            Geometry.circle(unit.tileX(), unit.tileY(), (int) (((int) realRad/ Vars.tilesize) * 3), (cx, cy) -> {
+                if(Intersector.isInsideHexagon(paramUnit.x, paramUnit.y, realRad * 2f, cx * Vars.tilesize, cy * Vars.tilesize) && Vars.world.tile(cx, cy) != null)
+                    creeperConsumer.get(Vars.world.tile(cx, cy));
+            });
         }else{
             radiusScale = 0f;
         }

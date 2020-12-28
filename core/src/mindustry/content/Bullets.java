@@ -299,7 +299,7 @@ public class Bullets implements ContentList{
             lightningLength = 10;
         }};
 
-        standardCopper = new BasicBulletType(2.5f, 9){{
+        standardCopper = new BasicBulletType(2.5f, 10){{
             width = 7f;
             height = 9f;
             lifetime = 60f;
