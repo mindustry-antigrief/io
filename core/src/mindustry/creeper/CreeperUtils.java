@@ -54,7 +54,7 @@ public class CreeperUtils {
     public static float buildShieldDamageMultiplier = 0.5f;
     public static float shieldBoostProtectionMultiplier = 0.5f;
     public static float shieldCreeperDropAmount = 30f;
-    public static float shieldCreeperDropRadius = 5f;
+    public static float shieldCreeperDropRadius = 6f;
 
     public static float nullifierRange = 10f;
 
