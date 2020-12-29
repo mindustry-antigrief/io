@@ -1536,13 +1536,14 @@ public class Blocks implements ContentList{
             targetAir = false;
             shootSound = Sounds.laser;
 
-            shootType = new LaserBulletType(70){{
+            shootType = new LaserBulletType(20){{
                 colors = new Color[]{Pal.lancerLaser.cpy().mul(1f, 1f, 1f, 0.4f), Pal.lancerLaser, Color.white};
                 hitEffect = Fx.hitLancer;
                 despawnEffect = Fx.none;
                 hitSize = 4;
                 lifetime = 16f;
                 drawSize = 400f;
+                pierce = true;
                 collidesAir = false;
                 length = 173f;
             }};
