@@ -13,6 +13,7 @@ import mindustry.creeper.CreeperUtils;
 import mindustry.gen.*;
 import mindustry.graphics.*;
 import mindustry.world.Tile;
+import mindustry.world.blocks.storage.CoreBlock;
 
 public class ForceFieldAbility extends Ability{
     /** Shield radius. */
@@ -57,13 +58,11 @@ public class ForceFieldAbility extends Ability{
                 Call.effect(Fx.shieldBreak, paramUnit.x, paramUnit.y, paramField.radius, paramUnit.team.color);
             }
 
-            paramUnit.shield -= CreeperUtils.creeperDamage * CreeperUtils.unitShieldDamageMultiplier * (tile.creep / 2f);
+            paramUnit.shield -= CreeperUtils.creeperDamage * CreeperUtils.unitShieldDamageMultiplier * (tile.creep / 2f) + (tile.block() instanceof CoreBlock && tile.team() == CreeperUtils.creeperTeam ? 2 : 0);
             paramField.alpha = 1f;
 
-            tile.creep = 0f;
-            tile.newCreep = 0f;
             if(tile.build != null && tile.build.team == CreeperUtils.creeperTeam)
-                tile.build.damage(Blocks.conveyor.health);
+                tile.build.damage(Blocks.conveyor.health / 10);
         }
     };
 

@@ -17,6 +17,7 @@ import mindustry.graphics.*;
 import mindustry.logic.*;
 import mindustry.ui.*;
 import mindustry.world.*;
+import mindustry.world.blocks.storage.CoreBlock;
 import mindustry.world.consumers.*;
 import mindustry.world.meta.*;
 
@@ -52,13 +53,10 @@ public class ForceProjector extends Block{
             Call.effect(Fx.absorb, tile.worldx(), tile.worldy(), 1, Color.blue);
 
             paramEntity.hit = 1f;
-            paramEntity.healthLeft -= creeperDamage * buildShieldDamageMultiplier * (tile.creep / 2f) * Math.max(shieldBoostProtectionMultiplier, 1f - paramEntity.phaseHeat);
-
-            tile.creep = 0f;
-            tile.newCreep = 0f;
+            paramEntity.healthLeft -= creeperDamage * buildShieldDamageMultiplier * (tile.creep / 2f) * Math.max(shieldBoostProtectionMultiplier, 1f - paramEntity.phaseHeat) + (tile.block() instanceof CoreBlock && tile.team() == CreeperUtils.creeperTeam ? 2 : 0);
 
             if(tile.build != null && tile.build.team == creeperTeam)
-                tile.build.damage(Blocks.conveyor.health);
+                tile.build.damage(Blocks.conveyor.health / 2f);
         }
     };
 

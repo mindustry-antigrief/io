@@ -39,7 +39,7 @@ public class CreeperUtils {
     public static float evaporationRate = 0f; // Base creeper evaporation
     public static float creeperDamage = 2.5f; // Base creeper damage
     public static float creeperEvaporationDamageMultiplier = 10f; // Creeper percentage that will remain upon damaging something
-    public static float creeperUnitDamage = 3f;
+    public static float creeperUnitDamage = 4f;
     public static float minCreeper = 0.5f; // Minimum amount of creeper required for transfer
 
     public static BulletType sporeType = Bullets.artilleryDense;
@@ -50,8 +50,8 @@ public class CreeperUtils {
     public static float sporeHealthMultiplier = 10f;
     public static float sporeTargetOffset = 256f;
 
-    public static float unitShieldDamageMultiplier = 1f;
-    public static float buildShieldDamageMultiplier = 0.5f;
+    public static float unitShieldDamageMultiplier = 0.1f;
+    public static float buildShieldDamageMultiplier = 1.5f;
     public static float shieldBoostProtectionMultiplier = 0.5f;
     public static float shieldCreeperDropAmount = 5f;
     public static float shieldCreeperDropRadius = 3f;
