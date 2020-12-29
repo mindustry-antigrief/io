@@ -51,15 +51,11 @@ public class ForceProjector extends Block{
         if((tile.creep >= 1f || (creeperBlocks.containsValue(tile.block()) && tile.team() == creeperTeam)) && Intersector.isInsideHexagon(paramEntity.x, paramEntity.y, paramEntity.realRadius() * 2f, tile.worldx(), tile.worldy())){
             Call.effect(Fx.absorb, tile.worldx(), tile.worldy(), 1, Color.blue);
 
+            paramEntity.hit = 1f;
+            paramEntity.healthLeft -= creeperDamage * buildShieldDamageMultiplier * (tile.creep / 2f) * Math.max(shieldBoostProtectionMultiplier, 1f - paramEntity.phaseHeat);
+
             tile.creep = 0f;
             tile.newCreep = 0f;
-
-
-            paramEntity.hit = 1f;
-
-            paramEntity.buildup += creeperDamage * buildShieldDamageMultiplier * (CreeperUtils.creeperLevels.getOrDefault(tile.block(), 2) / 2f) * paramEntity.warmup * Math.max(shieldBoostProtectionMultiplier, 1f - paramEntity.phaseHeat);
-            paramEntity.healthLeft -= creeperDamage * buildShieldDamageMultiplier * (CreeperUtils.creeperLevels.getOrDefault(tile.block(), 2) / 2f) * Math.max(shieldBoostProtectionMultiplier, 1f - paramEntity.phaseHeat);
-
 
             if(tile.build != null && tile.build.team == creeperTeam)
                 tile.build.damage(Blocks.conveyor.health);
