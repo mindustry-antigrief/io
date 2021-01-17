@@ -23,6 +23,7 @@ public class MendProjector extends Block{
     public float reload = 250f;
     public float range = 60f;
     public float healPercent = 12f;
+    public float healAmount = 50f;
     public float phaseBoost = 12f;
     public float phaseRangeBoost = 50f;
     public float useTime = 400f;
@@ -85,7 +86,8 @@ public class MendProjector extends Block{
                 charge = 0f;
 
                 indexer.eachBlock(this, realRange, other -> other.damaged(), other -> {
-                    other.heal(other.maxHealth() * (healPercent + phaseHeat * phaseBoost) / 100f * efficiency());
+                    //other.heal(other.maxHealth() * (healPercent + phaseHeat * phaseBoost) / 100f * efficiency());
+                    other.heal(healAmount * phaseHeat * phaseBoost * efficiency());
                     Fx.healBlockFull.at(other.x, other.y, other.block.size, Tmp.c1.set(baseColor).lerp(phaseColor, phaseHeat));
                 });
             }
