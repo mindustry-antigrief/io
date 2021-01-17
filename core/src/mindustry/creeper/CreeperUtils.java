@@ -50,7 +50,7 @@ public class CreeperUtils {
     public static float sporeHealthMultiplier = 10f;
     public static float sporeTargetOffset = 256f;
 
-    public static float unitShieldDamageMultiplier = 0.1f;
+    public static float unitShieldDamageMultiplier = 1f;
     public static float buildShieldDamageMultiplier = 1.5f;
     public static float shieldBoostProtectionMultiplier = 0.5f;
     public static float shieldCreeperDropAmount = 5f;

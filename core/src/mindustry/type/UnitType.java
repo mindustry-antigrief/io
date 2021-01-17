@@ -62,6 +62,9 @@ public class UnitType extends UnlockableContent{
     public Seq<Ability> abilities = new Seq<>();
     public BlockFlag targetFlag = BlockFlag.generator;
 
+    /** damage resistance to creeper */
+    public float creeperResistance = 0.1f;
+
     public int legCount = 4, legGroupSize = 2;
     public float legLength = 10f, legSpeed = 0.1f, legTrns = 1f, legBaseOffset = 0f, legMoveSpace = 1f, legExtension = 0, legPairOffset = 0, legLengthScl = 1f, kinematicScl = 1f, maxStretch = 1.75f;
     public float legSplashDamage = 0f, legSplashRange = 5;

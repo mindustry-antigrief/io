@@ -908,11 +908,12 @@ public class UnitTypes implements ContentList{
             accel = 0.08f;
             drag = 0.01f;
             flying = true;
-            health = 475;
+            health = 275;
             engineOffset = 5.5f;
             range = 140f;
             targetAir = false;
             circleTarget = true;
+            creeperResistance = 0.2f;
 
             weapons.add(new Weapon(){{
                 y = 0f;
@@ -932,7 +933,7 @@ public class UnitTypes implements ContentList{
         }};
 
         horizon = new UnitType("horizon"){{
-            health = 940;
+            health = 440;
             speed = 1.7f;
             accel = 0.08f;
             drag = 0.016f;
@@ -945,6 +946,7 @@ public class UnitTypes implements ContentList{
             armor = 3f;
             targetFlag = BlockFlag.factory;
             circleTarget = true;
+            creeperResistance = 0.8f;
 
             weapons.add(new Weapon(){{
                 minShootVelocity = 0.75f;
@@ -982,6 +984,7 @@ public class UnitTypes implements ContentList{
 
             engineOffset = 12f;
             engineSize = 3f;
+            creeperResistance = 0.4f;
 
             weapons.add(new Weapon("zenith-missiles"){{
                 reload = 40f;
