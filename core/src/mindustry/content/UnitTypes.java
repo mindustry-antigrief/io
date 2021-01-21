@@ -711,7 +711,6 @@ public class UnitTypes implements ContentList{
             legExtension = -15;
             legBaseOffset = 10f;
             landShake = 1f;
-            legSpeed = 0.1f;
             legLengthScl = 0.96f;
             rippleScale = 2f;
             legSpeed = 0.2f;
@@ -1337,6 +1336,7 @@ public class UnitTypes implements ContentList{
             hitSize = 32f;
             payloadCapacity = (3 * 3) * tilePayload;
             buildSpeed = 2.5f;
+            buildBeamOffset = 23;
             range = 140f;
             targetAir = false;
             targetFlag = BlockFlag.battery;
@@ -1407,6 +1407,7 @@ public class UnitTypes implements ContentList{
             buildSpeed = 4f;
             drawShields = false;
             lowAltitude = true;
+            buildBeamOffset = 43;
 
             ammoCapacity = 1300;
             ammoResupplyAmount = 20;
