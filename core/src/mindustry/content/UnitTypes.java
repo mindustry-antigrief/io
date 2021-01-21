@@ -545,18 +545,25 @@ public class UnitTypes implements ContentList{
         crawler = new UnitType("crawler"){{
             defaultController = SuicideAI::new;
 
+            speed = 1.5f;
+            drag = 0.4f;
+            hitSize = 8f;
+            rotateSpeed = 3f;
+            targetAir = false;
+            health = 600;
+            immunities = ObjectSet.with(StatusEffects.burning, StatusEffects.melting);
+
             legCount = 4;
             legLength = 9f;
             legTrns = 0.6f;
             legMoveSpace = 1.4f;
-            speed = 1.5f;
-            hitSize = 8f;
-            health = 150;
             hovering = true;
-            targetAir = false;
-            mechSideSway = 0.25f;
-            range = 40f;
-            creeperDeposit = 5f;
+            armor = 3f;
+            creeperDeposit = 7f;
+
+            allowLegStep = true;
+            visualElevation = 0.2f;
+            groundLayer = Layer.legUnit - 1f;
 
             weapons.add(new Weapon(){{
                 reload = 24f;
