@@ -18,6 +18,7 @@ import mindustry.world.blocks.*;
 import static mindustry.Vars.*;
 
 public abstract class BulletType extends Content{
+    public boolean isCreeper = false;
     public float lifetime = 40f;
     public float speed;
     public float damage;

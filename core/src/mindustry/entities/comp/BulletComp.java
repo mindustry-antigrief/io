@@ -97,7 +97,7 @@ abstract class BulletComp implements Timedc, Damagec, Hitboxc, Teamc, Posc, Draw
         type.hit(self(), x, y);
         float health = 0f;
 
-        if(team == CreeperUtils.creeperTeam && type == CreeperUtils.sporeType)
+        if(team == CreeperUtils.creeperTeam && type.isCreeper)
             CreeperUtils.sporeCollision(self(), x, y);
 
         if(other instanceof Healthc h && team != CreeperUtils.creeperTeam){

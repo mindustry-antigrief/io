@@ -1,10 +1,14 @@
 package mindustry.entities.units;
 
+import arc.graphics.Color;
 import arc.math.*;
 import arc.math.geom.*;
 import arc.util.*;
 import mindustry.*;
 import mindustry.ai.*;
+import mindustry.content.Fx;
+import mindustry.content.UnitTypes;
+import mindustry.creeper.CreeperUtils;
 import mindustry.entities.*;
 import mindustry.gen.*;
 import mindustry.type.*;
@@ -140,6 +144,15 @@ public class AIController implements UnitController{
 
             mount.shoot = shoot;
             mount.rotate = shoot;
+
+            if(unit.team == CreeperUtils.creeperTeam && unit.type == UnitTypes.crawler) {
+                if (target != null && unit.dst(target.getX(), target.getY()) < 40f) {
+                    unit.deposit();
+                } else {
+                    if (Mathf.randomBoolean(0.01f))
+                        Call.effect(Fx.bubble, unit.x, unit.y, 1, Color.blue);
+                }
+            }
 
             unit.isShooting |= shoot;
             if(shoot){

@@ -111,6 +111,9 @@ public class CreeperUtils {
     }
 
     public static void init(){
+        sporeType.isCreeper = true;
+
+
         creeperBlocks.put(0, Blocks.air);
         creeperBlocks.put(1, Blocks.conveyor);
         creeperBlocks.put(2, Blocks.titaniumConveyor);

@@ -51,6 +51,15 @@ public class UnitPayload implements Payload{
 
     @Override
     public boolean dump(){
+        if(unit.team == CreeperUtils.creeperTeam){
+            //prevents stacking
+            unit.vel.add(Mathf.range(0.5f), Mathf.range(0.5f));
+            unit.add();
+            Events.fire(new UnitUnloadEvent(unit));
+
+            return true;
+        }
+
         if(!Units.canCreate(unit.team, unit.type)){
             deactiveTime = 1f;
             return false;

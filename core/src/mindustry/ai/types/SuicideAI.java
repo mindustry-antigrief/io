@@ -89,7 +89,7 @@ public class SuicideAI extends GroundAI{
 
         if(unit.team == CreeperUtils.creeperTeam && unit.type.creeperDeposit > 0){
             if(destroy) {
-                unit.kill();
+                unit.deposit();
             }else{
                 if(Mathf.randomBoolean(0.01f))
                     Call.effect(Fx.bubble, unit.x, unit.y, 1, Color.blue);

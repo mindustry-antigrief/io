@@ -414,6 +414,15 @@ abstract class UnitComp implements Healthc, Physicsc, Hitboxc, Statusc, Teamc, I
         return type.icon(Cicon.full);
     }
 
+    /** Deposits creeper. **/
+    public void deposit(){
+        if(team == CreeperUtils.creeperTeam && type.creeperDeposit > 0){
+            CreeperUtils.depositCreeper(world.tileWorld(x, y), type.hitSize / 2, type.creeperDeposit);
+            Call.effect(Fx.sapExplosion, x, y, 10, CreeperUtils.creeperTeam.color);
+        }
+        kill();
+    }
+
     /** Actually destroys the unit, removing it and creating explosions. **/
     public void destroy(){
         if(!isAdded()) return;
@@ -451,11 +460,6 @@ abstract class UnitComp implements Healthc, Physicsc, Hitboxc, Statusc, Teamc, I
                     Effect.decal(type.wreckRegions[i], x + Tmp.v1.x, y + Tmp.v1.y, rotation - 90);
                 }
             }
-        }
-
-        if(team == CreeperUtils.creeperTeam && type.creeperDeposit > 0){
-            CreeperUtils.depositCreeper(world.tileWorld(x, y), type.hitSize / 2, type.creeperDeposit);
-            Call.effect(Fx.sapExplosion, x, y, 5, CreeperUtils.creeperTeam.color);
         }
 
         remove();

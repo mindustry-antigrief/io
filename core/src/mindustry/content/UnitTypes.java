@@ -548,27 +548,27 @@ public class UnitTypes implements ContentList{
             accel = 0.08f;
             drag = 0.016f;
             flying = true;
-            hitSize = 9f;
+            hitSize = 6f;
             targetAir = false;
             engineOffset = 7.8f;
             range = 140f;
-            faceTarget = true;
-            armor = 3f;
+            faceTarget = false;
             targetFlag = BlockFlag.factory;
             circleTarget = true;
-            creeperDeposit = 7f;
+            creeperDeposit = 4f;
 
             weapons.add(new Weapon(){{
                 reload = 24f;
                 shootCone = 180f;
                 ejectEffect = Fx.none;
                 shootSound = Sounds.explosion;
-                bullet = new BombBulletType(0f, 0f, "clear"){{
+                bullet = new ArtilleryBulletType(25f, 0f, "clear"){{
+                    isCreeper = true;
                     hitEffect = Fx.pulverize;
                     lifetime = 10f;
-                    speed = 1f;
+                    speed = 0.1f;
                     splashDamageRadius = 70f;
-                    instantDisappear = true;
+                    instantDisappear = false;
                     splashDamage = 80f;
                     killShooter = true;
                     hittable = false;
