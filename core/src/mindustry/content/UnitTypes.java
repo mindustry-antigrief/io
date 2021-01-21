@@ -545,11 +545,18 @@ public class UnitTypes implements ContentList{
         crawler = new UnitType("crawler"){{
             defaultController = SuicideAI::new;
 
-            speed = 1f;
+            legCount = 4;
+            legLength = 9f;
+            legTrns = 0.6f;
+            legMoveSpace = 1.4f;
+            speed = 1.5f;
             hitSize = 8f;
-            health = 180;
+            health = 150;
+            hovering = true;
+            targetAir = false;
             mechSideSway = 0.25f;
             range = 40f;
+            creeperDeposit = 5f;
 
             weapons.add(new Weapon(){{
                 reload = 24f;
@@ -571,6 +578,8 @@ public class UnitTypes implements ContentList{
         }};
 
         atrax = new UnitType("atrax"){{
+            defaultController = SuicideAI::new;
+
             speed = 0.5f;
             drag = 0.4f;
             hitSize = 10f;
@@ -585,6 +594,7 @@ public class UnitTypes implements ContentList{
             legMoveSpace = 1.4f;
             hovering = true;
             armor = 3f;
+            creeperDeposit = 7f;
 
             allowLegStep = true;
             visualElevation = 0.2f;
@@ -611,9 +621,12 @@ public class UnitTypes implements ContentList{
         }};
 
         spiroct = new UnitType("spiroct"){{
+            defaultController = SuicideAI::new;
+
             speed = 0.4f;
             drag = 0.4f;
             hitSize = 12f;
+            creeperDeposit = 7f;
             rotateSpeed = 3f;
             health = 900;
             immunities = ObjectSet.with(StatusEffects.burning, StatusEffects.melting);
@@ -622,6 +635,7 @@ public class UnitTypes implements ContentList{
             legTrns = 0.8f;
             legMoveSpace = 1.4f;
             legBaseOffset = 2f;
+            targetAir = false;
             hovering = true;
             armor = 5f;
             ammoType = AmmoTypes.power;
@@ -678,11 +692,15 @@ public class UnitTypes implements ContentList{
         }};
 
         arkyid = new UnitType("arkyid"){{
+            defaultController = SuicideAI::new;
+
             drag = 0.1f;
             speed = 0.5f;
             hitSize = 21f;
+            creeperDeposit = 5f;
             health = 8000;
             armor = 6f;
+            targetAir = false;
 
             rotateSpeed = 2.7f;
 
@@ -781,9 +799,13 @@ public class UnitTypes implements ContentList{
         }};
 
         toxopid = new UnitType("toxopid"){{
+            defaultController = SuicideAI::new;
+
+
             drag = 0.1f;
             speed = 0.5f;
             hitSize = 21f;
+            creeperDeposit = 9f;
             health = 22000;
             armor = 13f;
 
@@ -806,6 +828,7 @@ public class UnitTypes implements ContentList{
             legSplashDamage = 80;
             legSplashRange = 60;
 
+            targetAir = false;
             hovering = true;
             allowLegStep = true;
             visualElevation = 0.95f;
