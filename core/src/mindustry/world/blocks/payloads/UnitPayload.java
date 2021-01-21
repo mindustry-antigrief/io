@@ -44,15 +44,6 @@ public class UnitPayload implements Payload{
 
     @Override
     public boolean dump(){
-        if(unit.team == CreeperUtils.creeperTeam){
-
-            //prevents stacking
-            unit.vel.add(Mathf.range(0.5f), Mathf.range(0.5f));
-            unit.add();
-
-            return true;
-        }
-
         if(!Units.canCreate(unit.team, unit.type)){
             deactiveTime = 1f;
             return false;
@@ -68,6 +59,7 @@ public class UnitPayload implements Payload{
             }
 
             //cannot dump on solid blocks
+            if(unit.team == CreeperUtils.creeperTeam) return true;
             if(!nearEmpty) return false;
         }
 

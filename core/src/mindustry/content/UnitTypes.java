@@ -543,27 +543,20 @@ public class UnitTypes implements ContentList{
         //region ground legs
 
         crawler = new UnitType("crawler"){{
-            defaultController = SuicideAI::new;
-
+            health = 100;
             speed = 1.5f;
-            drag = 0.4f;
-            hitSize = 8f;
-            rotateSpeed = 3f;
+            accel = 0.08f;
+            drag = 0.016f;
+            flying = true;
+            hitSize = 9f;
             targetAir = false;
-            health = 600;
-            immunities = ObjectSet.with(StatusEffects.burning, StatusEffects.melting);
-
-            legCount = 4;
-            legLength = 9f;
-            legTrns = 0.6f;
-            legMoveSpace = 1.4f;
-            hovering = true;
+            engineOffset = 7.8f;
+            range = 140f;
+            faceTarget = true;
             armor = 3f;
+            targetFlag = BlockFlag.factory;
+            circleTarget = true;
             creeperDeposit = 7f;
-
-            allowLegStep = true;
-            visualElevation = 0.2f;
-            groundLayer = Layer.legUnit - 1f;
 
             weapons.add(new Weapon(){{
                 reload = 24f;
