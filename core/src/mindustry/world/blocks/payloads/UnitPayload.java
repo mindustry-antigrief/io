@@ -7,6 +7,7 @@ import arc.math.geom.*;
 import arc.util.*;
 import arc.util.io.*;
 import mindustry.*;
+import mindustry.creeper.CreeperUtils;
 import mindustry.entities.EntityCollisions.*;
 import mindustry.entities.*;
 import mindustry.gen.*;
@@ -43,6 +44,15 @@ public class UnitPayload implements Payload{
 
     @Override
     public boolean dump(){
+        if(unit.team == CreeperUtils.creeperTeam){
+
+            //prevents stacking
+            unit.vel.add(Mathf.range(0.5f), Mathf.range(0.5f));
+            unit.add();
+
+            return true;
+        }
+
         if(!Units.canCreate(unit.team, unit.type)){
             deactiveTime = 1f;
             return false;

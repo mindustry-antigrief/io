@@ -6,6 +6,7 @@ import arc.math.geom.*;
 import arc.util.*;
 import arc.util.io.*;
 import mindustry.annotations.Annotations.*;
+import mindustry.creeper.CreeperUtils;
 import mindustry.gen.*;
 import mindustry.graphics.*;
 import mindustry.world.*;
@@ -137,7 +138,7 @@ public class PayloadAcceptor extends Block{
                     if(movePayload(payload)){
                         payload = null;
                     }
-                }else if(front == null || !front.tile().solid()){
+                }else if(front == null || (!front.tile().solid() || team == CreeperUtils.creeperTeam)){
                     dumpPayload();
                 }
             }

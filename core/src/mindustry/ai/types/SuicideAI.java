@@ -1,6 +1,7 @@
 package mindustry.ai.types;
 
 import arc.graphics.Color;
+import arc.math.Mathf;
 import mindustry.*;
 import mindustry.ai.*;
 import mindustry.content.Fx;
@@ -90,7 +91,8 @@ public class SuicideAI extends GroundAI{
             if(destroy) {
                 unit.kill();
             }else{
-                Call.effect(Fx.bubble, unit.x, unit.y, 1, Color.blue);
+                if(Mathf.randomBoolean(0.01f))
+                    Call.effect(Fx.bubble, unit.x, unit.y, 1, Color.blue);
             }
         }else {
             unit.controlWeapons(rotate, shoot);
