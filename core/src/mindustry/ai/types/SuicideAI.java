@@ -1,7 +1,10 @@
 package mindustry.ai.types;
 
+import arc.graphics.Color;
 import mindustry.*;
 import mindustry.ai.*;
+import mindustry.content.Fx;
+import mindustry.creeper.CreeperUtils;
 import mindustry.entities.*;
 import mindustry.entities.units.*;
 import mindustry.gen.*;
@@ -26,12 +29,15 @@ public class SuicideAI extends GroundAI{
 
         Building core = unit.closestEnemyCore();
 
-        boolean rotate = false, shoot = false, moveToTarget = false;
+        boolean rotate = false, shoot = false, moveToTarget = false, destroy = false;
 
         if(!Units.invalidateTarget(target, unit, unit.range()) && unit.hasWeapons()){
             rotate = true;
             shoot = unit.within(target, unit.type.weapons.first().bullet.range() +
                 (target instanceof Building b ? b.block.size * Vars.tilesize / 2f : ((Hitboxc)target).hitSize() / 2f));
+
+            destroy = unit.within(target, 30f +
+                    (target instanceof Building b ? b.block.size * Vars.tilesize / 2f : 2000f));
 
             if(unit.type.hasWeapons()){
                 unit.aimLook(Predict.intercept(unit, target, unit.type.weapons.first().bullet.speed));
@@ -80,7 +86,15 @@ public class SuicideAI extends GroundAI{
             if(unit.moving()) unit.lookAt(unit.vel().angle());
         }
 
-        unit.controlWeapons(rotate, shoot);
+        if(unit.team == CreeperUtils.creeperTeam && unit.type.creeperDeposit > 0){
+            if(destroy) {
+                unit.kill();
+            }else{
+                Call.effect(Fx.bubble, unit.x, unit.y, 1, Color.blue);
+            }
+        }else {
+            unit.controlWeapons(rotate, shoot);
+        }
     }
 
     @Override

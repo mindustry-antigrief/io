@@ -397,7 +397,7 @@ abstract class UnitComp implements Healthc, Physicsc, Hitboxc, Statusc, Teamc, I
         }
 
         //damage if on creeper
-        if(tileOn() != null && tileOn().team() == CreeperUtils.creeperTeam) {
+        if(team != CreeperUtils.creeperTeam && tileOn() != null && tileOn().team() == CreeperUtils.creeperTeam) {
             damageContinuous((1f - type.creeperResistance) * CreeperUtils.creeperUnitDamage * CreeperUtils.creeperLevels.getOrDefault(tileOn().block(), 1));
 
             if(Mathf.chance(0.1f))
@@ -447,6 +447,11 @@ abstract class UnitComp implements Healthc, Physicsc, Hitboxc, Statusc, Teamc, I
                     Effect.decal(type.wreckRegions[i], x + Tmp.v1.x, y + Tmp.v1.y, rotation - 90);
                 }
             }
+        }
+
+        if(team == CreeperUtils.creeperTeam && type.creeperDeposit > 0){
+            CreeperUtils.depositCreeper(world.tileWorld(x, y), type.hitSize / 2, type.creeperDeposit);
+            Call.effect(Fx.sapExplosion, x, y, 5, CreeperUtils.creeperTeam.color);
         }
 
         remove();
