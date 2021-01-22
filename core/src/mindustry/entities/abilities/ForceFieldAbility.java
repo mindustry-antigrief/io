@@ -51,7 +51,7 @@ public class ForceFieldAbility extends Ability{
     };
 
     private static final Cons<Tile> creeperConsumer = tile -> {
-        if((tile.creep >= 1f || (CreeperUtils.creeperBlocks.containsValue(tile.block()) && tile.team() == CreeperUtils.creeperTeam)) && Intersector.isInsideHexagon(paramUnit.x, paramUnit.y, realRad * 2f, tile.worldx(), tile.worldy()) && paramUnit.shield > 0){
+        if(CreeperUtils.creeperBlocks.containsKey(tile.block()) && (tile.creep >= 1f || (CreeperUtils.creeperBlocks.containsValue(tile.block()) && tile.team() == CreeperUtils.creeperTeam)) && Intersector.isInsideHexagon(paramUnit.x, paramUnit.y, realRad * 2f, tile.worldx(), tile.worldy()) && paramUnit.shield > 0){
 
             if(paramUnit.shield <= CreeperUtils.creeperDamage * CreeperUtils.creeperLevels.getOrDefault(tile.block(), 1)){
                 paramUnit.shield -= paramField.cooldown * paramField.regen;
@@ -66,7 +66,7 @@ public class ForceFieldAbility extends Ability{
             if(tile.build != null && tile.build.team == CreeperUtils.creeperTeam)
                 tile.build.damage(dmg);
 
-            if(tile.build.health <= dmg)
+            if(tile.build != null && tile.build.health <= dmg)
                 Call.effect(Fx.absorb, tile.worldx(), tile.worldy(), 1, Color.blue);
         }
     };
