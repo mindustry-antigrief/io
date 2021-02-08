@@ -55,7 +55,7 @@ abstract class UnitComp implements Healthc, Physicsc, Hitboxc, Statusc, Teamc, I
     }
 
     public void approach(Vec2 vector){
-        vel.approachDelta(vector, type.accel * realSpeed() * floorSpeedMultiplier());
+        vel.approachDelta(vector, type.accel * realSpeed());
     }
 
     public void aimLook(Position pos){
@@ -84,7 +84,7 @@ abstract class UnitComp implements Healthc, Physicsc, Hitboxc, Statusc, Teamc, I
 
     /** @return speed with boost multipliers factored in. */
     public float realSpeed(){
-        return Mathf.lerp(1f, type.canBoost ? type.boostMultiplier : 1f, elevation) * speed();
+        return Mathf.lerp(1f, type.canBoost ? type.boostMultiplier : 1f, elevation) * speed() * floorSpeedMultiplier();
     }
 
     /** Iterates through this unit and everything it is controlling. */
@@ -132,6 +132,7 @@ abstract class UnitComp implements Healthc, Physicsc, Hitboxc, Statusc, Teamc, I
             case y -> World.conv(y);
             case team -> team.id;
             case shooting -> isShooting() ? 1 : 0;
+            case range -> range() / tilesize;
             case shootX -> World.conv(aimX());
             case shootY -> World.conv(aimY());
             case mining -> mining() ? 1 : 0;
@@ -429,9 +430,10 @@ abstract class UnitComp implements Healthc, Physicsc, Hitboxc, Statusc, Teamc, I
 
         float explosiveness = 2f + item().explosiveness * stack().amount * 1.53f;
         float flammability = item().flammability * stack().amount / 1.9f;
+        float power = item().charge * stack().amount * 150f;
 
         if(!spawnedByCore){
-            Damage.dynamicExplosion(x, y, flammability, explosiveness, 0f, bounds() / 2f, state.rules.damageExplosions, item().flammability > 1, team);
+            Damage.dynamicExplosion(x, y, flammability, explosiveness, power, bounds() / 2f, state.rules.damageExplosions, item().flammability > 1, team);
         }
 
         float shake = hitSize / 3f;
