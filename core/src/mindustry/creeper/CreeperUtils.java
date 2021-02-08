@@ -73,6 +73,7 @@ public class CreeperUtils {
     public static HashMap<Block, Emitter> emitterBlocks = new HashMap<>();
 
     public static Seq<Emitter> creeperEmitters = new Seq<>();
+    public static Seq<Tile> creeperableTiles = new Seq<>();
     public static Seq<ForceProjector.ForceBuild> shields = new Seq<>();
 
     public static Timer.Task runner;
@@ -148,6 +149,7 @@ public class CreeperUtils {
             if(fixedRunner != null)
                 fixedRunner.cancel();
 
+            creeperableTiles.clear();
             creeperEmitters.clear();
             shields.clear();
         });
@@ -156,10 +158,14 @@ public class CreeperUtils {
             // DOES NOT SIGNIFY WORLD IS LOADED, need to wait
             try {
                 Thread.sleep(2000);
+                creeperableTiles.clear();
                 creeperEmitters.clear();
 
                 Seq<Building> iterated = new Seq<>();
                 for(Tile tile : world.tiles){
+                    if(!tile.block().isStatic() && !tile.floor().isDeep())
+                        creeperableTiles.add(tile);
+
                     if(tile.block() != null && emitterBlocks.containsKey(tile.block()) && !iterated.contains(tile.build) && tile.build.team == creeperTeam){
                         iterated.add(tile.build);
                         creeperEmitters.add(new Emitter(tile.build));
@@ -252,7 +258,7 @@ public class CreeperUtils {
         }
 
         // update creeper flow
-        for(Tile tile : world.tiles){
+        for(Tile tile : creeperableTiles){
             transferCreeper(tile, world.tile(tile.x+1, tile.y));
             transferCreeper(tile, world.tile(tile.x-1, tile.y));
             transferCreeper(tile, world.tile(tile.x, tile.y+1));
@@ -260,7 +266,7 @@ public class CreeperUtils {
         }
 
         // clamp creeper
-        for(Tile tile : world.tiles){
+        for(Tile tile : creeperableTiles){
             if(tile.newCreep > 10)
                 tile.newCreep = 10;
             else if (tile.newCreep < 0.01)
