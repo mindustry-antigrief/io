@@ -348,6 +348,8 @@ public class Bullets implements ContentList{
         standardDenseBig = new BasicBulletType(7f, 55, "bullet"){{
             width = 15f;
             height = 21f;
+            pierceCap = 6;
+            pierceBuilding = true;
             shootEffect = Fx.shootBig;
         }};
 
@@ -355,7 +357,7 @@ public class Bullets implements ContentList{
             width = 16f;
             height = 23f;
             shootEffect = Fx.shootBig;
-            pierceCap = 2;
+            pierceCap = 8;
             pierceBuilding = true;
             knockback = 0.7f;
         }};
@@ -368,7 +370,7 @@ public class Bullets implements ContentList{
             status = StatusEffects.burning;
             shootEffect = Fx.shootBig;
             makeFire = true;
-            pierceCap = 2;
+            pierceCap = 6;
             pierceBuilding = true;
             knockback = 0.7f;            
         }};

@@ -1540,7 +1540,7 @@ public class Blocks implements ContentList{
             targetAir = false;
             shootSound = Sounds.laser;
 
-            shootType = new LaserBulletType(20){{
+            shootType = new LaserBulletType(10){{
                 colors = new Color[]{Pal.lancerLaser.cpy().a(0.4f), Pal.lancerLaser, Color.white};
                 hitEffect = Fx.hitLancer;
                 despawnEffect = Fx.none;
@@ -1556,7 +1556,7 @@ public class Blocks implements ContentList{
         arc = new PowerTurret("arc"){{
             requirements(Category.turret, with(Items.copper, 50, Items.lead, 50));
             shootType = new LightningBulletType(){{
-                damage = 10;
+                damage = 4;
                 lightningLength = 15;
                 collidesAir = false;
             }};
@@ -1582,7 +1582,7 @@ public class Blocks implements ContentList{
             force = 8f;
             scaledForce = 7f;
             range = 230f;
-            damage = 0.3f;
+            damage = 6f;
             health = 160 * size * size;
             rotateSpeed = 10;
 
@@ -1597,7 +1597,7 @@ public class Blocks implements ContentList{
             Items.surgeAlloy, Bullets.missileSurge
             );
             reloadTime = 30f;
-            shots = 4;
+            shots = 8;
             burstSpacing = 5;
             inaccuracy = 10f;
             range = 200f;
@@ -1689,6 +1689,7 @@ public class Blocks implements ContentList{
 
             ammo(
             Items.titanium, new ShrapnelBulletType(){{
+                pierce = false;
                 length = brange;
                 damage = 33f;
                 ammoMultiplier = 4f;
@@ -1696,8 +1697,9 @@ public class Blocks implements ContentList{
                 reloadMultiplier = 1.3f;
             }},
             Items.thorium, new ShrapnelBulletType(){{
+                pierce = true;
                 length = brange;
-                damage = 55f;
+                damage = 26f;
                 ammoMultiplier = 5f;
                 toColor = Pal.thoriumPink;
                 shootEffect = smokeEffect = Fx.thoriumShoot;
@@ -1773,6 +1775,7 @@ public class Blocks implements ContentList{
                 speed = brange;
                 hitShake = 6f;
                 ammoMultiplier = 1f;
+                pierce = true;
             }}
             );
 
