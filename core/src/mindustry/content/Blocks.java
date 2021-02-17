@@ -1754,20 +1754,27 @@ public class Blocks implements ContentList{
 
             ammo(
                     Items.surgeAlloy, new LaserBulletType(){{
-                        damage = 420f;
-                        colors = new Color[]{Pal.lancerLaser.cpy().a(0.4f), Pal.lancerLaser, Color.white};
-                        shootEffect = Fx.instShoot;
-                        hitEffect = Fx.instHit;
-                        smokeEffect = Fx.smokeCloud;
-                        trailEffect = Fx.instTrail;
-                        despawnEffect = Fx.instBomb;
-                        hitSize = 8;
+                        length = 460f;
+                        damage = 560f;
+                        width = 75f;
 
-                        lifetime = 64f;
-                        drawSize = 500*2;
-                        pierce = true;
-                        collidesAir = false;
-                        length = 500;
+                        lifetime = 65f;
+
+                        lightningSpacing = 35f;
+                        lightningLength = 5;
+                        lightningDelay = 1.1f;
+                        lightningLengthRand = 15;
+                        lightningDamage = 50;
+                        lightningAngleRand = 40f;
+                        largeHit = true;
+                        lightColor = lightningColor = Pal.heal;
+
+                        shootEffect = Fx.greenLaserCharge;
+
+                        sideAngle = 15f;
+                        sideWidth = 0f;
+                        sideLength = 0f;
+                        colors = new Color[]{Pal.heal.cpy().a(0.4f), Pal.heal, Color.white};
                     }}
             );
 
