@@ -171,7 +171,8 @@ public class CreeperUtils {
                         creeperEmitters.add(new Emitter(tile.build));
                     }
                 }
-
+                
+                Log.info(creeperableTiles.size + " creeperableTiles");
                 Log.info(creeperEmitters.size + " emitters");
 
                 runner = Timer.schedule(CreeperUtils::updateCreeper, 0, updateInterval);
@@ -287,7 +288,7 @@ public class CreeperUtils {
                 tile.removeNet();
 
                 // deal continuous damage
-            if (tile.build != null && tile.build.team != creeperTeam && tile.touchingCreeper()) {
+            if (tile.build != null && tile.build.team != creeperTeam) {
 
                 Core.app.post(() -> {
                     if (tile.build != null) {
