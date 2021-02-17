@@ -14,6 +14,7 @@ import arc.util.serialization.*;
 import mindustry.annotations.Annotations.*;
 import mindustry.content.*;
 import mindustry.core.GameState.*;
+import mindustry.creeper.CreeperUtils;
 import mindustry.entities.units.*;
 import mindustry.game.EventType.*;
 import mindustry.game.*;
@@ -33,6 +34,7 @@ import java.util.zip.*;
 
 import static arc.util.Log.*;
 import static mindustry.Vars.*;
+import static mindustry.creeper.CreeperUtils.*;
 
 public class NetServer implements ApplicationListener{
     /** note that snapshots are compressed, so the max snapshot size here is above the typical UDP safe limit */
@@ -274,6 +276,43 @@ public class NetServer implements ApplicationListener{
             }catch(Exception e){
                 player.sendMessage("[#656566]⚠ No information provided for this server.");
             }
+        });
+
+        // [#656566]⚠
+
+        clientCommands.<Player>register("spore", "", "Create a spore at your location.", (args, player) -> {
+            if(!player.admin){
+                player.sendMessage("[#656566]⚠ Not enough permissions!");
+                return;
+            }
+            if(player.unit() == null){
+                player.sendMessage("[#656566]⚠ You must be alive!");
+                return;
+            }
+            Unit unit = player.unit();
+
+            float[] packed = targetSpore();
+            float targetx = packed[0];
+            float targety = packed[1];
+
+            float distance = player.unit().dst(targetx, targety);
+            float angle = Angles.angle(unit.x, unit.y, targetx, targety);
+
+            Call.createBullet(sporeType, creeperTeam, unit.x, unit.y, angle, sporeHealthMultiplier, sporeSpeedMultiplier, Math.min(sporeMaxRangeMultiplier, (distance * sporeType.lifetime) / (sporeType.speed * sporeSpeedMultiplier) / 8200f));
+        });
+
+        clientCommands.<Player>register("deposit", "<radius> <amt>", "Deposit creeper on your location.", (args, player) -> {
+            if(!player.admin){
+                player.sendMessage("[#656566]⚠ Not enough permissions!");
+                return;
+            }
+            if(player.unit() == null){
+                player.sendMessage("[#656566]⚠ You must be alive!");
+                return;
+            }
+            Unit unit = player.unit();
+
+            CreeperUtils.depositCreeper(unit.tileOn(), Integer.parseInt(args[0]), Integer.parseInt(args[1]));
         });
 
         clientCommands.<Player>register("help", "[page]", "Lists all commands.", (args, player) -> {
