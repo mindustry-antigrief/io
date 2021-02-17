@@ -1412,7 +1412,7 @@ public class UnitTypes implements ContentList{
             ammoCapacity = 1300;
             ammoResupplyAmount = 20;
 
-            abilities.add(new ForceFieldAbility(140f, 4f, 15000f, 60f * 8));
+            abilities.add(new ForceFieldAbility(140f, 16f, 15000f, 60f * 8));
         }};
 
         //endregion

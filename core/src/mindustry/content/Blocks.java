@@ -970,6 +970,7 @@ public class Blocks implements ContentList{
 
         plastaniumConveyor = new StackConveyor("plastanium-conveyor"){{
             requirements(Category.distribution, with(Items.plastanium, 1, Items.silicon, 1, Items.graphite, 1));
+            absorbLasers = true;
             health = 225;
             speed = 4f / 60f;
             itemCapacity = 10;
@@ -1597,8 +1598,8 @@ public class Blocks implements ContentList{
             Items.surgeAlloy, Bullets.missileSurge
             );
             reloadTime = 30f;
-            shots = 10;
-            burstSpacing = 2;
+            shots = 5;
+            burstSpacing = 4;
             inaccuracy = 10f;
             range = 200f;
             xRand = 6f;
@@ -1792,10 +1793,10 @@ public class Blocks implements ContentList{
                         hitSize = 8;
 
                         lifetime = 64f;
-                        drawSize = brange;
+                        drawSize = 500*2;
                         pierce = true;
                         collidesAir = false;
-                        length = brange;
+                        length = 500;
                     }}
             );
 
