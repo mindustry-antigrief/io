@@ -41,6 +41,22 @@ public class LCanvas extends Table{
         return Core.graphics.getWidth() < Scl.scl(900f) * 1.2f;
     }
 
+    public static void tooltip(Cell<?> cell, String key){
+        String lkey = key.toLowerCase().replace(" ", "");
+        if(Core.settings.getBool("logichints", true) && Core.bundle.has(lkey)){
+            cell.get().addListener(new Tooltip(t -> t.background(Styles.black8).margin(4f).add("[lightgray]" + Core.bundle.get(lkey)).style(Styles.outlineLabel)));
+        }
+    }
+
+    public static void tooltip(Cell<?> cell, Enum<?> key){
+        String cl = key.getClass().getSimpleName().toLowerCase() + "." + key.name().toLowerCase();
+        if(Core.bundle.has(cl)){
+            tooltip(cell, cl);
+        }else{
+            tooltip(cell, "lenum." + key.name());
+        }
+    }
+
     public void rebuild(){
         targetWidth = useRows() ? 400f : 900f;
         float s = pane != null ? pane.getScrollPercentY() : 0f;

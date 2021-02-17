@@ -782,7 +782,7 @@ public class UnitTypes implements ContentList{
                     width = height = 19f;
                     collidesTiles = true;
                     ammoMultiplier = 4f;
-                    splashDamageRadius = 95f;
+                    splashDamageRadius = 80f;
                     splashDamage = 65f;
                     backColor = Pal.sapBulletBack;
                     frontColor = lightningColor = Pal.sapBullet;
@@ -885,7 +885,7 @@ public class UnitTypes implements ContentList{
                     width = height = 25f;
                     collidesTiles = collides = true;
                     ammoMultiplier = 4f;
-                    splashDamageRadius = 90f;
+                    splashDamageRadius = 80f;
                     splashDamage = 75f;
                     backColor = Pal.sapBulletBack;
                     frontColor = lightningColor = Pal.sapBullet;
@@ -906,7 +906,7 @@ public class UnitTypes implements ContentList{
                         lifetime = 90f;
                         width = height = 20f;
                         collidesTiles = false;
-                        splashDamageRadius = 80f;
+                        splashDamageRadius = 70f;
                         splashDamage = 40f;
                         backColor = Pal.sapBulletBack;
                         frontColor = lightningColor = Pal.sapBullet;
@@ -1385,8 +1385,8 @@ public class UnitTypes implements ContentList{
                     collides = false;
 
                     healPercent = 15f;
-                    splashDamage = 230f;
-                    splashDamageRadius = 120f;
+                    splashDamage = 220f;
+                    splashDamageRadius = 80f;
                 }};
             }});
         }};
@@ -1555,7 +1555,7 @@ public class UnitTypes implements ContentList{
                     width = 15f;
                     collidesTiles = false;
                     ammoMultiplier = 4f;
-                    splashDamageRadius = 60f;
+                    splashDamageRadius = 50f;
                     splashDamage = 80f;
                     backColor = Pal.missileYellowBack;
                     frontColor = Pal.missileYellow;
@@ -1608,7 +1608,7 @@ public class UnitTypes implements ContentList{
         }};
 
         sei = new UnitType("sei"){{
-            health = 10200;
+            health = 10500;
             armor = 12f;
 
             speed = 0.73f;

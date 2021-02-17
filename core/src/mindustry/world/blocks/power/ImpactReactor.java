@@ -6,6 +6,7 @@ import arc.graphics.g2d.*;
 import arc.math.*;
 import arc.math.geom.Geometry;
 import arc.struct.Seq;
+import arc.struct.*;
 import arc.util.*;
 import arc.util.io.*;
 import mindustry.annotations.Annotations.*;
@@ -30,8 +31,8 @@ public class ImpactReactor extends PowerGenerator{
 
     public float warmupSpeed = 0.001f;
     public float itemDuration = 60f;
-    public int explosionRadius = 50;
-    public int explosionDamage = 2000;
+    public int explosionRadius = 23;
+    public int explosionDamage = 1900;
 
     public Seq<Building> builds = new Seq<>();
 
@@ -47,6 +48,7 @@ public class ImpactReactor extends PowerGenerator{
         liquidCapacity = 30f;
         hasItems = true;
         outputsPower = consumesPower = true;
+        flags = EnumSet.of(BlockFlag.reactor, BlockFlag.generator);
     }
 
     @Override
