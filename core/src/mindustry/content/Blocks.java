@@ -1597,8 +1597,8 @@ public class Blocks implements ContentList{
             Items.surgeAlloy, Bullets.missileSurge
             );
             reloadTime = 30f;
-            shots = 8;
-            burstSpacing = 5;
+            shots = 10;
+            burstSpacing = 2;
             inaccuracy = 10f;
             range = 200f;
             xRand = 6f;
@@ -1689,17 +1689,15 @@ public class Blocks implements ContentList{
 
             ammo(
             Items.titanium, new ShrapnelBulletType(){{
-                pierce = false;
                 length = brange;
-                damage = 33f;
+                damage = 16f;
                 ammoMultiplier = 4f;
                 width = 17f;
                 reloadMultiplier = 1.3f;
             }},
             Items.thorium, new ShrapnelBulletType(){{
-                pierce = true;
                 length = brange;
-                damage = 26f;
+                damage = 33f;
                 ammoMultiplier = 5f;
                 toColor = Pal.thoriumPink;
                 shootEffect = smokeEffect = Fx.thoriumShoot;
@@ -1762,6 +1760,8 @@ public class Blocks implements ContentList{
             float brange = range = 500f;
 
             requirements(Category.turret, with(Items.copper, 1000, Items.metaglass, 600, Items.surgeAlloy, 300, Items.plastanium, 200, Items.silicon, 600));
+
+            /*
             ammo(
             Items.surgeAlloy, new PointBulletType(){{
                 shootEffect = Fx.instShoot;
@@ -1777,6 +1777,26 @@ public class Blocks implements ContentList{
                 ammoMultiplier = 1f;
                 pierce = true;
             }}
+            );
+            */
+
+            ammo(
+                    Items.surgeAlloy, new LaserBulletType(){{
+                        damage = 420f;
+                        colors = new Color[]{Pal.lancerLaser.cpy().a(0.4f), Pal.lancerLaser, Color.white};
+                        shootEffect = Fx.instShoot;
+                        hitEffect = Fx.instHit;
+                        smokeEffect = Fx.smokeCloud;
+                        trailEffect = Fx.instTrail;
+                        despawnEffect = Fx.instBomb;
+                        hitSize = 8;
+
+                        lifetime = 64f;
+                        drawSize = brange;
+                        pierce = true;
+                        collidesAir = false;
+                        length = brange;
+                    }}
             );
 
             maxAmmo = 40;

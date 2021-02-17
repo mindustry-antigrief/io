@@ -357,12 +357,12 @@ public class Bullets implements ContentList{
             width = 16f;
             height = 23f;
             shootEffect = Fx.shootBig;
-            pierceCap = 8;
+            pierceCap = 10;
             pierceBuilding = true;
             knockback = 0.7f;
         }};
 
-        standardIncendiaryBig = new BasicBulletType(7f, 60, "bullet"){{
+        standardIncendiaryBig = new BasicBulletType(7f, 8, "bullet"){{
             width = 16f;
             height = 21f;
             frontColor = Pal.lightishOrange;
@@ -370,7 +370,7 @@ public class Bullets implements ContentList{
             status = StatusEffects.burning;
             shootEffect = Fx.shootBig;
             makeFire = true;
-            pierceCap = 6;
+            pierceCap = 16;
             pierceBuilding = true;
             knockback = 0.7f;            
         }};
@@ -454,11 +454,12 @@ public class Bullets implements ContentList{
         }};
 
         slagShot = new LiquidBulletType(Liquids.slag){{
-            damage = 4;
+            damage = 6;
             drag = 0.01f;
         }};
 
         oilShot = new LiquidBulletType(Liquids.oil){{
+            damage = 2;
             drag = 0.01f;
         }};
 
@@ -471,7 +472,7 @@ public class Bullets implements ContentList{
             drag = 0.001f;
             ammoMultiplier = 0.4f;
             statusDuration = 60f * 4f;
-            damage = 0.2f;
+            damage = 1f;
         }};
 
         heavyCryoShot = new LiquidBulletType(Liquids.cryofluid){{
@@ -483,16 +484,16 @@ public class Bullets implements ContentList{
             drag = 0.001f;
             ammoMultiplier = 0.4f;
             statusDuration = 60f * 4f;
-            damage = 0.2f;
+            damage = 3f;
         }};
 
         heavySlagShot = new LiquidBulletType(Liquids.slag){{
             lifetime = 49f;
             speed = 4f;
             knockback = 1.3f;
-            puddleSize = 8f;
+            puddleSize = 16f;
             orbSize = 4f;
-            damage = 4.75f;
+            damage = 8f;
             drag = 0.001f;
             ammoMultiplier = 0.4f;
             statusDuration = 60f * 4f;
@@ -502,12 +503,12 @@ public class Bullets implements ContentList{
             lifetime = 49f;
             speed = 4f;
             knockback = 1.3f;
-            puddleSize = 8f;
+            puddleSize = 16f;
             orbSize = 4f;
             drag = 0.001f;
             ammoMultiplier = 0.4f;
             statusDuration = 60f * 4f;
-            damage = 0.2f;
+            damage = 4.75f;
         }};
 
         driverBolt = new MassDriverBolt();
