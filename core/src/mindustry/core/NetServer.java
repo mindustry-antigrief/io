@@ -84,6 +84,8 @@ public class NetServer implements ApplicationListener{
     public NetServer(){
 
         net.handleServer(Connect.class, (con, connect) -> {
+            Events.fire(new ConnectionEvent(con));
+
             if(admins.isIPBanned(connect.addressTCP) || admins.isSubnetBanned(connect.addressTCP)){
                 con.kick(KickReason.banned);
             }
@@ -96,9 +98,13 @@ public class NetServer implements ApplicationListener{
         });
 
         net.handleServer(ConnectPacket.class, (con, packet) -> {
+            if(con.kicked) return;
+
             if(con.address.startsWith("steam:")){
                 packet.uuid = con.address.substring("steam:".length());
             }
+
+            con.connectTime = Time.millis();
 
             String uuid = packet.uuid;
             byte[] buuid = Base64Coder.decode(uuid);
@@ -199,7 +205,7 @@ public class NetServer implements ApplicationListener{
             }
 
             if(packet.locale == null){
-                packet.locale = "en_US";
+                packet.locale = "en";
             }
 
             String ip = con.address;
@@ -252,7 +258,8 @@ public class NetServer implements ApplicationListener{
         });
 
         net.handleServer(InvokePacket.class, (con, packet) -> {
-            if(con.player == null) return;
+            if(con.player == null || con.kicked) return;
+
             try{
                 RemoteReadServer.readPacket(packet.reader(), packet.type, con.player);
             }catch(ValidateException e){
@@ -773,6 +780,7 @@ public class NetServer implements ApplicationListener{
             //no verification is done, so admins can hypothetically spam waves
             //not a real issue, because server owners may want to do just that
             logic.skipWave();
+            info("&lc@ has skipped the wave.", player.name);
         }else if(action == AdminAction.ban){
             netServer.admins.banPlayerIP(other.con.address);
             netServer.admins.banPlayerID(other.con.uuid);
@@ -782,7 +790,8 @@ public class NetServer implements ApplicationListener{
             other.kick(KickReason.kick);
             info("&lc@ has kicked @.", player.name, other.name);
         }else if(action == AdminAction.trace){
-            TraceInfo info = new TraceInfo(other.con.address, other.uuid(), other.con.modclient, other.con.mobile);
+            PlayerInfo stats = netServer.admins.getInfo(other.uuid());
+            TraceInfo info = new TraceInfo(other.con.address, other.uuid(), other.con.modclient, other.con.mobile, stats.timesJoined, stats.timesKicked);
             if(player.con != null){
                 Call.traceInfo(player.con, other, info);
             }else{
@@ -794,6 +803,8 @@ public class NetServer implements ApplicationListener{
 
     @Remote(targets = Loc.client)
     public static void connectConfirm(Player player){
+        if(player.con.kicked) return;
+
         player.add();
 
         if(player.con == null || player.con.hasConnected) return;
