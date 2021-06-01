@@ -30,6 +30,8 @@ public class Rules{
     public boolean waitEnemies = false;
     /** Determinates if gamemode is attack mode. */
     public boolean attackMode = false;
+    /** Determines if gamemode is flood mode.*/
+    public boolean floodMode = false;
     /** Whether this is the editor gamemode. */
     public boolean editor = false;
     /** Whether a gameover can happen at all. Set this to false to implement custom gameover conditions. */
@@ -131,7 +133,9 @@ public class Rules{
             return Gamemode.pvp;
         }else if(editor){
             return Gamemode.editor;
-        }else if(attackMode){
+        }else if (floodMode){
+            return Gamemode.flood;
+        }else if(attackMode) {
             return Gamemode.attack;
         }else if(infiniteResources){
             return Gamemode.sandbox;

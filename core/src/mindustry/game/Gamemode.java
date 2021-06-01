@@ -17,6 +17,15 @@ public enum Gamemode{
         rules.waves = true;
         rules.waveTimer = false;
     }),
+    flood(rules -> {
+        rules.attackMode = true;
+        rules.floodMode = true;
+        rules.waves = true;
+        rules.waveTimer = true;
+
+        rules.waveSpacing /= 2f;
+        rules.teams.get(rules.waveTeam).infiniteResources = true;
+    }, map -> map.teams.contains(5)),
     attack(rules -> {
         rules.attackMode = true;
         rules.waves = true;
