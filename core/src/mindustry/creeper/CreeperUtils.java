@@ -207,7 +207,11 @@ public class CreeperUtils {
                 }, nullificationPeriod);
             }
 
-            }, 0, 10);
+        }, 0, 10);
+
+        Timer.schedule (() -> {
+            Call.infoPopup("\uE810 [" + getTrafficlightColor((float) Core.graphics.getFramesPerSecond() / 60) + "]" + Core.graphics.getFramesPerSecond() + "/60[] ticks per second", 1f, 20, 50, 20, 500, 0);
+        }, 0, 1);
 
     }
 
