@@ -179,7 +179,7 @@ public class CreeperUtils {
         });
 
         Timer.schedule(() -> {
-
+            if (!state.isGame()) return;
             Call.infoPopup("\uE88B [" + getTrafficlightColor(Mathf.clamp((CreeperUtils.nullifiedCount / Math.max(1.0, creeperEmitters.size)), 0f, 1f)) + "]" + CreeperUtils.nullifiedCount + "/" + CreeperUtils.creeperEmitters.size + "[] emitters suspended", 10f, 20, 50, 20, 527, 0);
             // check for gameover
             if(CreeperUtils.nullifiedCount == CreeperUtils.creeperEmitters.size){
@@ -192,7 +192,6 @@ public class CreeperUtils {
                     // failed to win, core got unsuspended
                 }, nullificationPeriod);
             }
-
         }, 0, 10);
     }
 
@@ -222,6 +221,7 @@ public class CreeperUtils {
         for(ForceProjector.ForceBuild shield : shields){
             if(shield == null || shield.dead || shield.health <= 0f || shield.healthLeft <= 0f) {
                 shields.remove(shield);
+                if (shield == null) return;
                 Core.app.post(shield::kill);
 
                 float percentage = 1f - shield.healthLeft / ((ForceProjector) shield.block).shieldHealth;
@@ -290,18 +290,15 @@ public class CreeperUtils {
             }
 
         }
-        if (tile != null && tile.x < world.width() && tile.y < world.height() && tile.creep >= 1f &&
-                !(tile.block() instanceof CoreBlock) &&
-                (creeperLevels.getOrDefault(tile.block(), 10)) < Math.round(tile.creep) || tile.block() instanceof TreeBlock){
-
-                tile.setNet(creeperBlocks.get(Mathf.clamp(Math.round(tile.creep), 0, 10)), creeperTeam, Mathf.random(0, 3));
+        if (tile.x < world.width() && tile.y < world.height() && tile.creep >= 1f && !(tile.block() instanceof CoreBlock) && creeperLevels.getOrDefault(tile.block(), 10) < Math.round(tile.creep) || tile.block() instanceof TreeBlock){
+            tile.setNet(creeperBlocks.get(Mathf.clamp(Math.round(tile.creep), 0, 10)), creeperTeam, Mathf.random(0, 3));
         }
     }
 
     public static boolean canTransfer(Tile source, Tile target){
         boolean amountValid = source.creep > minCreeper;
 
-        if(!validTile(source) || !validTile(target))
+        if(!validTile(target))
             return false;
 
         if(target.block() instanceof TreeBlock && amountValid)
@@ -320,10 +317,7 @@ public class CreeperUtils {
     }
 
     public static boolean validTile(Tile tile){
-        if(tile == null)
-            return false;
-
-        return true;
+        return tile != null;
     }
 
     public static void transferCreeper(Tile source, Tile target) {
