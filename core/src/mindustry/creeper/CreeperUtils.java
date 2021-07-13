@@ -1,37 +1,24 @@
 package mindustry.creeper;
 
-import arc.Core;
-import arc.Events;
-import arc.func.Cons;
-import arc.func.Intc;
-import arc.graphics.Color;
-import arc.math.Mathf;
-import arc.math.geom.Geometry;
-import arc.struct.Seq;
-import arc.util.Log;
+import arc.*;
+import arc.graphics.*;
+import arc.math.*;
+import arc.math.geom.*;
+import arc.struct.*;
 import arc.util.Timer;
-import mindustry.Vars;
-import mindustry.content.Blocks;
-import mindustry.content.Bullets;
-import mindustry.content.Fx;
-import mindustry.entities.bullet.BulletType;
-import mindustry.game.EventType;
-import mindustry.game.Team;
+import arc.util.*;
+import mindustry.content.*;
+import mindustry.entities.bullet.*;
+import mindustry.game.*;
 import mindustry.gen.*;
-import mindustry.world.Block;
-import mindustry.world.Build;
-import mindustry.world.Tile;
-import mindustry.world.blocks.defense.ForceProjector;
-import mindustry.world.blocks.environment.Cliff;
-import mindustry.world.blocks.environment.StaticWall;
-import mindustry.world.blocks.environment.TreeBlock;
-import mindustry.world.blocks.storage.CoreBlock;
+import mindustry.world.*;
+import mindustry.world.blocks.defense.*;
+import mindustry.world.blocks.environment.*;
+import mindustry.world.blocks.storage.*;
 
-import java.util.HashMap;
-import java.util.concurrent.CompletableFuture;
+import java.util.*;
 
-import static mindustry.Vars.state;
-import static mindustry.Vars.world;
+import static mindustry.Vars.*;
 
 public class CreeperUtils {
     public static float updateInterval = 0.025f; // Base update interval in seconds
@@ -194,7 +181,6 @@ public class CreeperUtils {
         Timer.schedule(() -> {
 
             Call.infoPopup("\uE88B [" + getTrafficlightColor(Mathf.clamp((CreeperUtils.nullifiedCount / Math.max(1.0, creeperEmitters.size)), 0f, 1f)) + "]" + CreeperUtils.nullifiedCount + "/" + CreeperUtils.creeperEmitters.size + "[] emitters suspended", 10f, 20, 50, 20, 527, 0);
-            Call.infoPopup("\uE810 [" + getTrafficlightColor((float) Core.graphics.getFramesPerSecond() / 60) + "]" + Core.graphics.getFramesPerSecond() + "/60[] ticks per second", 10f, 20, 50, 20, 500, 0);
             // check for gameover
             if(CreeperUtils.nullifiedCount == CreeperUtils.creeperEmitters.size){
                 Timer.schedule(() -> {
@@ -208,11 +194,6 @@ public class CreeperUtils {
             }
 
         }, 0, 10);
-
-        Timer.schedule (() -> {
-            Call.infoPopup("\uE810 [" + getTrafficlightColor((float) Core.graphics.getFramesPerSecond() / 60) + "]" + Core.graphics.getFramesPerSecond() + "/60[] ticks per second", 1f, 20, 50, 20, 500, 0);
-        }, 0, 1);
-
     }
 
     public static void depositCreeper(Tile tile, float radius, float amount){
