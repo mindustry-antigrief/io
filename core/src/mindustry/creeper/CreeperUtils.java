@@ -221,7 +221,7 @@ public class CreeperUtils {
         for(ForceProjector.ForceBuild shield : shields){
             if(shield == null || shield.dead || shield.health <= 0f || shield.healthLeft <= 0f) {
                 shields.remove(shield);
-                if (shield == null) return;
+                if (shield == null) continue;
                 Core.app.post(shield::kill);
 
                 float percentage = 1f - shield.healthLeft / ((ForceProjector) shield.block).shieldHealth;
@@ -291,7 +291,7 @@ public class CreeperUtils {
 
         }
         if (tile.x < world.width() && tile.y < world.height() && tile.creep >= 1f && !(tile.block() instanceof CoreBlock) && creeperLevels.getOrDefault(tile.block(), 10) < Math.round(tile.creep) || tile.block() instanceof TreeBlock){
-            tile.setNet(creeperBlocks.get(Mathf.clamp(Math.round(tile.creep), 0, 10)), creeperTeam, Mathf.random(0, 3));
+            Core.app.post(() -> tile.setNet(creeperBlocks.get(Mathf.clamp(Math.round(tile.creep), 0, 10)), creeperTeam, Mathf.random(0, 3)));
         }
     }
 
