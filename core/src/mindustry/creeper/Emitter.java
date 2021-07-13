@@ -18,7 +18,7 @@ public class Emitter {
 
     // updates every interval in CreeperUtils
     public boolean update(){
-        if(build == null || build != null && build.health <= 1f)
+        if(build == null || build.health <= 1f)
             return false;
 
         nullified = build.nullifyTimeout > 0f;
