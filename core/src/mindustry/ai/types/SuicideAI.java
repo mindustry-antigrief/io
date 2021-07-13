@@ -13,7 +13,10 @@ import mindustry.gen.*;
 import mindustry.world.*;
 import mindustry.world.blocks.distribution.*;
 import mindustry.world.blocks.liquid.*;
+import mindustry.world.blocks.storage.*;
 import mindustry.world.meta.*;
+
+import static mindustry.Vars.*;
 
 public class SuicideAI extends GroundAI{
     static boolean blockedByBlock;
@@ -32,6 +35,10 @@ public class SuicideAI extends GroundAI{
         Building core = unit.closestEnemyCore();
 
         boolean rotate = false, shoot = false, moveToTarget = false, destroy = false;
+
+        if(target == null){
+            target = core;
+        }
 
         if(!Units.invalidateTarget(target, unit, unit.range()) && unit.hasWeapons()){
             rotate = true;
@@ -84,8 +91,20 @@ public class SuicideAI extends GroundAI{
                 if(target != null && !unit.within(target, 70f)){
                     pathfind(Pathfinder.fieldRally);
                 }
-            }else if(command() == UnitCommand.attack && core != null){
-                pathfind(Pathfinder.fieldCore);
+            }else if(command() == UnitCommand.attack){
+                boolean move = true;
+
+                //stop moving toward the drop zone if applicable
+                if(core == null && state.rules.waves && unit.team == state.rules.defaultTeam){
+                    Tile spawner = getClosestSpawner();
+                    if(spawner != null && unit.within(spawner, state.rules.dropZoneRadius + 120f)){
+                        move = false;
+                    }
+                }
+
+                if(move){
+                    pathfind(Pathfinder.fieldCore);
+                }
             }
 
             if(unit.moving()) unit.lookAt(unit.vel().angle());
