@@ -213,7 +213,7 @@ public class CreeperUtils {
 
     public static void fixedUpdate(){
         // dont update anything if game is paused
-        if (!state.isPlaying()) return;
+        if (!state.isPlaying() || state.serverPaused) return;
 
         int newcount = 0;
         for(Emitter emitter : creeperEmitters){
@@ -242,7 +242,7 @@ public class CreeperUtils {
 
     public static void updateCreeper(){
         // dont update anything if game is paused
-        if (!state.isPlaying()) return;
+        if (!state.isPlaying() || state.serverPaused) return;
 
         // update emitters
         for(Emitter emitter : creeperEmitters){
