@@ -212,6 +212,9 @@ public class CreeperUtils {
     }
 
     public static void fixedUpdate(){
+        // dont update anything if game is paused
+        if (!state.isPlaying()) return;
+
         int newcount = 0;
         for(Emitter emitter : creeperEmitters){
             emitter.fixedUpdate();
@@ -238,6 +241,9 @@ public class CreeperUtils {
     }
 
     public static void updateCreeper(){
+        // dont update anything if game is paused
+        if (!state.isPlaying()) return;
+
         // update emitters
         for(Emitter emitter : creeperEmitters){
             if(!emitter.update())
@@ -261,7 +267,6 @@ public class CreeperUtils {
             tile.creep = tile.newCreep;
             drawCreeper(tile);
         }
-
     }
 
     // creates appropiate blocks for creeper OR damages the tile that it wants to take
