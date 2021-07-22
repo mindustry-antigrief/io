@@ -4,6 +4,7 @@ import arc.*;
 import arc.graphics.*;
 import arc.graphics.g2d.*;
 import arc.math.*;
+import arc.math.geom.*;
 import arc.struct.*;
 import arc.util.*;
 import arc.util.io.*;
@@ -16,6 +17,7 @@ import mindustry.gen.*;
 import mindustry.graphics.*;
 import mindustry.logic.*;
 import mindustry.ui.*;
+import mindustry.world.*;
 import mindustry.world.blocks.storage.*;
 import mindustry.world.meta.*;
 
@@ -86,15 +88,17 @@ public class ImpactReactor extends PowerGenerator{
                     warmup = 1f;
                 }
 
+                Geometry.circle(tile.x, tile.y, (int)nullifierRange, (cx, cy) -> {
+                    Tile t = world.tile(cx, cy);
+                    if (creeperBlocks.containsValue(t.block()) && t.block() instanceof CoreBlock)
+                        Call.effect(Fx.breakBlock, cx * tilesize, cy * tilesize, Mathf.random(1, 3), Pal.accent);
+                });
                 Building build;
-                while ((build = Units.findEnemyTile(team, x, y, nullifierRange * tilesize, b -> b.block instanceof CoreBlock && creeperBlocks.containsValue(b.block))) != null) {
-                    Call.effect(Fx.breakBlock, build.x, build.y, Mathf.random(1, 3), Pal.accent);
-                    if (Mathf.equal(warmup, 1f, 0.1f)) {
-                        Call.effectReliable(Fx.massiveExplosion, x, y, 0.5f, Pal.accentBack);
-                        build.tile.removeNet();
-                        for (Emitter e : creeperEmitters) if (e.build == build) creeperEmitters.remove(e);
-                        Core.app.post(this::kill);
-                    }
+                while (Mathf.equal(warmup, 1f, 0.1f) && (build = Units.findEnemyTile(team, x, y, nullifierRange * tilesize, b -> b.block instanceof CoreBlock && creeperBlocks.containsValue(b.block))) != null) {
+                    Call.effectReliable(Fx.massiveExplosion, x, y, 0.5f, Pal.accentBack);
+                    build.tile.removeNet();
+                    for (Emitter e : creeperEmitters) if (e.build == build) creeperEmitters.remove(e);
+                    Core.app.post(this::kill);
                 }
 
                 if(!prevOut && (getPowerProduction() > consumes.getPower().requestedPower(this))){
