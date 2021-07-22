@@ -4,23 +4,19 @@ import arc.*;
 import arc.graphics.*;
 import arc.graphics.g2d.*;
 import arc.math.*;
-import arc.math.geom.Geometry;
-import arc.struct.Seq;
 import arc.struct.*;
 import arc.util.*;
 import arc.util.io.*;
 import mindustry.annotations.Annotations.*;
 import mindustry.content.*;
-import mindustry.creeper.CreeperUtils;
-import mindustry.creeper.Emitter;
+import mindustry.creeper.*;
 import mindustry.entities.*;
 import mindustry.game.EventType.*;
 import mindustry.gen.*;
 import mindustry.graphics.*;
 import mindustry.logic.*;
 import mindustry.ui.*;
-import mindustry.world.Tile;
-import mindustry.world.blocks.storage.CoreBlock;
+import mindustry.world.blocks.storage.*;
 import mindustry.world.meta.*;
 
 import static mindustry.Vars.*;
@@ -34,8 +30,6 @@ public class ImpactReactor extends PowerGenerator{
     public int explosionRadius = 23;
     public int explosionDamage = 1900;
     public Effect explodeEffect = Fx.impactReactorExplosion;
-
-    public Seq<Building> builds = new Seq<>();
 
     public Color plasma1 = Color.valueOf("ffd06b"), plasma2 = Color.valueOf("ff361b");
 
@@ -84,45 +78,21 @@ public class ImpactReactor extends PowerGenerator{
 
         @Override
         public void updateTile(){
-
-            builds.clear();
-            Geometry.circle(tile.x, tile.y, (int) nullifierRange, (cx, cy) -> {
-                if(world.tile(cx, cy) != null) {
-                    Tile t = world.tile(cx, cy);
-
-                    if (creeperBlocks.containsValue(t.block()) && t.block() instanceof CoreBlock && t.build != null && t.build.health > 0f && t.build.team == creeperTeam)
-                        builds.add(t.build);
-
-                }
-            });
-
-
             if(consValid() && power.status >= 0.99f){
                 boolean prevOut = getPowerProduction() <= consumes.getPower().requestedPower(this);
-
-                if(builds.size > 0) {
-                    for (Building build : builds) {
-                        Call.effect(Fx.breakBlock, build.x, build.y, Mathf.random(1, 3), Pal.accent);
-                    }
-                }
 
                 warmup = Mathf.lerpDelta(warmup, 1f, warmupSpeed * timeScale);
                 if(Mathf.equal(warmup, 1f, 0.001f)){
                     warmup = 1f;
                 }
 
-                if(builds.size > 0 && Mathf.equal(warmup, 1f, 0.1f)){
-                    if(builds.size > 0) {
+                Building build;
+                while ((build = Units.findEnemyTile(team, x, y, nullifierRange * tilesize, b -> b.block instanceof CoreBlock && creeperBlocks.containsValue(b.block))) != null) {
+                    Call.effect(Fx.breakBlock, build.x, build.y, Mathf.random(1, 3), Pal.accent);
+                    if (Mathf.equal(warmup, 1f, 0.1f)) {
                         Call.effectReliable(Fx.massiveExplosion, x, y, 0.5f, Pal.accentBack);
-                        for (Building build : builds) {
-                            Core.app.post(() -> {
-                                build.tile.removeNet();
-                                for(Emitter et : creeperEmitters){
-                                    if(et.build == build)
-                                        creeperEmitters.remove(et);
-                                }
-                            });
-                        }
+                        build.tile.removeNet();
+                        for (Emitter e : creeperEmitters) if (e.build == build) creeperEmitters.remove(e);
                         Core.app.post(this::kill);
                     }
                 }
