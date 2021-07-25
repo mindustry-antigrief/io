@@ -296,7 +296,7 @@ public class CreeperUtils {
 
         }
         if (tile.x < world.width() && tile.y < world.height() && tile.creep >= 1f && !(tile.block() instanceof CoreBlock) && creeperLevels.getOrDefault(tile.block(), 10) < Math.round(tile.creep) || tile.block() instanceof TreeBlock){
-            Core.app.post(() -> tile.setNet(creeperBlocks.get(Mathf.clamp(Math.round(tile.creep), 0, 10)), creeperTeam, Mathf.random(0, 3)));
+            tile.setNet(creeperBlocks.get(Mathf.clamp(Math.round(tile.creep), 0, 10)), creeperTeam, Mathf.random(0, 3));
         }
     }
 
