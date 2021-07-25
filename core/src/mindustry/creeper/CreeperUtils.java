@@ -8,6 +8,7 @@ import arc.struct.*;
 import arc.struct.EnumSet;
 import arc.util.Timer;
 import arc.util.*;
+import arc.util.async.*;
 import mindustry.content.*;
 import mindustry.entities.bullet.*;
 import mindustry.game.*;
@@ -152,31 +153,24 @@ public class CreeperUtils {
 
         Events.on(EventType.WorldLoadEvent.class, e -> {
             // DOES NOT SIGNIFY WORLD IS LOADED, need to wait
-            try {
-                Thread.sleep(2000);
-                creeperableTiles.clear();
-                creeperEmitters.clear();
+            Threads.sleep(2000);
+            creeperableTiles.clear();
+            creeperEmitters.clear();
 
-                Seq<Building> iterated = new Seq<>();
-                for(Tile tile : world.tiles){
-                    if(!tile.block().isStatic() && !tile.floor().isDeep())
-                        creeperableTiles.add(tile);
+            for(Tile tile : world.tiles){
+                if((tile.breakable() || tile.block() == Blocks.air) && !tile.floor().isDeep())
+                    creeperableTiles.add(tile);
 
-                    if(tile.block() != null && emitterBlocks.containsKey(tile.block()) && !iterated.contains(tile.build) && tile.build.team == creeperTeam){
-                        iterated.add(tile.build);
-                        creeperEmitters.add(new Emitter(tile.build));
-                    }
+                if(tile.block() != null && emitterBlocks.containsKey(tile.block()) && tile.isCenter() && tile.build.team == creeperTeam){
+                    creeperEmitters.add(new Emitter(tile.build));
                 }
-                
-                Log.info(creeperableTiles.size + " creeperableTiles");
-                Log.info(creeperEmitters.size + " emitters");
-
-                runner = Timer.schedule(CreeperUtils::updateCreeper, 0, updateInterval);
-                fixedRunner = Timer.schedule(CreeperUtils::fixedUpdate, 0, 1);
-
-            } catch (InterruptedException interruptedException) {
-                interruptedException.printStackTrace();
             }
+
+            Log.info(creeperableTiles.size + " creeperableTiles");
+            Log.info(creeperEmitters.size + " emitters");
+
+            runner = Timer.schedule(CreeperUtils::updateCreeper, 0, updateInterval);
+            fixedRunner = Timer.schedule(CreeperUtils::fixedUpdate, 0, 1);
         });
 
         Events.on(EventType.BlockDestroyEvent.class, e -> {
@@ -278,7 +272,7 @@ public class CreeperUtils {
         }
     }
 
-    // creates appropiate blocks for creeper OR damages the tile that it wants to take
+    // creates appropriate blocks for creeper OR damages the tile that it wants to take
     public static void drawCreeper(Tile tile){
 
         // check if can transfer anyway because weird
@@ -304,7 +298,7 @@ public class CreeperUtils {
             }
 
         }
-        if (tile.x < world.width() && tile.y < world.height() && tile.creep >= 1f && !(tile.block() instanceof CoreBlock) && creeperLevels.getOrDefault(tile.block(), 10) < Math.round(tile.creep) || tile.block() instanceof TreeBlock){
+        if (tile.x < world.width() && tile.y < world.height() && tile.creep >= 1f && !(tile.block() instanceof CoreBlock) && creeperLevels.getOrDefault(tile.block(), 10) < Math.round(tile.creep)){
             Core.app.post(() -> tile.setNet(creeperBlocks.get(Mathf.clamp(Math.round(tile.creep), 0, 10)), creeperTeam, Mathf.random(0, 3)));
         }
     }
