@@ -19,10 +19,10 @@ import mindustry.world.meta.*;
 import static mindustry.Vars.*;
 
 public class Pathfinder implements Runnable{
-    private static final long maxUpdate = Time.millisToNanos(7);
+    private static final long maxUpdate = Time.millisToNanos(14);
     private static final int updateFPS = 60;
     private static final int updateInterval = 1000 / updateFPS;
-    private static final int impassable = 100;
+    private static final int impassable = -1;
 
     public static final int
         fieldCore = 0,
