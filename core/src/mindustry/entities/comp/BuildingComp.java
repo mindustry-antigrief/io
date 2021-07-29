@@ -1023,6 +1023,11 @@ abstract class BuildingComp implements Posc, Teamc, Healthc, Buildingc, Timerc, 
 
     }
 
+    /** @return the cap for item amount calculations, used when this block explodes. */
+    public int explosionItemCap(){
+        return block.itemCapacity;
+    }
+
     /** Called when the block is destroyed. The tile is still intact at this stage. */
     public void onDestroyed(){
         float explosiveness = block.baseExplosiveness;
@@ -1031,7 +1036,7 @@ abstract class BuildingComp implements Posc, Teamc, Healthc, Buildingc, Timerc, 
 
         if(block.hasItems){
             for(Item item : content.items()){
-                int amount = items.get(item);
+                int amount = Math.min(items.get(item), explosionItemCap());
                 explosiveness += item.explosiveness * amount;
                 flammability += item.flammability * amount;
                 power += item.charge * amount * 100f;
@@ -1071,7 +1076,9 @@ abstract class BuildingComp implements Posc, Teamc, Healthc, Buildingc, Timerc, 
     }
 
     public String getDisplayName(){
-        return block.localizedName;
+        return team == Team.derelict ?  
+            block.localizedName + "\n" + Core.bundle.get("block.derelict"):
+            block.localizedName;
     }
 
     public TextureRegion getDisplayIcon(){
@@ -1100,7 +1107,7 @@ abstract class BuildingComp implements Posc, Teamc, Healthc, Buildingc, Timerc, 
             table.row();
             table.table(this::displayConsumption).growX();
 
-            boolean displayFlow = (block.category == Category.distribution || block.category == Category.liquid) && Core.settings.getBool("flow") && block.displayFlow;
+            boolean displayFlow = (block.category == Category.distribution || block.category == Category.liquid) && block.displayFlow;
 
             if(displayFlow){
                 String ps = " " + StatUnit.perSecond.localized();

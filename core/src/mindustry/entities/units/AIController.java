@@ -10,9 +10,11 @@ import mindustry.content.Fx;
 import mindustry.content.UnitTypes;
 import mindustry.creeper.CreeperUtils;
 import mindustry.entities.*;
+import mindustry.game.*;
 import mindustry.gen.*;
 import mindustry.type.*;
 import mindustry.world.*;
+import mindustry.world.blocks.payloads.*;
 import mindustry.world.meta.*;
 
 import static mindustry.Vars.*;
@@ -82,7 +84,6 @@ public class AIController implements UnitController{
         return Units.invalidateTarget(target, unit.team, unit.x, unit.y);
     }
 
-
     protected void pathfind(int pathTarget){
         int costType = unit.pathType();
 
@@ -100,7 +101,7 @@ public class AIController implements UnitController{
         boolean ret = retarget();
 
         if(ret){
-            target = findTarget(unit.x, unit.y, unit.range(), unit.type.targetAir, unit.type.targetGround);
+            target = findMainTarget(unit.x, unit.y, unit.range(), unit.type.targetAir, unit.type.targetGround);
         }
 
         if(invalid(target)){
@@ -167,6 +168,7 @@ public class AIController implements UnitController{
     }
 
     protected Teamc targetFlag(float x, float y, BlockFlag flag, boolean enemy){
+        if(unit.team == Team.derelict) return null;
         Tile target = Geometry.findClosest(x, y, enemy ? indexer.getEnemy(unit.team, flag) : indexer.getAllied(unit.team, flag));
         return target == null ? null : target.build;
     }
@@ -179,6 +181,10 @@ public class AIController implements UnitController{
         return timer.get(timerTarget, target == null ? 40 : 90);
     }
 
+    protected Teamc findMainTarget(float x, float y, float range, boolean air, boolean ground){
+        return findTarget(x, y, range, air, ground);
+    }
+
     protected Teamc findTarget(float x, float y, float range, boolean air, boolean ground){
         return target(x, y, range, air, ground);
     }
@@ -189,6 +195,14 @@ public class AIController implements UnitController{
 
     protected @Nullable Tile getClosestSpawner(){
         return Geometry.findClosest(unit.x, unit.y, Vars.spawner.getSpawns());
+    }
+
+    protected void unloadPayloads(){
+        if(unit instanceof Payloadc pay && pay.hasPayload() && target instanceof Building && pay.payloads().peek() instanceof UnitPayload){
+            if(target.within(unit, Math.max(unit.type().range + 1f, 75f))){
+                pay.dropLastPayload();
+            }
+        }
     }
 
     protected void circle(Position target, float circleLength){
