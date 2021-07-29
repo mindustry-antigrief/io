@@ -90,7 +90,7 @@ public class ImpactReactor extends PowerGenerator{
 
                 Geometry.circle(tile.x, tile.y, (int)nullifierRange, (cx, cy) -> {
                     Tile t = world.tile(cx, cy);
-                    if (creeperBlocks.containsValue(t.block()) && t.block() instanceof CoreBlock)
+                    if (t != null && creeperBlocks.containsValue(t.block()) && t.block() instanceof CoreBlock)
                         Call.effect(Fx.breakBlock, cx * tilesize, cy * tilesize, Mathf.random(1, 3), Pal.accent);
                 });
                 Building build;
