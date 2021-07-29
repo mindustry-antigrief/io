@@ -972,6 +972,7 @@ public class UnitTypes implements ContentList{
         }};
 
         horizon = new UnitType("horizon"){{
+            defaultController = BuilderAI::new;
             health = 440;
             speed = 1.7f;
             accel = 0.08f;
@@ -985,7 +986,7 @@ public class UnitTypes implements ContentList{
             armor = 3f;
             targetFlags = new BlockFlag[]{BlockFlag.factory, null};
             circleTarget = true;
-            creeperResistance = 0.8f;
+            creeperResistance = 1f;
             ammoType = new ItemAmmoType(Items.graphite);
 
             weapons.add(new Weapon(){{

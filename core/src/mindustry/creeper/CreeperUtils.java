@@ -138,8 +138,6 @@ public class CreeperUtils {
         emitterBlocks.put(Blocks.coreFoundation, new Emitter(8, 20));
         emitterBlocks.put(Blocks.coreNucleus, new Emitter(3, 30));
 
-        // todo: add "spore launchers", etc. (yes creeper world ripoff i know)
-
         Events.on(EventType.GameOverEvent.class, e -> {
             if(runner != null)
                 runner.cancel();
@@ -179,6 +177,10 @@ public class CreeperUtils {
             
             e.tile.creep = 0;
             e.tile.newCreep = 0;
+        });
+
+        Events.on(EventType.UnitCreateEvent.class, e -> { // Horizons can't shoot but also don't die to flood
+            if (e.unit.type == UnitTypes.horizon) e.unit.apply(StatusEffects.disarmed, Float.MAX_VALUE);
         });
 
         Timer.schedule(() -> {
