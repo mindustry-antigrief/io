@@ -12,6 +12,7 @@ import mindustry.annotations.Annotations.*;
 import mindustry.content.*;
 import mindustry.creeper.*;
 import mindustry.entities.*;
+import mindustry.game.*;
 import mindustry.game.EventType.*;
 import mindustry.gen.*;
 import mindustry.graphics.*;
@@ -96,7 +97,7 @@ public class ImpactReactor extends PowerGenerator{
                 Building build;
                 while (Mathf.equal(warmup, 1f, 0.1f) && (build = Units.findEnemyTile(team, x, y, nullifierRange * tilesize, b -> b.block instanceof CoreBlock && creeperBlocks.containsValue(b.block))) != null) {
                     Call.effectReliable(Fx.massiveExplosion, x, y, 0.5f, Pal.accentBack);
-                    build.tile.removeNet();
+                    build.tile.setNet(Blocks.coreShard, Team.sharded, 0);
                     for (Emitter e : creeperEmitters) if (e.build == build) creeperEmitters.remove(e);
                     Core.app.post(this::kill);
                 }
