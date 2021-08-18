@@ -15,7 +15,9 @@ public class LayeredFormation extends FormationPattern{
             int row = row(slotNumber);
             int cap = Math.min(slots - 8 * row * (row - 1) / 2, row * 8);
             float angle = 360f * (slotNumber % cap) / cap + 22.5f / row;
-            float radius = spacing * (2 + row);
+            float radius = slots <= 8 ?
+            spacing / (float)Math.sin(180f / slots * Mathf.degRad) :
+            spacing * (2 + row);
             outLocation.set(Angles.trnsx(angle, radius), Angles.trnsy(angle, radius), angle);
         }else{
             outLocation.set(0, spacing * 1.1f, 360f * slotNumber);
