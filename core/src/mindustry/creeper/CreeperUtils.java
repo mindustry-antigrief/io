@@ -261,15 +261,12 @@ public class CreeperUtils {
             transferCreeper(tile, world.tile(tile.x-1, tile.y));
             transferCreeper(tile, world.tile(tile.x, tile.y+1));
             transferCreeper(tile, world.tile(tile.x, tile.y-1));
-        }
 
-        // clamp creeper
-        for(Tile tile : creeperableTiles){
-            if(tile.newCreep > 10)
-                tile.newCreep = 10;
-            else if (tile.newCreep < 0.01)
-                tile.newCreep = 0;
-            tile.creep = tile.newCreep;
+            // Clamp
+            tile.creep = tile.newCreep > 0.01 ? tile.newCreep < 10 ?
+                tile.newCreep : 10 : 0;
+
+            // Draw
             drawCreeper(tile);
         }
     }
