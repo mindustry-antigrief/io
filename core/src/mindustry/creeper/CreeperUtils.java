@@ -93,7 +93,7 @@ public class CreeperUtils {
 
     public static void sporeCollision(Bullet bullet, float x, float y){
         Tile tile = world.tileWorld(x, y);
-        if(!validTile(tile))
+        if(invalidTile(tile))
             return;
 
         Call.effect(Fx.sapExplosion, x, y, sporeRadius, Color.blue);
@@ -203,7 +203,7 @@ public class CreeperUtils {
     public static void depositCreeper(Tile tile, float radius, float amount){
         Geometry.circle(tile.x, tile.y, (int) radius, (cx, cy) -> {
             Tile ct = world.tile(cx, cy);
-            if(!validTile(ct) || (tile.block() instanceof StaticWall || (tile.floor() != null && !tile.floor().placeableOn || tile.floor().isDeep() || tile.block() instanceof Cliff)))
+            if(invalidTile(ct) || (tile.block() instanceof StaticWall || (tile.floor() != null && !tile.floor().placeableOn || tile.floor().isDeep() || tile.block() instanceof Cliff)))
                 return;
 
             ct.creep = Math.min(ct.creep + amount, 10);
@@ -305,7 +305,7 @@ public class CreeperUtils {
     public static boolean canTransfer(Tile source, Tile target){
         boolean amountValid = source.creep > minCreeper;
 
-        if(!validTile(target))
+        if(invalidTile(target))
             return false;
 
         if(target.block() instanceof TreeBlock && amountValid)
@@ -323,8 +323,8 @@ public class CreeperUtils {
         return amountValid;
     }
 
-    public static boolean validTile(Tile tile){
-        return tile != null;
+    public static boolean invalidTile(Tile tile){
+        return tile == null;
     }
 
     public static void transferCreeper(Tile source, Tile target){
