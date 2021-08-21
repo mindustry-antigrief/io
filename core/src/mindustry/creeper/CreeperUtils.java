@@ -330,25 +330,14 @@ public class CreeperUtils {
         return tile != null;
     }
 
-    public static void transferCreeper(Tile source, Tile target) {
-        if(canTransfer(source, target)){
-            float sourceCreeper = source.creep;
+    public static void transferCreeper(Tile source, Tile target){
+        if(!canTransfer(source, target)) return;
 
-            if (sourceCreeper > 0){
-                float sourceTotal = source.creep;
-                float targetTotal = target.creep;
-                float delta;
+        float delta = Math.min((source.creep - target.creep) * transferRate, source.creep);
 
-                if (sourceTotal > targetTotal) {
-                    delta = sourceTotal - targetTotal;
-                    if (delta > sourceCreeper)
-                        delta = sourceCreeper;
+        if(delta <= 0) return;
 
-                    float adjustedDelta = delta * transferRate;
-                    source.newCreep -= adjustedDelta;
-                    target.newCreep += adjustedDelta - evaporationRate;
-                }
-            }
-        }
+        source.newCreep -= delta;
+        target.newCreep += delta - evaporationRate;
     }
 }
