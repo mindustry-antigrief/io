@@ -156,7 +156,7 @@ public class CreeperUtils {
             creeperEmitters.clear();
 
             for(Tile tile : world.tiles){
-                if((tile.breakable() || tile.block() == Blocks.air) && !tile.floor().isDeep())
+                if((tile.breakable() || tile.block() == Blocks.air || tile.block() instanceof TreeBlock) && !tile.floor().isDeep() && tile.floor().placeableOn)
                     creeperableTiles.add(tile);
 
                 if(tile.block() != null && emitterBlocks.containsKey(tile.block()) && tile.isCenter() && tile.build.team == creeperTeam){
