@@ -23,7 +23,7 @@ import java.util.*;
 
 import static mindustry.Vars.*;
 
-public class CreeperUtils {
+public class CreeperUtils{
     public static float updateInterval = 0.025f; // Base update interval in seconds
     public static float transferRate = 0.249f; // Base transfer rate NOTE: keep below 0.25f
     public static float evaporationRate = 0f; // Base creeper evaporation
@@ -70,7 +70,7 @@ public class CreeperUtils {
     public static Timer.Task fixedRunner;
 
     public static String getTrafficlightColor(double value){
-        return "#"+Integer.toHexString(java.awt.Color.HSBtoRGB((float)value/3f, 1f, 1f)).substring(2);
+        return "#" + Integer.toHexString(java.awt.Color.HSBtoRGB((float)value / 3f, 1f, 1f)).substring(2);
     }
 
 
@@ -80,7 +80,7 @@ public class CreeperUtils {
 
         while(ret == null && iterations < 100 && Groups.player.size() > 0){
             iterations++;
-            Player player = Groups.player.index(Mathf.random(0, Groups.player.size()-1));
+            Player player = Groups.player.index(Mathf.random(0, Groups.player.size() - 1));
             if(player.unit() == null || player.x == 0 && player.y == 0)
                 continue;
 
@@ -88,7 +88,7 @@ public class CreeperUtils {
             ret = new float[]{unit.x + Mathf.random(-sporeTargetOffset, sporeTargetOffset), unit.y + Mathf.random(-sporeTargetOffset, sporeTargetOffset)};
         }
 
-        return (ret != null ? ret : new float[]{0,0});
+        return (ret != null ? ret : new float[]{0, 0});
     }
 
     public static void sporeCollision(Bullet bullet, float x, float y){
@@ -126,7 +126,7 @@ public class CreeperUtils {
         for(var set : creeperBlocks.entrySet()){
             BlockFlag[] newFlags = new BlockFlag[set.getValue().flags.size() + 1];
             int i = 0;
-            for (BlockFlag flag : set.getValue().flags) {
+            for(BlockFlag flag : set.getValue().flags){
                 newFlags[i++] = flag;
             }
             newFlags[i] = BlockFlag.generator;
@@ -174,17 +174,17 @@ public class CreeperUtils {
         Events.on(EventType.BlockDestroyEvent.class, e -> {
             if(CreeperUtils.creeperBlocks.containsValue(e.tile.block()))
                 onCreeperDestroy(e.tile);
-            
+
             e.tile.creep = 0;
             e.tile.newCreep = 0;
         });
 
         Events.on(EventType.UnitCreateEvent.class, e -> { // Horizons can't shoot but also don't die to flood
-            if (e.unit.type == UnitTypes.horizon) e.unit.apply(StatusEffects.disarmed, Float.MAX_VALUE);
+            if(e.unit.type == UnitTypes.horizon) e.unit.apply(StatusEffects.disarmed, Float.MAX_VALUE);
         });
 
         Timer.schedule(() -> {
-            if (!state.isGame()) return;
+            if(!state.isGame()) return;
             Call.infoPopup("\uE88B [" + getTrafficlightColor(Mathf.clamp((CreeperUtils.nullifiedCount / Math.max(1.0, creeperEmitters.size)), 0f, 1f)) + "]" + CreeperUtils.nullifiedCount + "/" + CreeperUtils.creeperEmitters.size + "[] emitters suspended", 10f, 20, 50, 20, 527, 0);
             // check for gameover
             if(CreeperUtils.nullifiedCount == CreeperUtils.creeperEmitters.size){
@@ -201,7 +201,7 @@ public class CreeperUtils {
     }
 
     public static void depositCreeper(Tile tile, float radius, float amount){
-        Geometry.circle(tile.x, tile.y, (int) radius, (cx, cy) -> {
+        Geometry.circle(tile.x, tile.y, (int)radius, (cx, cy) -> {
             Tile ct = world.tile(cx, cy);
             if(invalidTile(ct) || (tile.block() instanceof StaticWall || (tile.floor() != null && !tile.floor().placeableOn || tile.floor().isDeep() || tile.block() instanceof Cliff)))
                 return;
@@ -211,14 +211,14 @@ public class CreeperUtils {
         });
     }
 
-    private static void onCreeperDestroy(Tile tile) {
+    private static void onCreeperDestroy(Tile tile){
         tile.creep = 0;
         tile.newCreep = 0;
     }
 
     public static void fixedUpdate(){
         // dont update anything if game is paused
-        if (!state.isPlaying() || state.serverPaused) return;
+        if(!state.isPlaying() || state.serverPaused) return;
 
         int newcount = 0;
         for(Emitter emitter : creeperEmitters){
@@ -227,19 +227,19 @@ public class CreeperUtils {
                 newcount++;
         }
         for(ForceProjector.ForceBuild shield : shields){
-            if(shield == null || shield.dead || shield.health <= 0f || shield.healthLeft <= 0f) {
+            if(shield == null || shield.dead || shield.health <= 0f || shield.healthLeft <= 0f){
                 shields.remove(shield);
-                if (shield == null) continue;
+                if(shield == null) continue;
                 Core.app.post(shield::kill);
 
-                float percentage = 1f - shield.healthLeft / ((ForceProjector) shield.block).shieldHealth;
+                float percentage = 1f - shield.healthLeft / ((ForceProjector)shield.block).shieldHealth;
                 depositCreeper(shield.tile, shieldCreeperDropRadius, shieldCreeperDropAmount * percentage);
 
                 continue;
             }
 
-            double percentage = shield.healthLeft / ((ForceProjector) shield.block).shieldHealth;
-            Call.label("[" + getTrafficlightColor(percentage) + "]" + (int) (percentage*100) + "%" + (shield.phaseHeat > 0.1f ? " [#f4ba6e]\uE86B +" + ((int) ((1f - CreeperUtils.shieldBoostProtectionMultiplier) * 100f)) + "%" : ""), 1f, shield.x, shield.y);
+            double percentage = shield.healthLeft / ((ForceProjector)shield.block).shieldHealth;
+            Call.label("[" + getTrafficlightColor(percentage) + "]" + (int)(percentage * 100) + "%" + (shield.phaseHeat > 0.1f ? " [#f4ba6e]\uE86B +" + ((int)((1f - CreeperUtils.shieldBoostProtectionMultiplier) * 100f)) + "%" : ""), 1f, shield.x, shield.y);
         }
 
         nullifiedCount = newcount;
@@ -247,7 +247,7 @@ public class CreeperUtils {
 
     public static void updateCreeper(){
         // dont update anything if game is paused
-        if (!state.isPlaying() || state.serverPaused) return;
+        if(!state.isPlaying() || state.serverPaused) return;
 
         // update emitters
         for(Emitter emitter : creeperEmitters){
@@ -257,14 +257,14 @@ public class CreeperUtils {
 
         // update creeper flow
         for(Tile tile : creeperableTiles){
-            transferCreeper(tile, world.tile(tile.x+1, tile.y));
-            transferCreeper(tile, world.tile(tile.x-1, tile.y));
-            transferCreeper(tile, world.tile(tile.x, tile.y+1));
-            transferCreeper(tile, world.tile(tile.x, tile.y-1));
+            transferCreeper(tile, world.tile(tile.x + 1, tile.y));
+            transferCreeper(tile, world.tile(tile.x - 1, tile.y));
+            transferCreeper(tile, world.tile(tile.x, tile.y + 1));
+            transferCreeper(tile, world.tile(tile.x, tile.y - 1));
 
             // Clamp
             tile.creep = tile.newCreep > 0.01 ? tile.newCreep < 10 ?
-                tile.newCreep : 10 : 0;
+            tile.newCreep : 10 : 0;
 
             // Draw
             drawCreeper(tile);
@@ -273,34 +273,34 @@ public class CreeperUtils {
 
     // creates appropriate blocks for creeper OR damages the tile that it wants to take
     public static void drawCreeper(Tile tile){
-
-        // check if can transfer anyway because weird
-        if(tile.creep >= 1f) {
-
-            if(tile.creep < 10f && tile.block() == creeperBlocks.get(10))
-                tile.setNet(Blocks.air);
-
-                // deal continuous damage
-            if (tile.build != null && tile.build.team != creeperTeam) {
-
-                Core.app.post(() -> {
-                    if (tile.build != null) {
-
-                        if (Mathf.chance(0.05f))
-                            Call.effect(Fx.bubble, tile.build.x, tile.build.y, 0, Color.blue);
-
-                        tile.build.damageContinuous(creeperDamage * tile.creep);
-                        tile.creep -= creeperDamage / creeperEvaporationDamageMultiplier;
-                        tile.newCreep -= creeperDamage / creeperEvaporationDamageMultiplier;
-                    }
-                });
-            }
-
-            if (tile.block() instanceof Prop || tile.block() instanceof TreeBlock){
-                tile.setNet(Blocks.air);
-            }
+        // check map bounds and minimum required creep to spread
+        if(tile.creep < 1f
+        || tile.x > world.width()
+        || tile.y > world.width()){
+            return;
         }
-        if (tile.x < world.width() && tile.y < world.height() && tile.creep >= 1f && !(tile.block() instanceof CoreBlock) && creeperLevels.getOrDefault(tile.block(), 10) < Math.round(tile.creep)){
+
+        if((tile.creep < 10f && tile.block() == creeperBlocks.get(10))
+        || tile.block() instanceof Prop
+        || tile.block() instanceof TreeBlock){
+            tile.setNet(Blocks.air);
+        }
+
+        // Damage if not creeper team
+        if(tile.build != null && tile.build.team != creeperTeam){
+            Core.app.post(() -> {
+                if(tile.build == null) return;
+
+                if(Mathf.chance(0.05d)){
+                    Call.effect(Fx.bubble, tile.build.x, tile.build.y, 0, Color.blue);
+                }
+                tile.build.damageContinuous(creeperDamage * tile.creep);
+                tile.creep -= creeperDamage / creeperEvaporationDamageMultiplier;
+                tile.newCreep -= creeperDamage / creeperEvaporationDamageMultiplier;
+            });
+        }
+
+        if(!(tile.block() instanceof CoreBlock) && creeperLevels.getOrDefault(tile.block(), 10) < Math.round(tile.creep)){
             tile.setNet(creeperBlocks.get(Mathf.clamp(Math.round(tile.creep), 0, 10)), creeperTeam, Mathf.random(0, 3));
         }
     }
@@ -317,7 +317,7 @@ public class CreeperUtils {
         if(target.block() instanceof StaticWall || (target.floor() != null && !target.floor().placeableOn || target.floor().isDeep() || target.block() instanceof Cliff))
             return false;
 
-        if(source.build != null && source.build.team != creeperTeam) {
+        if(source.build != null && source.build.team != creeperTeam){
             // wall or something, decline transfer but damage the wall
             drawCreeper(source);
             return false;
