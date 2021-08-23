@@ -48,10 +48,6 @@ public class SuicideAI extends GroundAI{
             destroy = unit.within(target, 30f +
                     (target instanceof Building b ? b.block.size * Vars.tilesize / 2f : 2000f));
 
-            if(unit.type.hasWeapons()){
-                unit.aimLook(Predict.intercept(unit, target, unit.type.weapons.first().bullet.speed));
-            }
-
             //do not move toward walls or transport blocks
             if(!(target instanceof Building)){
                 blockedByBlock = false;
@@ -79,7 +75,7 @@ public class SuicideAI extends GroundAI{
                 if(!blocked){
                     moveToTarget = true;
                     //move towards target directly
-                    unit.moveAt(vec.set(target).sub(unit).limit(unit.speed()));
+                    unit.movePref(vec.set(target).sub(unit).limit(unit.speed()));
                 }
             }
         }
@@ -106,8 +102,6 @@ public class SuicideAI extends GroundAI{
                     pathfind(Pathfinder.fieldCore);
                 }
             }
-
-            if(unit.moving()) unit.lookAt(unit.vel().angle());
         }
 
         if(unit.team == CreeperUtils.creeperTeam && unit.type.creeperDeposit > 0){
@@ -120,10 +114,12 @@ public class SuicideAI extends GroundAI{
         }else {
             unit.controlWeapons(rotate, shoot);
         }
+
+        faceTarget();
     }
 
     @Override
-    protected Teamc target(float x, float y, float range, boolean air, boolean ground){
+    public Teamc target(float x, float y, float range, boolean air, boolean ground){
         return Units.closestTarget(unit.team, x, y, range, u -> u.checkTarget(air, ground), t -> ground);
     }
 }
