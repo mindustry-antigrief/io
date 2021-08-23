@@ -27,7 +27,7 @@ public class CreeperUtils{
     public static float updateInterval = 0.025f; // Base update interval in seconds
     public static float transferRate = 0.249f; // Base transfer rate NOTE: keep below 0.25f
     public static float evaporationRate = 0f; // Base creeper evaporation
-    public static float creeperDamage = 2.5f; // Base creeper damage
+    public static float creeperDamage = 6f; // Base creeper damage
     public static float creeperEvaporationDamageMultiplier = 20f; // Creeper percentage that will remain upon damaging something
     public static float creeperUnitDamage = 4f;
     public static float minCreeper = 0.9f; // Minimum amount of creeper required for transfer
@@ -287,14 +287,14 @@ public class CreeperUtils{
         }
 
         // Damage if not creeper team
-        if(tile.build != null && tile.build.team != creeperTeam){
+        if(tile.build != null && tile.build.team != creeperTeam && tile.creep > 1f){
             Core.app.post(() -> {
                 if(tile.build == null) return;
 
                 if(Mathf.chance(0.05d)){
                     Call.effect(Fx.bubble, tile.build.x, tile.build.y, 0, Color.blue);
                 }
-                tile.build.damageContinuous(creeperDamage * tile.creep);
+                tile.build.damage(creeperDamage * tile.creep);
                 tile.creep -= creeperDamage / creeperEvaporationDamageMultiplier;
                 tile.newCreep -= creeperDamage / creeperEvaporationDamageMultiplier;
             });
