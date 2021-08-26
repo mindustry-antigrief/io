@@ -67,7 +67,7 @@ abstract class UnitComp implements Healthc, Physicsc, Hitboxc, Statusc, Teamc, I
     }
 
     public void approach(Vec2 vector){
-        vel.approachDelta(vector, type.accel * realSpeed());
+        vel.approachDelta(vector, type.accel * speed());
     }
 
     public void rotateMove(Vec2 vec){
