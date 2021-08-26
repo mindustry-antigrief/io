@@ -265,7 +265,6 @@ public class CreeperUtils{
             // Clamp
             tile.creep = tile.newCreep > 0.01 ? tile.newCreep < 10 ?
             tile.newCreep : 10 : 0;
-
             // Draw
             drawCreeper(tile);
         }
@@ -276,7 +275,7 @@ public class CreeperUtils{
         // check map bounds and minimum required creep to spread
         if(tile.creep < 1f
         || tile.x > world.width()
-        || tile.y > world.width()){
+        || tile.y > world.height()){
             return;
         }
 
