@@ -257,6 +257,10 @@ public class CreeperUtils{
 
         // update creeper flow
         for(Tile tile : creeperableTiles){
+            if (tile == null) {
+                creeperableTiles.remove(tile);
+                continue;
+            };
             transferCreeper(tile, world.tile(tile.x + 1, tile.y));
             transferCreeper(tile, world.tile(tile.x - 1, tile.y));
             transferCreeper(tile, world.tile(tile.x, tile.y + 1));
