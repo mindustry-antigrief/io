@@ -174,9 +174,6 @@ public class CreeperUtils{
         Events.on(EventType.BlockDestroyEvent.class, e -> {
             if(CreeperUtils.creeperBlocks.containsValue(e.tile.block()))
                 onCreeperDestroy(e.tile);
-
-            e.tile.creep = 0;
-            e.tile.newCreep = 0;
         });
 
         Events.on(EventType.UnitCreateEvent.class, e -> { // Horizons can't shoot but also don't die to flood
