@@ -91,7 +91,7 @@ public class ImpactReactor extends PowerGenerator{
 
                 Geometry.circle(tile.x, tile.y, (int)nullifierRange, (cx, cy) -> {
                     Tile t = world.tile(cx, cy);
-                    if (t != null && creeperBlocks.containsValue(t.block()) && t.block() instanceof CoreBlock)
+                    if (t != null && t.team() != team() && creeperBlocks.containsValue(t.block()) && t.block() instanceof CoreBlock)
                         Call.effect(Fx.breakBlock, cx * tilesize, cy * tilesize, Mathf.random(1, 3), Pal.accent);
                 });
                 Building build;
@@ -99,7 +99,7 @@ public class ImpactReactor extends PowerGenerator{
                     Call.effectReliable(Fx.massiveExplosion, x, y, 0.5f, Pal.accentBack);
                     build.tile.setNet(Blocks.coreShard, Team.sharded, 0);
                     for (Emitter e : creeperEmitters) if (e.build == build) creeperEmitters.remove(e);
-                    Core.app.post(this::kill);
+                    tile.setNet(Blocks.air); // We dont want polys rebuilding this
                 }
 
                 if(!prevOut && (getPowerProduction() > consumes.getPower().requestedPower(this))){
