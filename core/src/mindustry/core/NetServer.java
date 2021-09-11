@@ -274,6 +274,10 @@ public class NetServer implements ApplicationListener{
             }
         });
 
+        clientCommands.<Player>register("tutorial", "", "Start the interactive tutorial", (args, player) -> {
+            Call.menuChoose(player, 1, 0);
+        });
+
         // [#656566]⚠
 
         clientCommands.<Player>register("spore", "", "Create a spore at your location.", (args, player) -> {
