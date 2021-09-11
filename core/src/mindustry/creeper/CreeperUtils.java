@@ -13,6 +13,7 @@ import mindustry.content.*;
 import mindustry.entities.bullet.*;
 import mindustry.game.*;
 import mindustry.gen.*;
+import mindustry.ui.Menus;
 import mindustry.world.*;
 import mindustry.world.blocks.defense.*;
 import mindustry.world.blocks.environment.*;
@@ -28,14 +29,14 @@ public class CreeperUtils{
     public static float transferRate = 0.249f; // Base transfer rate NOTE: keep below 0.25f
     public static float evaporationRate = 0f; // Base creeper evaporation
     public static float creeperDamage = 6f; // Base creeper damage
-    public static float creeperEvaporationDamageMultiplier = 20f; // Creeper percentage that will remain upon damaging something
+    public static float creeperEvaporationDamageMultiplier = 40f; // Creeper percentage that will remain upon damaging something
     public static float creeperUnitDamage = 4f;
     public static float minCreeper = 0.9f; // Minimum amount of creeper required for transfer
 
     public static BulletType sporeType = Bullets.artilleryDense;
     public static float sporeMaxRangeMultiplier = 30f;
     public static float sporeAmount = 30f;
-    public static float sporeRadius = 3f;
+    public static float sporeRadius = 6f;
     public static float sporeSpeedMultiplier = 0.15f;
     public static float sporeHealthMultiplier = 10f;
     public static float sporeTargetOffset = 256f;
@@ -43,14 +44,14 @@ public class CreeperUtils{
     public static float unitShieldDamageMultiplier = 1f;
     public static float buildShieldDamageMultiplier = 1.5f;
     public static float shieldBoostProtectionMultiplier = 0.5f;
-    public static float shieldCreeperDropAmount = 5f;
-    public static float shieldCreeperDropRadius = 3f;
+    public static float shieldCreeperDropAmount = 7f;
+    public static float shieldCreeperDropRadius = 4f;
 
-    public static float nullifierRange = 10f;
+    public static float nullifierRange = 16f;
 
 
     public static float nullifyDamage = 1500f; // Damage that needs to be applied for the core to be suspended
-    public static float nullifyTimeout = 360f; // The amount of time a core remains suspended (resets upon enough damage applied)
+    public static float nullifyTimeout = 180f; // The amount of time a core remains suspended (resets upon enough damage applied)
 
     public static float nullificationPeriod = 10f; // How many seconds all cores have to be nullified (suspended) in order for the game to end
     private static int nullifiedCount = 0;
@@ -195,6 +196,39 @@ public class CreeperUtils{
                 }, nullificationPeriod);
             }
         }, 0, 10);
+
+
+        // tutorial
+        Events.on(EventType.PlayerJoin.class, e -> {
+            if(e.player.getInfo().timesJoined <= 1) {
+                String[][] options1 = {
+                        {"[#49e87c]\uE875 Take the tutorial[]"},
+                        {"[#e85e49]⚠ Skip (not recommended)[]"}
+                };
+                Call.menu(e.player.con, 1, "[accent]Welcome![]", "Looks like it's your first time playing..", options1);
+            }
+        });
+
+        String[][] tutOptions = {{"[#49e87c]\uE829 Continue[]"}};
+        String[][] tutFinal = {{"[#49e87c]\uE829 Finish[]"}};
+        String[] tutEntries = {
+                "[accent]\uE875[] Tutorial 1/4", "In [#e056f0]\uE83B the flood[] there are [scarlet]no units[] to defeat.\nInstead, your goal is to suspend all [accent]emitters[], which are simply [accent]enemy cores.[]",
+                "[accent]\uE875[] Tutorial 2/4", "[scarlet]⚠ beware![]\n[accent]Emitters[] spawn [accent]\uE814 the flood[], which when in proximity to friendly buildings or units, damages them.",
+                "[accent]\uE875[] Tutorial 3/4", "You can [accent]suspend emitters[] by constantly dealing damage to them.",
+                "[accent]\uE875[] Tutorial 4/4", "If [accent]emitters[] are sufficiently suspended, you can [accent]nullify them[] by building an \uF871 [accent]Impact Reactor[] near them and activating it.",
+                "[white]\uF872[]", "[accent]Spore Launchers[]\n[accent]Thorium Reactors[] shoot long distance artillery that on impact, releases [accent]a huge amount of flood[], you can defend against this with segments \uF80E.",
+                "[white]\uF898[]", "[accent]Flood Shield[]\n[accent]Force Projectors[] actively absorb [#e056f0]the flood[], but [accent]explode[] when they are full.",
+                "[white]\uF7FA[]", "[accent]Flood Creep[]\n[accent]Spider-Type units[] explode when in contact of friendly buildings and release tons of [#e056f0]the flood[].",
+                "[white]\uF7F5[]", "[accent]Horizons[] are immune to the flood but [orange]do not deal any damage[]. Use them to carry [accent]resources[] over the flood.",
+        };
+
+        for(int i = 0; i < tutEntries.length / 2; i++){
+            final int j = i;
+            Menus.registerMenu(i + 1, (player, selection) -> {
+                if(selection == 0)
+                    Call.menu(player.con, j + 2, tutEntries[2 * j], tutEntries[2 * j + 1], j == tutEntries.length / 2 - 1 ? tutFinal : tutOptions);
+            });
+        }
     }
 
     public static void depositCreeper(Tile tile, float radius, float amount){
