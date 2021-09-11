@@ -354,17 +354,17 @@ public class Bullets implements ContentList{
             knockback = 0.3f;
         }};
 
-        standardThoriumBig = new BasicBulletType(8f, 80, "bullet"){{
+        standardThoriumBig = new BasicBulletType(8f, 50, "bullet"){{
             hitSize = 5;
             width = 16f;
             height = 23f;
             shootEffect = Fx.shootBig;
-            pierceCap = 10;
+            pierceCap = 8;
             pierceBuilding = true;
             knockback = 0.7f;
         }};
 
-        standardIncendiaryBig = new BasicBulletType(7f, 8, "bullet"){{
+        standardIncendiaryBig = new BasicBulletType(7f, 1, "bullet"){{
             width = 16f;
             height = 21f;
             frontColor = Pal.lightishOrange;
