@@ -25,7 +25,7 @@ import java.util.*;
 import static mindustry.Vars.*;
 
 public class CreeperUtils{
-    public static float updateInterval = 0.020f; // Base update interval in seconds
+    public static float updateInterval = 0.023f; // Base update interval in seconds
     public static float transferRate = 0.249f; // Base transfer rate NOTE: keep below 0.25f
     public static float evaporationRate = 0f; // Base creeper evaporation
     public static float creeperDamage = 6f; // Base creeper damage
