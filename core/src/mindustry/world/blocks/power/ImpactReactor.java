@@ -136,11 +136,11 @@ public class ImpactReactor extends PowerGenerator{
                     Call.soundAt(Sounds.corexplode, x, y, 0.8f, 1.5f);
 
                     tile.setNet(Blocks.air); // We dont want polys rebuilding this
+                    build.tile.setNet(Blocks.coreShard, Team.sharded, 0);
 
+                    // again in case other explosion destroys it
                     Building finalBuild = build;
-                    Core.app.post(() -> {
-                        finalBuild.tile.setNet(Blocks.coreShard, Team.sharded, 0);
-                    });
+                    Core.app.post(() -> finalBuild.tile.setNet(Blocks.coreShard, Team.sharded, 0));
                 }
 
                 if(!prevOut && (getPowerProduction() > consumes.getPower().requestedPower(this))){
