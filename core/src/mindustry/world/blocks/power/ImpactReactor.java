@@ -128,7 +128,6 @@ public class ImpactReactor extends PowerGenerator{
                 Building build;
                 while (Mathf.equal(warmup, 1f, 0.01f) && (build = Units.findEnemyTile(team, x, y, nullifierRange * tilesize, b -> b.block instanceof CoreBlock && creeperBlocks.containsValue(b.block))) != null) {
                     Call.effect(Fx.massiveExplosion, x, y, 2f, Pal.accentBack);
-                    build.tile.setNet(Blocks.coreShard, Team.sharded, 0);
                     for (Emitter e : creeperEmitters) if (e.build == build) creeperEmitters.remove(e);
 
                     Damage.damage(x, y, 16f * tilesize, explosionDamage);
@@ -137,6 +136,11 @@ public class ImpactReactor extends PowerGenerator{
                     Call.soundAt(Sounds.corexplode, x, y, 0.8f, 1.5f);
 
                     tile.setNet(Blocks.air); // We dont want polys rebuilding this
+
+                    Building finalBuild = build;
+                    Core.app.post(() -> {
+                        finalBuild.tile.setNet(Blocks.coreShard, Team.sharded, 0);
+                    });
                 }
 
                 if(!prevOut && (getPowerProduction() > consumes.getPower().requestedPower(this))){
