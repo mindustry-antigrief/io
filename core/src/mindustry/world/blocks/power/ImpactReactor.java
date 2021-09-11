@@ -78,9 +78,27 @@ public class ImpactReactor extends PowerGenerator{
 
     public class ImpactReactorBuild extends GeneratorBuild{
         public float warmup;
+        public int lastFx = 0;
+        public int finFx = 0;
 
         @Override
         public void updateTile(){
+            if (lastFx > (2f - warmup) * 50) {
+                lastFx = 0;
+                Geometry.circle(tile.x, tile.y, (int) nullifierRange, (cx, cy) -> {
+                    Tile t = world.tile(cx, cy);
+                    if (t != null && t.team() != team() && creeperBlocks.containsValue(t.block()) && t.block() instanceof CoreBlock)
+
+                        Geometry.iterateLine(0f, x, y, t.getX(), t.getY(), Math.max((1f - warmup) * 16f, 4f), (x, y) -> {
+                            Timer.schedule(() -> {
+                                Call.effect(Fx.lancerLaserChargeBegin, x, y, 1, Pal.accent);
+                            }, dst(x, y) / tilesize / nullifierRange);
+                        });
+                });
+            } else {
+                lastFx += 1;
+            }
+
             if(consValid() && power.status >= 0.99f){
                 boolean prevOut = getPowerProduction() <= consumes.getPower().requestedPower(this);
 
@@ -89,16 +107,35 @@ public class ImpactReactor extends PowerGenerator{
                     warmup = 1f;
                 }
 
-                Geometry.circle(tile.x, tile.y, (int)nullifierRange, (cx, cy) -> {
-                    Tile t = world.tile(cx, cy);
-                    if (t != null && t.team() != team() && creeperBlocks.containsValue(t.block()) && t.block() instanceof CoreBlock)
-                        Call.effect(Fx.breakBlock, cx * tilesize, cy * tilesize, Mathf.random(1, 3), Pal.accent);
-                });
+                if (finFx > (1.1f - warmup) * 50) {
+                    finFx = 0;
+                    Geometry.circle(tile.x, tile.y, (int) nullifierRange, (cx, cy) -> {
+                        Tile t = world.tile(cx, cy);
+                        if (t != null && t.team() != team() && creeperBlocks.containsValue(t.block()) && t.block() instanceof CoreBlock) {
+                            Call.effect(Fx.breakBlock, cx * tilesize, cy * tilesize, warmup * 5f, Pal.accent);
+
+                            if (Mathf.chance(warmup)) {
+                                if (Mathf.chance(0.1f))
+                                    Call.effect(Fx.cloudsmoke, x + Mathf.range(0, 36), y + Mathf.range(0, 36), 1f, Pal.gray);
+                                if (Mathf.chance(0.2f))
+                                    Call.soundAt(Mathf.chance(0.7f) ? Sounds.flame2 : Sounds.flame, x, y, 0.8f, Mathf.range(0.8f, 1.5f));
+                            }
+                        }
+                    });
+                } else{
+                    finFx += 1;
+                }
                 Building build;
-                while (Mathf.equal(warmup, 1f, 0.1f) && (build = Units.findEnemyTile(team, x, y, nullifierRange * tilesize, b -> b.block instanceof CoreBlock && creeperBlocks.containsValue(b.block))) != null) {
-                    Call.effectReliable(Fx.massiveExplosion, x, y, 0.5f, Pal.accentBack);
+                while (Mathf.equal(warmup, 1f, 0.01f) && (build = Units.findEnemyTile(team, x, y, nullifierRange * tilesize, b -> b.block instanceof CoreBlock && creeperBlocks.containsValue(b.block))) != null) {
+                    Call.effect(Fx.massiveExplosion, x, y, 2f, Pal.accentBack);
                     build.tile.setNet(Blocks.coreShard, Team.sharded, 0);
                     for (Emitter e : creeperEmitters) if (e.build == build) creeperEmitters.remove(e);
+
+                    Damage.damage(x, y, 16f * tilesize, explosionDamage);
+
+                    Call.effect(Fx.shockwave, x, y, 16f, Pal.accent);
+                    Call.soundAt(Sounds.corexplode, x, y, 0.8f, 1.5f);
+
                     tile.setNet(Blocks.air); // We dont want polys rebuilding this
                 }
 
