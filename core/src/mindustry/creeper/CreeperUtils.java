@@ -135,7 +135,7 @@ public class CreeperUtils{
             creeperLevels.put(set.getValue(), set.getKey());
         }
 
-        emitterBlocks.put(Blocks.coreShard, new Emitter(20, 20));
+        emitterBlocks.put(Blocks.coreShard, new Emitter(16, 25));
         emitterBlocks.put(Blocks.coreFoundation, new Emitter(8, 20));
         emitterBlocks.put(Blocks.coreNucleus, new Emitter(3, 30));
 
