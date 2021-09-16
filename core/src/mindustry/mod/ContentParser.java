@@ -48,6 +48,7 @@ public class ContentParser{
     ObjectMap<Class<?>, ContentType> contentTypes = new ObjectMap<>();
     ObjectSet<Class<?>> implicitNullable = ObjectSet.with(TextureRegion.class, TextureRegion[].class, TextureRegion[][].class);
     ObjectMap<String, AssetDescriptor<?>> sounds = new ObjectMap<>();
+    Seq<ParseListener> listeners = new Seq<>();
 
     ObjectMap<Class<?>, FieldParser> classParsers = new ObjectMap<>(){{
         put(Effect.class, (type, data) -> {
@@ -79,6 +80,8 @@ public class ContentParser{
         put(StatusEffect.class, (type, data) -> {
             if(data.isString()){
                 StatusEffect result = locate(ContentType.status, data.asString());
+                if(result != null) return result;
+                result = (StatusEffect)fieldOpt(StatusEffects.class, data);
                 if(result != null) return result;
                 throw new IllegalArgumentException("Unknown status effect: '" + data.asString() + "'");
             }
@@ -176,7 +179,10 @@ public class ContentParser{
         @Override
         public <T> T readValue(Class<T> type, Class elementType, JsonValue jsonData, Class keyType){
             T t = internalRead(type, elementType, jsonData, keyType);
-            if(t != null) checkNullFields(t);
+            if(t != null && !Reflect.isWrapper(t.getClass()) && (type == null || !type.isPrimitive())){
+                checkNullFields(t);
+                listeners.each(hook -> hook.parsed(type, jsonData, t));
+            }
             return t;
         }
 
@@ -801,6 +807,10 @@ public class ContentParser{
         @Nullable
         public UnitType previous;
         public float time = 60f * 10f;
+    }
+
+    public interface ParseListener{
+        void parsed(Class<?> type, JsonValue jsonData, Object result);
     }
 
 }
