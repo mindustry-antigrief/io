@@ -12,6 +12,7 @@ import arc.util.*;
 import mindustry.ai.*;
 import mindustry.ai.types.*;
 import mindustry.annotations.Annotations.*;
+import mindustry.content.Fx;
 import mindustry.core.*;
 import mindustry.creeper.CreeperUtils;
 import mindustry.ctype.*;
