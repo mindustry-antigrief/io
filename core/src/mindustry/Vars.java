@@ -40,12 +40,12 @@ public class Vars implements Loadable{
     public static boolean loadLocales = true;
     /** Whether the logger is loaded. */
     public static boolean loadedLogger = false, loadedFileLogger = false;
-    /** Whether to enable various experimental features (e.g. cliffs) */
+    /** Whether to enable various experimental features (e.g. spawn positions for spawn groups) */
     public static boolean experimental = false;
     /** Name of current Steam player. */
     public static String steamPlayerName = "";
     /** Default accessible content types used for player-selectable icons. */
-    public static final ContentType[] defaultContentIcons = {ContentType.item, ContentType.liquid, ContentType.block};
+    public static final ContentType[] defaultContentIcons = {ContentType.item, ContentType.liquid, ContentType.block, ContentType.unit};
     /** Wall darkness radius. */
     public static final int darkRadius = 4;
     /** Maximum extra padding around deployment schematics. */

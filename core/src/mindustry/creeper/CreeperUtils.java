@@ -79,7 +79,7 @@ public class CreeperUtils{
         float[] ret = null;
         int iterations = 0;
 
-        while(ret == null && iterations < 100 && Groups.player.size() > 0){
+        while(ret == null && iterations < 1000 && Groups.player.size() > 0){
             iterations++;
             Player player = Groups.player.index(Mathf.random(0, Groups.player.size() - 1));
             if(player.unit() == null || player.x == 0 && player.y == 0)
@@ -87,6 +87,14 @@ public class CreeperUtils{
 
             Unit unit = player.unit();
             ret = new float[]{unit.x + Mathf.random(-sporeTargetOffset, sporeTargetOffset), unit.y + Mathf.random(-sporeTargetOffset, sporeTargetOffset)};
+            Tile retTile = world.tileWorld(ret[0], ret[1]);
+
+            // dont target static walls or deep water
+            if (retTile != null && !retTile.breakable() || retTile.floor().isDeep()) {
+                continue;
+            } else {
+                return ret;
+            }
         }
 
         return (ret != null ? ret : new float[]{0, 0});
