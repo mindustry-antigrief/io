@@ -144,7 +144,7 @@ public class CreeperUtils{
         }
 
         emitterBlocks.put(Blocks.coreShard, new Emitter(16, 25));
-        emitterBlocks.put(Blocks.coreFoundation, new Emitter(8, 20));
+        emitterBlocks.put(Blocks.coreFoundation, new Emitter(8, 25));
         emitterBlocks.put(Blocks.coreNucleus, new Emitter(3, 30));
 
         Events.on(EventType.GameOverEvent.class, e -> {
