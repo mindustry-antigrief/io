@@ -32,6 +32,7 @@ public class ForceProjector extends Block{
     public float phaseShieldBoost = 400f;
     public float radius = 101.7f;
     public float shieldHealth = 700f;
+    public float regen = 1.8f;
     public float cooldownNormal = 1.75f;
     public float cooldownLiquid = 1.5f;
     public float cooldownBrokenBase = 0.35f;
@@ -182,6 +183,15 @@ public class ForceProjector extends Block{
                     if(Intersector.isInsideHexagon(tile.worldx(), tile.worldy(), realRadius * 2f, cx * Vars.tilesize, cy * Vars.tilesize) && Vars.world.tile(cx, cy) != null)
                         creeperConsumer.get(Vars.world.tile(cx, cy));
                 });
+            }
+
+            ConsumeLiquidFilter cons = consumes.get(ConsumeType.liquid);
+            if(cons.valid(this)){
+                cons.update(this);
+                if (liquids.currentAmount() > 0f) {
+                    liquids.remove(liquids.current(), 0.5f);
+                    healthLeft = Math.min(healthLeft + regen * liquids.current().heatCapacity, shieldHealth);
+                }
             }
 
             if(broken || healthLeft <= 0f){
