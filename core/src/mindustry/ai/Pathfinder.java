@@ -9,6 +9,7 @@ import arc.util.async.*;
 import mindustry.annotations.Annotations.*;
 import mindustry.content.*;
 import mindustry.core.*;
+import mindustry.creeper.CreeperUtils;
 import mindustry.game.EventType.*;
 import mindustry.game.*;
 import mindustry.gen.*;
@@ -99,7 +100,11 @@ public class Pathfinder implements Runnable{
 
         Events.on(ResetEvent.class, event -> stop());
 
-        Events.on(TileChangeEvent.class, event -> updateTile(event.tile));
+        Events.on(TileChangeEvent.class, event -> {
+            if (event.tile.team() != CreeperUtils.creeperTeam) {
+                updateTile(event.tile);
+            }
+        });
     }
 
     private void clearCache(){
