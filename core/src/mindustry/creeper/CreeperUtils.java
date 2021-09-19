@@ -25,18 +25,18 @@ import java.util.*;
 import static mindustry.Vars.*;
 
 public class CreeperUtils{
-    public static float updateInterval = 0.023f; // Base update interval in seconds
+    public static float updateInterval = 0.026f; // Base update interval in seconds
     public static float transferRate = 0.249f; // Base transfer rate NOTE: keep below 0.25f
     public static float evaporationRate = 0f; // Base creeper evaporation
     public static float creeperDamage = 6f; // Base creeper damage
-    public static float creeperEvaporationDamageMultiplier = 20f; // Creeper percentage that will remain upon damaging something
+    public static float creeperEvaporationDamageMultiplier = 80f; // Creeper percentage that will remain upon damaging something
     public static float creeperUnitDamage = 4f;
-    public static float minCreeper = 0.9f; // Minimum amount of creeper required for transfer
+    public static float minCreeper = 1.0f; // Minimum amount of creeper required for transfer
 
     public static BulletType sporeType = Bullets.artilleryDense;
     public static float sporeMaxRangeMultiplier = 30f;
-    public static float sporeAmount = 30f;
-    public static float sporeRadius = 6f;
+    public static float sporeAmount = 20f;
+    public static float sporeRadius = 5f;
     public static float sporeSpeedMultiplier = 0.15f;
     public static float sporeHealthMultiplier = 10f;
     public static float sporeTargetOffset = 256f;
@@ -90,7 +90,7 @@ public class CreeperUtils{
             Tile retTile = world.tileWorld(ret[0], ret[1]);
 
             // dont target static walls or deep water
-            if (retTile != null && !retTile.breakable() || retTile.floor().isDeep()) {
+            if (retTile != null && (!retTile.breakable() || retTile.floor().isDeep())) {
                 continue;
             } else {
                 return ret;
@@ -315,17 +315,10 @@ public class CreeperUtils{
 
     // creates appropriate blocks for creeper OR damages the tile that it wants to take
     public static void drawCreeper(Tile tile){
-        // check map bounds and minimum required creep to spread
-        if(tile.creep < 1f
-        || tile.x > world.width()
-        || tile.y > world.height()){
-            return;
-        }
 
-        if((tile.creep < 10f && tile.block() == creeperBlocks.get(10))
-        || tile.block() instanceof Prop
-        || tile.block() instanceof TreeBlock){
-            tile.setNet(Blocks.air);
+        // check minimum creeper to draw
+        if(tile.creep < 1f) {
+            return;
         }
 
         // Damage if not creeper team
@@ -342,7 +335,10 @@ public class CreeperUtils{
             });
         }
 
-        if(!(tile.block() instanceof CoreBlock) && creeperLevels.getOrDefault(tile.block(), 10) < Math.round(tile.creep)){
+        int currentLvl = creeperLevels.getOrDefault(tile.block(), 11);
+        int creepLvl = Math.round(tile.creep);
+
+        if(currentLvl <= 10 && (currentLvl < creepLvl || currentLvl > creepLvl + 2)){
             tile.setNet(creeperBlocks.get(Mathf.clamp(Math.round(tile.creep), 0, 10)), creeperTeam, Mathf.random(0, 3));
         }
     }
