@@ -25,12 +25,12 @@ import java.util.*;
 import static mindustry.Vars.*;
 
 public class CreeperUtils{
-    public static float updateInterval = 0.026f; // Base update interval in seconds
+    public static float updateInterval = 0.02f; // Base update interval in seconds
     public static float transferRate = 0.249f; // Base transfer rate NOTE: keep below 0.25f
     public static float evaporationRate = 0f; // Base creeper evaporation
     public static float creeperDamage = 6f; // Base creeper damage
     public static float creeperEvaporationDamageMultiplier = 80f; // Creeper percentage that will remain upon damaging something
-    public static float creeperUnitDamage = 4f;
+    public static float creeperUnitDamage = 2f;
     public static float minCreeper = 0.99f; // Minimum amount of creeper required for transfer
 
     public static BulletType sporeType = Bullets.artilleryDense;
@@ -62,6 +62,7 @@ public class CreeperUtils{
     public static HashMap<Block, Integer> creeperLevels = new HashMap<>();
 
     public static HashMap<Block, Emitter> emitterBlocks = new HashMap<>();
+    public static HashMap<Block, ChargedEmitter> chargedEmitterBlocks = new HashMap<>();
 
     public static Seq<Emitter> creeperEmitters = new Seq<>();
     public static Seq<Tile> creeperableTiles = new Seq<>();
@@ -128,9 +129,13 @@ public class CreeperUtils{
 
         // this is purely for damage multiplication
         creeperBlocks.put(12, Blocks.thoriumReactor);
+
         creeperBlocks.put(20, Blocks.coreShard);
         creeperBlocks.put(35, Blocks.coreFoundation);
         creeperBlocks.put(50, Blocks.coreNucleus);
+
+        creeperBlocks.put(75, Blocks.launchPad);
+        creeperBlocks.put(100, Blocks.interplanetaryAccelerator);
 
         for(var set : creeperBlocks.entrySet()){
             BlockFlag[] newFlags = new BlockFlag[set.getValue().flags.size() + 1];
@@ -143,9 +148,13 @@ public class CreeperUtils{
             creeperLevels.put(set.getValue(), set.getKey());
         }
 
-        emitterBlocks.put(Blocks.coreShard, new Emitter(16, 25));
-        emitterBlocks.put(Blocks.coreFoundation, new Emitter(8, 25));
-        emitterBlocks.put(Blocks.coreNucleus, new Emitter(3, 30));
+        // max amt is 10
+        emitterBlocks.put(Blocks.coreShard, new Emitter(8, 5));
+        emitterBlocks.put(Blocks.coreFoundation, new Emitter(6, 10));
+        emitterBlocks.put(Blocks.coreNucleus, new Emitter(3, 10));
+
+        chargedEmitterBlocks.put(Blocks.launchPad, new ChargedEmitter(1, 10, 180, 600));
+        chargedEmitterBlocks.put(Blocks.interplanetaryAccelerator, new ChargedEmitter(0, 10, 380, 1800));
 
         Events.on(EventType.GameOverEvent.class, e -> {
             if(runner != null)
@@ -337,8 +346,9 @@ public class CreeperUtils{
 
         int currentLvl = creeperLevels.getOrDefault(tile.block(), 11);
         int creepLvl = Math.round(tile.creep);
+        Team tileTeam = tile.team();
 
-        if(currentLvl <= 10 && (currentLvl < creepLvl || currentLvl > creepLvl + 2)){
+        if((tileTeam == Team.derelict || tileTeam == creeperTeam) && currentLvl <= 10 && (currentLvl < creepLvl || currentLvl > creepLvl + 2)){
             tile.setNet(creeperBlocks.get(Mathf.clamp(Math.round(tile.creep), 0, 10)), creeperTeam, Mathf.random(0, 3));
         }
     }
