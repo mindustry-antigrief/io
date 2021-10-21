@@ -14,6 +14,7 @@ import mindustry.game.EventType.*;
 import mindustry.game.*;
 import mindustry.gen.*;
 import mindustry.world.*;
+import mindustry.world.blocks.environment.*;
 import mindustry.world.blocks.storage.*;
 import mindustry.world.meta.*;
 
@@ -41,7 +42,7 @@ public class Pathfinder implements Runnable{
 
     public static final Seq<PathCost> costTypes = Seq.with(
         //ground
-        (team, tile) -> (PathTile.team(tile) == team.id || PathTile.team(tile) == 0) && PathTile.solid(tile) ? impassable : 1 +
+        (team, tile) -> (PathTile.allDeep(tile) || (PathTile.team(tile) == team.id || PathTile.team(tile) == 0) && PathTile.solid(tile)) ? impassable : 1 +
             PathTile.health(tile) * 5 +
             (PathTile.nearSolid(tile) ? 2 : 0) +
             (PathTile.nearLiquid(tile) ? 6 : 0) +
@@ -50,6 +51,7 @@ public class Pathfinder implements Runnable{
 
         //legs
         (team, tile) -> PathTile.legSolid(tile) ? impassable : 1 +
+            (PathTile.deep(tile) ? 6000 : 0) + //leg units can now drown
             (PathTile.solid(tile) ? 5 : 0),
 
         //water
@@ -113,14 +115,16 @@ public class Pathfinder implements Runnable{
 
     /** Packs a tile into its internal representation. */
     private int packTile(Tile tile){
-        boolean nearLiquid = false, nearSolid = false, nearGround = false, solid = tile.solid();
+        boolean nearLiquid = false, nearSolid = false, nearGround = false, solid = tile.solid(), allDeep = tile.floor().isDeep();
 
         for(int i = 0; i < 4; i++){
             Tile other = tile.nearby(i);
             if(other != null){
-                if(other.floor().isLiquid) nearLiquid = true;
+                Floor floor = other.floor();
+                if(floor.isLiquid) nearLiquid = true;
                 if(other.solid()) nearSolid = true;
-                if(!other.floor().isLiquid) nearGround = true;
+                if(!floor.isLiquid) nearGround = true;
+                if(!floor.isDeep()) allDeep = false;
             }
         }
 
@@ -136,7 +140,8 @@ public class Pathfinder implements Runnable{
             nearGround,
             nearSolid,
             tile.floor().isDeep(),
-            tile.floor().damageTaken > 0.00001f
+            tile.floor().damageTaken > 0.00001f,
+            allDeep
         );
     }
 
@@ -499,5 +504,7 @@ public class Pathfinder implements Runnable{
         boolean deep;
         //whether the floor damages
         boolean damages;
+        //whether all tiles nearby are deep
+        boolean allDeep;
     }
 }
