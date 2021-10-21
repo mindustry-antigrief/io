@@ -71,6 +71,20 @@ public class CreeperUtils{
     public static Timer.Task runner;
     public static Timer.Task fixedRunner;
 
+    public static final String[][] tutContinue = {{"[#49e87c]\uE829 Continue[]"}};
+    public static final String[][] tutFinal = {{"[#49e87c]\uE829 Finish[]"}};
+    public static final String[][] tutStart = {{"[#49e87c]\uE875 Take the tutorial[]"}, {"[#e85e49]⚠ Skip (not recommended)[]"}};
+    public static final String[] tutEntries = {
+    "[accent]\uE875[] Tutorial 1/4", "In [#e056f0]\uE83B the flood[] there are [scarlet]no units[] to defeat.\nInstead, your goal is to suspend all [accent]emitters[], which are simply [accent]enemy cores.[]",
+    "[accent]\uE875[] Tutorial 2/4", "[scarlet]⚠ beware![]\n[accent]Emitters[] spawn [accent]\uE814 the flood[], which when in proximity to friendly buildings or units, damages them.",
+    "[accent]\uE875[] Tutorial 3/4", "You can [accent]suspend emitters[] by constantly dealing damage to them.",
+    "[accent]\uE875[] Tutorial 4/4", "If [accent]emitters[] are sufficiently suspended, you can [accent]nullify them[] by building an \uF871 [accent]Impact Reactor[] near them and activating it.",
+    "[white]\uF872[]", "[accent]Spore Launchers[]\n[accent]Thorium Reactors[] shoot long distance artillery that on impact, releases [accent]a huge amount of flood[], you can defend against this with segments \uF80E.",
+    "[white]\uF898[]", "[accent]Flood Shield[]\n[accent]Force Projectors[] actively absorb [#e056f0]the flood[], but [accent]explode[] when they are full.",
+    "[white]\uF7FA[]", "[accent]Flood Creep[]\n[accent]Spider-Type units[] explode when in contact of friendly buildings and release tons of [#e056f0]the flood[].",
+    "[white]\uF7F5[]", "[accent]Horizons[] are immune to the flood but [orange]do not deal any damage[]. Use them to carry [accent]resources[] over the flood.",
+    };
+
     public static String getTrafficlightColor(double value){
         return "#" + Integer.toHexString(java.awt.Color.HSBtoRGB((float)value / 3f, 1f, 1f)).substring(2);
     }
@@ -91,9 +105,9 @@ public class CreeperUtils{
             Tile retTile = world.tileWorld(ret[0], ret[1]);
 
             // dont target static walls or deep water
-            if (retTile != null && (!retTile.breakable() || retTile.floor().isDeep())) {
+            if(retTile != null && (!retTile.breakable() || retTile.floor().isDeep())){
                 continue;
-            } else {
+            }else{
                 return ret;
             }
         }
@@ -156,6 +170,21 @@ public class CreeperUtils{
         chargedEmitterBlocks.put(Blocks.launchPad, new ChargedEmitter(1, 10, 180, 600));
         chargedEmitterBlocks.put(Blocks.interplanetaryAccelerator, new ChargedEmitter(0, 10, 380, 1800));
 
+        int[] menuID = {0};
+        for(int i = tutEntries.length; --i >= 0; ){
+            final int j = i;
+            menuID[0] = Menus.registerMenu((player, selection) -> {
+                if(selection == 1) return;
+                if(j == tutEntries.length / 2) return;
+                Call.menu(player.con, menuID[0], tutEntries[2 * j], tutEntries[2 * j + 1], j == tutEntries.length / 2 - 1 ? tutFinal : tutContinue);
+            });
+        }
+
+        Events.on(EventType.PlayerJoin.class, e -> {
+            if(e.player.getInfo().timesJoined > 1) return;
+            Call.menu(e.player.con, menuID[0], "[accent]Welcome![]", "Looks like it's your first time playing..", tutStart);
+        });
+
         Events.on(EventType.GameOverEvent.class, e -> {
             if(runner != null)
                 runner.cancel();
@@ -213,39 +242,6 @@ public class CreeperUtils{
                 }, nullificationPeriod);
             }
         }, 0, 10);
-
-
-        // tutorial
-        Events.on(EventType.PlayerJoin.class, e -> {
-            if(e.player.getInfo().timesJoined <= 1) {
-                String[][] options1 = {
-                        {"[#49e87c]\uE875 Take the tutorial[]"},
-                        {"[#e85e49]⚠ Skip (not recommended)[]"}
-                };
-                Call.menu(e.player.con, 1, "[accent]Welcome![]", "Looks like it's your first time playing..", options1);
-            }
-        });
-
-        String[][] tutOptions = {{"[#49e87c]\uE829 Continue[]"}};
-        String[][] tutFinal = {{"[#49e87c]\uE829 Finish[]"}};
-        String[] tutEntries = {
-                "[accent]\uE875[] Tutorial 1/4", "In [#e056f0]\uE83B the flood[] there are [scarlet]no units[] to defeat.\nInstead, your goal is to suspend all [accent]emitters[], which are simply [accent]enemy cores.[]",
-                "[accent]\uE875[] Tutorial 2/4", "[scarlet]⚠ beware![]\n[accent]Emitters[] spawn [accent]\uE814 the flood[], which when in proximity to friendly buildings or units, damages them.",
-                "[accent]\uE875[] Tutorial 3/4", "You can [accent]suspend emitters[] by constantly dealing damage to them.",
-                "[accent]\uE875[] Tutorial 4/4", "If [accent]emitters[] are sufficiently suspended, you can [accent]nullify them[] by building an \uF871 [accent]Impact Reactor[] near them and activating it.",
-                "[white]\uF872[]", "[accent]Spore Launchers[]\n[accent]Thorium Reactors[] shoot long distance artillery that on impact, releases [accent]a huge amount of flood[], you can defend against this with segments \uF80E.",
-                "[white]\uF898[]", "[accent]Flood Shield[]\n[accent]Force Projectors[] actively absorb [#e056f0]the flood[], but [accent]explode[] when they are full.",
-                "[white]\uF7FA[]", "[accent]Flood Creep[]\n[accent]Spider-Type units[] explode when in contact of friendly buildings and release tons of [#e056f0]the flood[].",
-                "[white]\uF7F5[]", "[accent]Horizons[] are immune to the flood but [orange]do not deal any damage[]. Use them to carry [accent]resources[] over the flood.",
-        };
-
-        for(int i = 0; i < tutEntries.length / 2; i++){
-            final int j = i;
-            Menus.registerMenu(i + 1, (player, selection) -> {
-                if(selection == 0)
-                    Call.menu(player.con, j + 2, tutEntries[2 * j], tutEntries[2 * j + 1], j == tutEntries.length / 2 - 1 ? tutFinal : tutOptions);
-            });
-        }
     }
 
     public static void depositCreeper(Tile tile, float radius, float amount){
@@ -305,10 +301,11 @@ public class CreeperUtils{
 
         // update creeper flow
         for(Tile tile : creeperableTiles){
-            if (tile == null) {
+            if(tile == null){
                 creeperableTiles.remove(tile);
                 continue;
-            };
+            }
+            ;
             transferCreeper(tile, world.tile(tile.x + 1, tile.y));
             transferCreeper(tile, world.tile(tile.x - 1, tile.y));
             transferCreeper(tile, world.tile(tile.x, tile.y + 1));
@@ -326,7 +323,7 @@ public class CreeperUtils{
     public static void drawCreeper(Tile tile){
 
         // check minimum creeper to draw
-        if(tile.creep < 1f) {
+        if(tile.creep < 1f){
             return;
         }
 
