@@ -4,8 +4,8 @@ import arc.*;
 import arc.graphics.*;
 import arc.math.*;
 import arc.math.geom.*;
-import arc.struct.*;
 import arc.struct.EnumSet;
+import arc.struct.*;
 import arc.util.Timer;
 import arc.util.*;
 import arc.util.async.*;
@@ -13,11 +13,10 @@ import mindustry.content.*;
 import mindustry.entities.bullet.*;
 import mindustry.game.*;
 import mindustry.gen.*;
-import mindustry.ui.Menus;
+import mindustry.ui.*;
 import mindustry.world.*;
 import mindustry.world.blocks.defense.*;
 import mindustry.world.blocks.environment.*;
-import mindustry.world.blocks.storage.*;
 import mindustry.world.meta.*;
 
 import java.util.*;
@@ -26,7 +25,7 @@ import static mindustry.Vars.*;
 
 public class CreeperUtils{
     public static float updateInterval = 0.02f; // Base update interval in seconds
-    public static float transferRate = 0.249f; // Base transfer rate NOTE: keep below 0.25f
+    public static float transferRate = 0.2499f; // Base transfer rate NOTE: keep below 0.25f
     public static float evaporationRate = 0f; // Base creeper evaporation
     public static float creeperDamage = 6f; // Base creeper damage
     public static float creeperEvaporationDamageMultiplier = 80f; // Creeper percentage that will remain upon damaging something
@@ -76,7 +75,7 @@ public class CreeperUtils{
     public static final String[][] tutStart = {{"[#49e87c]\uE875 Take the tutorial[]"}, {"[#e85e49]⚠ Skip (not recommended)[]"}};
     public static final String[] tutEntries = {
     "[accent]\uE875[] Tutorial 1/4", "In [#e056f0]\uE83B the flood[] there are [scarlet]no units[] to defeat.\nInstead, your goal is to suspend all [accent]emitters[], which are simply [accent]enemy cores.[]",
-    "[accent]\uE875[] Tutorial 2/4", "[scarlet]⚠ beware![]\n[accent]Emitters[] spawn [accent]\uE814 the flood[], which when in proximity to friendly buildings or units, damages them.",
+    "[accent]\uE875[] Tutorial 2/4", "[scarlet]⚠ beware![]\n[accent]Emitters[] spawn [#e056f0]\uE83B the flood[], which when in proximity to friendly buildings or units, damages them.",
     "[accent]\uE875[] Tutorial 3/4", "You can [accent]suspend emitters[] by constantly dealing damage to them.",
     "[accent]\uE875[] Tutorial 4/4", "If [accent]emitters[] are sufficiently suspended, you can [accent]nullify them[] by building an \uF871 [accent]Impact Reactor[] near them and activating it.",
     "[white]\uF872[]", "[accent]Spore Launchers[]\n[accent]Thorium Reactors[] shoot long distance artillery that on impact, releases [accent]a huge amount of flood[], you can defend against this with segments \uF80E.",
@@ -105,9 +104,7 @@ public class CreeperUtils{
             Tile retTile = world.tileWorld(ret[0], ret[1]);
 
             // dont target static walls or deep water
-            if(retTile != null && (!retTile.breakable() || retTile.floor().isDeep())){
-                continue;
-            }else{
+            if (retTile != null && retTile.breakable() && !retTile.floor().isDeep() && retTile.floor().placeableOn){
                 return ret;
             }
         }
@@ -170,19 +167,21 @@ public class CreeperUtils{
         chargedEmitterBlocks.put(Blocks.launchPad, new ChargedEmitter(1, 10, 180, 600));
         chargedEmitterBlocks.put(Blocks.interplanetaryAccelerator, new ChargedEmitter(0, 10, 380, 1800));
 
-        int[] menuID = {0};
+        int menuID = 0;
         for(int i = tutEntries.length; --i >= 0; ){
             final int j = i;
-            menuID[0] = Menus.registerMenu((player, selection) -> {
+            int current = menuID;
+            menuID = Menus.registerMenu((player, selection) -> {
                 if(selection == 1) return;
                 if(j == tutEntries.length / 2) return;
-                Call.menu(player.con, menuID[0], tutEntries[2 * j], tutEntries[2 * j + 1], j == tutEntries.length / 2 - 1 ? tutFinal : tutContinue);
+                Call.menu(player.con, current, tutEntries[2 * j], tutEntries[2 * j + 1], j == tutEntries.length / 2 - 1 ? tutFinal : tutContinue);
             });
         }
 
+        int firstID = menuID;
         Events.on(EventType.PlayerJoin.class, e -> {
             if(e.player.getInfo().timesJoined > 1) return;
-            Call.menu(e.player.con, menuID[0], "[accent]Welcome![]", "Looks like it's your first time playing..", tutStart);
+            Call.menu(e.player.con, firstID, "[accent]Welcome![]", "Looks like it's your first time playing..", tutStart);
         });
 
         Events.on(EventType.GameOverEvent.class, e -> {
@@ -305,7 +304,7 @@ public class CreeperUtils{
                 creeperableTiles.remove(tile);
                 continue;
             }
-            ;
+
             transferCreeper(tile, world.tile(tile.x + 1, tile.y));
             transferCreeper(tile, world.tile(tile.x - 1, tile.y));
             transferCreeper(tile, world.tile(tile.x, tile.y + 1));
