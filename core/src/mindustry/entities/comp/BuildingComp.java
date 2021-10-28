@@ -296,7 +296,7 @@ abstract class BuildingComp implements Posc, Teamc, Healthc, Buildingc, Timerc, 
     }
 
     public byte relativeTo(Building tile){
-        return relativeTo(tile.tile());
+        return relativeTo(tile.tile);
     }
 
     public byte relativeToEdge(Tile other){
@@ -928,6 +928,10 @@ abstract class BuildingComp implements Posc, Teamc, Healthc, Buildingc, Timerc, 
         drawTeamTop();
     }
 
+    public void payloadDraw(){
+        draw();
+    }
+
     public void drawTeamTop(){
         if(block.teamRegion.found()){
             if(block.teamRegions[team.id] == block.teamRegion) Draw.color(team.color);
@@ -977,6 +981,11 @@ abstract class BuildingComp implements Posc, Teamc, Healthc, Buildingc, Timerc, 
                 }
             });
         }
+    }
+
+    /** @return whether this building is in a payload */
+    public boolean isPayload(){
+        return tile == emptyTile;
     }
 
     /**
@@ -1067,7 +1076,7 @@ abstract class BuildingComp implements Posc, Teamc, Healthc, Buildingc, Timerc, 
 
                 for(int i = 0; i < Mathf.clamp(amount / 5, 0, 30); i++){
                     Time.run(i / 2f, () -> {
-                        Tile other = world.tile(tileX() + Mathf.range(block.size / 2), tileY() + Mathf.range(block.size / 2));
+                        Tile other = world.tileWorld(x + Mathf.range(block.size * tilesize / 2), y + Mathf.range(block.size * tilesize / 2));
                         if(other != null){
                             Puddles.deposit(other, liquid, splash);
                         }
