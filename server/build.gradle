@@ -86,4 +86,18 @@ task deploy{
     }
 }
 
+task comp{
+    dependsOn "dist"
+
+    finalizedBy 'dzip'
+
+    doLast{
+        copy{
+            from "build/libs/server-release.jar"
+            into "build/libs"
+            rename("server-release.jar", "flood-release.jar")
+        }
+    }
+}
+
 dist.dependsOn classes
