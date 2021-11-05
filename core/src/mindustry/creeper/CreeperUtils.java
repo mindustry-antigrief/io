@@ -373,7 +373,7 @@ public class CreeperUtils{
 
         if(source.build != null && source.build.team != creeperTeam){
             // wall or something, decline transfer but damage the wall
-            drawCreeper(source);
+            applyDamage(source);
             return false;
         }
 
