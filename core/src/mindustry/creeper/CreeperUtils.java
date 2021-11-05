@@ -313,9 +313,17 @@ public class CreeperUtils{
             // Clamp
             tile.creep = tile.newCreep > 0.01 ? tile.newCreep < 10 ?
             tile.newCreep : 10 : 0;
+            // damage non creeper tiles
+            applyDamage(tile);
             // Draw
-            drawCreeper(tile);
+            if((closestEmitterDist(tile) + pulseOffset) % 8 == 0){
+                drawCreeper(tile);
+            }
         }
+    }
+
+    public static int closestEmitterDist(Tile tile){
+        return (int)Geometry.findClosest(tile.x, tile.y, creeperTeam.cores()).dst(tile);
     }
 
     // creates appropriate blocks for creeper OR damages the tile that it wants to take
