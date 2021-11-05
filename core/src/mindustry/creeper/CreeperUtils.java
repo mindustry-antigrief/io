@@ -334,6 +334,9 @@ public class CreeperUtils{
         if(tile.creep < 1f){
             return;
         }
+        int currentLvl = creeperLevels.getOrDefault(tile.block(), 11);
+        int creepLvl = Math.round(tile.creep);
+        Team tileTeam = tile.team();
 
         if((tileTeam == Team.derelict || tileTeam == creeperTeam) && currentLvl <= 10 && (currentLvl < creepLvl || currentLvl > creepLvl + 2)){
             tile.setNet(creeperBlocks.get(Mathf.clamp(Math.round(tile.creep), 0, 10)), creeperTeam, Mathf.random(0, 3));
