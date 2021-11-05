@@ -335,26 +335,23 @@ public class CreeperUtils{
             return;
         }
 
-        // Damage if not creeper team
-        if(tile.build != null && tile.build.team != creeperTeam && tile.creep > 1f){
-            Core.app.post(() -> {
-                if(tile.build == null) return;
-
-                if(Mathf.chance(0.05d)){
-                    Call.effect(Fx.bubble, tile.build.x, tile.build.y, 0, Color.blue);
-                }
-                tile.build.damage(creeperDamage * tile.creep);
-                tile.creep -= creeperDamage / creeperEvaporationDamageMultiplier;
-                tile.newCreep -= creeperDamage / creeperEvaporationDamageMultiplier;
-            });
-        }
-
-        int currentLvl = creeperLevels.getOrDefault(tile.block(), 11);
-        int creepLvl = Math.round(tile.creep);
-        Team tileTeam = tile.team();
-
         if((tileTeam == Team.derelict || tileTeam == creeperTeam) && currentLvl <= 10 && (currentLvl < creepLvl || currentLvl > creepLvl + 2)){
             tile.setNet(creeperBlocks.get(Mathf.clamp(Math.round(tile.creep), 0, 10)), creeperTeam, Mathf.random(0, 3));
+        }
+    }
+
+    public static void applyDamage(Tile tile){
+        if(tile.build != null && tile.build.team != creeperTeam && tile.creep > 1f){
+            //Core.app.post(() -> {
+            if(tile.build == null) return;
+
+            if(Mathf.chance(0.05d)){
+                Call.effect(Fx.bubble, tile.build.x, tile.build.y, 0, Color.blue);
+            }
+            tile.build.damage(creeperDamage * tile.creep);
+            tile.creep *= damageEvaporationRate;
+            tile.newCreep *= damageEvaporationRate;
+            //});
         }
     }
 
