@@ -104,7 +104,7 @@ public class CreeperUtils{
             Tile retTile = world.tileWorld(ret[0], ret[1]);
 
             // dont target static walls or deep water
-            if (retTile != null && retTile.breakable() && !retTile.floor().isDeep() && retTile.floor().placeableOn){
+            if(retTile != null && retTile.breakable() && !retTile.floor().isDeep() && retTile.floor().placeableOn){
                 return ret;
             }
         }
