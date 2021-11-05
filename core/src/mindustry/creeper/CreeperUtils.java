@@ -54,6 +54,7 @@ public class CreeperUtils{
 
     public static float nullificationPeriod = 10f; // How many seconds all cores have to be nullified (suspended) in order for the game to end
     private static int nullifiedCount = 0;
+    private static int pulseOffset = 0;
 
     public static Team creeperTeam = Team.blue;
 
