@@ -299,6 +299,7 @@ public class CreeperUtils{
         }
 
         // update creeper flow
+        if(++pulseOffset == 8) pulseOffset = 0;
         for(Tile tile : creeperableTiles){
             if(tile == null){
                 creeperableTiles.remove(tile);
