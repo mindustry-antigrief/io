@@ -308,14 +308,8 @@ public class CreeperUtils{
                 continue;
             }
 
-            transferCreeper(tile, world.tile(tile.x + 1, tile.y));
-            transferCreeper(tile, world.tile(tile.x - 1, tile.y));
-            transferCreeper(tile, world.tile(tile.x, tile.y + 1));
-            transferCreeper(tile, world.tile(tile.x, tile.y - 1));
+            transferCreeper(tile);
 
-            // Clamp
-            tile.creep = tile.newCreep > 0.01 ? tile.newCreep < 10 ?
-            tile.newCreep : 10 : 0;
             // damage non creeper tiles
             applyDamage(tile);
             // Draw
@@ -385,14 +379,29 @@ public class CreeperUtils{
         return tile == null;
     }
 
-    public static void transferCreeper(Tile source, Tile target){
-        if(!canTransfer(source, target)) return;
+    public static void transferCreeper(Tile source){
+        Tile[] adjacent = new Tile[]{
+        world.tile(source.x, source.y + 1),
+        world.tile(source.x, source.y - 1),
+        world.tile(source.x + 1, source.y),
+        world.tile(source.x - 1, source.y),
+        };
 
-        float delta = Math.min((source.creep - target.creep) * transferRate, source.creep);
+        float total = 0f;
+        for(Tile target : adjacent){
+            if(target == null) continue;
+            // cannot transfer more than the rate or go over the cap.
+            float max = Math.min(source.creep * transferRate, 10 - target.creep);
+            float delta = canTransfer(source, target) ? Mathf.clamp((source.creep - target.creep) * transferRate, 0, max) : 0;
 
-        if(delta <= 0) return;
+            if(delta > 0.001f){
+                target.creep += delta;
+                total += delta;
+            }
+        }
 
-        source.newCreep -= delta;
-        target.newCreep += delta - evaporationRate;
+        if(total > 0.001f){
+            source.creep -= total;
+        }
     }
 }
