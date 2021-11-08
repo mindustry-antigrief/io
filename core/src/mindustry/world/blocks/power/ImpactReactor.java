@@ -12,14 +12,13 @@ import mindustry.annotations.Annotations.*;
 import mindustry.content.*;
 import mindustry.creeper.*;
 import mindustry.entities.*;
-import mindustry.game.*;
 import mindustry.game.EventType.*;
+import mindustry.game.*;
 import mindustry.gen.*;
 import mindustry.graphics.*;
 import mindustry.logic.*;
 import mindustry.ui.*;
-import mindustry.world.*;
-import mindustry.world.blocks.storage.*;
+import mindustry.world.blocks.storage.CoreBlock.*;
 import mindustry.world.meta.*;
 
 import static mindustry.Vars.*;
@@ -81,22 +80,27 @@ public class ImpactReactor extends PowerGenerator{
         public float warmup;
         public int lastFx = 0;
         public int finFx = 0;
+        public CoreBuild targetEmitter;
 
         @Override
         public void updateTile(){
-            if (lastFx > (2f - warmup) * 50) {
+            if(lastFx > (2f - warmup) * 50){
                 lastFx = 0;
-                Geometry.circle(tile.x, tile.y, (int) nullifierRange, (cx, cy) -> {
-                    Tile t = world.tile(cx, cy);
-                    if (t != null && t.team() != team() && creeperBlocks.containsValue(t.block()) && t.block() instanceof CoreBlock)
+                if (targetEmitter == null){
+                    CoreBuild core = CreeperUtils.closestEmitter(tile);
+                    if (core != null && dst(core) < nullifierRange){
+                        targetEmitter = core;
+                    }
+                }
 
-                        Geometry.iterateLine(0f, x, y, t.getX(), t.getY(), Math.max((1f - warmup) * 16f, 4f), (x, y) -> {
-                            Timer.schedule(() -> {
-                                Call.effect(Fx.lancerLaserChargeBegin, x, y, 1, Pal.accent);
-                            }, dst(x, y) / tilesize / nullifierRange);
-                        });
-                });
-            } else {
+                if(validateEmitterTarget()){
+                    Geometry.iterateLine(0f, x, y, targetEmitter.x, targetEmitter.y, Math.max((1f - warmup) * 16f, 4f), (x, y) -> {
+                        Timer.schedule(() -> {
+                            Call.effect(Fx.lancerLaserChargeBegin, x, y, 1, Pal.accent);
+                        }, dst(x, y) / tilesize / nullifierRange);
+                    });
+                }
+            }else{
                 lastFx += 1;
             }
 
@@ -108,40 +112,34 @@ public class ImpactReactor extends PowerGenerator{
                     warmup = 1f;
                 }
 
-                if (finFx > (1.1f - warmup) * 50) {
+                if(finFx > (1.1f - warmup) * 50){
                     finFx = 0;
-                    Geometry.circle(tile.x, tile.y, (int) nullifierRange, (cx, cy) -> {
-                        Tile t = world.tile(cx, cy);
-                        if (t != null && t.team() != team() && creeperBlocks.containsValue(t.block()) && t.block() instanceof CoreBlock) {
-                            Call.effect(Fx.breakBlock, cx * tilesize, cy * tilesize, warmup * 5f, Pal.accent);
-
-                            if (Mathf.chance(warmup)) {
-                                if (Mathf.chance(0.1f))
-                                    Call.effect(Fx.cloudsmoke, x + Mathf.range(0, 36), y + Mathf.range(0, 36), 1f, Pal.gray);
-                                if (Mathf.chance(0.2f))
-                                    Call.soundAt(Mathf.chance(0.7f) ? Sounds.flame2 : Sounds.flame, x, y, 0.8f, Mathf.range(0.8f, 1.5f));
+                    if(targetEmitter != null){
+                        for(int i = -1; i < 2; i++){
+                            for(int j = -1; j < 2; j++){
+                                float wx = targetEmitter.x + (i * 4), wy = targetEmitter.y + (j * 4);
+                                Call.effect(Fx.mineHuge, wx, wy, 0, Pal.health);
                             }
                         }
-                    });
-                } else{
+                        if(Mathf.chance(warmup * 0.1f)){
+                            Call.effect(Fx.cloudsmoke, x + Mathf.range(0, 36), y + Mathf.range(0, 36), 1f, Pal.gray);
+                            Call.soundAt(Mathf.chance(0.7f) ? Sounds.flame2 : Sounds.flame, x, y, 0.8f, Mathf.range(0.8f, 1.5f));
+                        }
+                    }
+                }else{
                     finFx += 1;
                 }
-                Building build;
-                while (Mathf.equal(warmup, 1f, 0.01f) && (build = Units.findEnemyTile(team, x, y, nullifierRange * tilesize, b -> b.block instanceof CoreBlock && creeperBlocks.containsValue(b.block))) != null) {
+                if(targetEmitter != null && Mathf.equal(warmup, 1f, 0.01f)){
                     Call.effect(Fx.massiveExplosion, x, y, 2f, Pal.accentBack);
-                    for (Emitter e : creeperEmitters) if (e.build == build) creeperEmitters.remove(e);
 
-                    Damage.damage(x, y, 16f * tilesize, explosionDamage);
+                    for(Emitter e : creeperEmitters) if(e.build == targetEmitter) creeperEmitters.remove(e);
 
                     Call.effect(Fx.shockwave, x, y, 16f, Pal.accent);
                     Call.soundAt(Sounds.corexplode, x, y, 0.8f, 1.5f);
 
                     tile.setNet(Blocks.air); // We dont want polys rebuilding this
-                    build.tile.setNet(Blocks.coreShard, Team.sharded, 0);
-
-                    // again in case other explosion destroys it
-                    Building finalBuild = build;
-                    Core.app.post(() -> finalBuild.tile.setNet(Blocks.coreShard, Team.sharded, 0));
+                    targetEmitter.tile.setNet(Blocks.coreShard, Team.sharded, 0);
+                    targetEmitter = null;
                 }
 
                 if(!prevOut && (getPowerProduction() > consumes.getPower().requestedPower(this))){
@@ -188,7 +186,7 @@ public class ImpactReactor extends PowerGenerator{
         public void drawLight(){
             Drawf.light(team, x, y, (110f + Mathf.absin(5, 5f)) * warmup, Tmp.c1.set(plasma2).lerp(plasma1, Mathf.absin(7f, 0.2f)), 0.8f * warmup);
         }
-        
+
         @Override
         public double sense(LAccess sensor){
             if(sensor == LAccess.heat) return warmup;
@@ -219,6 +217,10 @@ public class ImpactReactor extends PowerGenerator{
         public void read(Reads read, byte revision){
             super.read(read, revision);
             warmup = read.f();
+        }
+
+        public boolean validateEmitterTarget(){
+            return targetEmitter != null && targetEmitter.block != null;
         }
     }
 }
