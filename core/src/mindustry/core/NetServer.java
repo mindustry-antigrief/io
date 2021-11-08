@@ -278,7 +278,7 @@ public class NetServer implements ApplicationListener{
         });
 
         clientCommands.<Player>register("tutorial", "", "Start the interactive tutorial", (args, player) -> {
-            Call.menuChoose(player, 1, 0);
+            Call.menuChoose(player, tutorialID, 0);
         });
 
         // [#656566]⚠

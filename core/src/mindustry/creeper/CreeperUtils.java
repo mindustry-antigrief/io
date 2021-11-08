@@ -53,6 +53,7 @@ public class CreeperUtils{
     public static float nullifyTimeout = 180f; // The amount of time a core remains suspended (resets upon enough damage applied)
 
     public static float nullificationPeriod = 10f; // How many seconds all cores have to be nullified (suspended) in order for the game to end
+    public static int tutorialID;
     private static int nullifiedCount = 0;
     private static int pulseOffset = 0;
 
@@ -179,10 +180,10 @@ public class CreeperUtils{
             });
         }
 
-        int firstID = menuID;
+        tutorialID = menuID;
         Events.on(EventType.PlayerJoin.class, e -> {
             if(e.player.getInfo().timesJoined > 1) return;
-            Call.menu(e.player.con, firstID, "[accent]Welcome![]", "Looks like it's your first time playing..", tutStart);
+            Call.menu(e.player.con, tutorialID, "[accent]Welcome![]", "Looks like it's your first time playing..", tutStart);
         });
 
         Events.on(EventType.GameOverEvent.class, e -> {
