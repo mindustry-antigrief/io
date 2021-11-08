@@ -320,7 +320,11 @@ public class CreeperUtils{
     }
 
     public static int closestEmitterDist(Tile tile){
-        return (int)Geometry.findClosest(tile.x, tile.y, creeperTeam.cores()).dst(tile);
+        return (int) tile.dst(closestEmitter(tile));
+    }
+
+    public static CoreBuild closestEmitter(Tile tile){
+        return Geometry.findClosest(tile.getX(), tile.getY(), creeperTeam.cores());
     }
 
     // creates appropriate blocks for creeper OR damages the tile that it wants to take
