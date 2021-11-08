@@ -1,14 +1,13 @@
 package mindustry.creeper;
 
-import arc.Events;
-import arc.graphics.Color;
-import arc.util.Log;
-import mindustry.content.Fx;
-import mindustry.game.EventType;
-import mindustry.gen.Building;
-import mindustry.gen.Call;
+import arc.graphics.*;
+import mindustry.content.*;
+import mindustry.gen.*;
+import mindustry.world.*;
 
-public class Emitter {
+import static mindustry.Vars.world;
+
+public class Emitter{
     public int interval;
     public int amt;
     public Building build;
@@ -48,7 +47,7 @@ public class Emitter {
 
     // updates every 1 second
     public void fixedUpdate(){
-        if(nullified) {
+        if(nullified){
             Call.label("[red]*[] SUSPENDED [red]*[]", 1f, build.x, build.y);
             Call.effect(Fx.placeBlock, build.x, build.y, build.block.size, Color.yellow);
         }
