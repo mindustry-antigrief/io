@@ -46,7 +46,7 @@ public class CreeperUtils{
     public static float shieldCreeperDropAmount = 7f;
     public static float shieldCreeperDropRadius = 4f;
 
-    public static float nullifierRange = 16f;
+    public static float nullifierRange = 80f;
 
 
     public static float nullifyDamage = 1500f; // Damage that needs to be applied for the core to be suspended
