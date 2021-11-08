@@ -162,9 +162,9 @@ public class CreeperUtils{
         }
 
         // max amt is 10
-        emitterBlocks.put(Blocks.coreShard, new Emitter(8, 5));
-        emitterBlocks.put(Blocks.coreFoundation, new Emitter(6, 10));
-        emitterBlocks.put(Blocks.coreNucleus, new Emitter(3, 10));
+        emitterBlocks.put(Blocks.coreShard, new Emitter(20, 5));
+        emitterBlocks.put(Blocks.coreFoundation, new Emitter(16, 8));
+        emitterBlocks.put(Blocks.coreNucleus, new Emitter(12, 10));
 
         chargedEmitterBlocks.put(Blocks.launchPad, new ChargedEmitter(1, 10, 180, 600));
         chargedEmitterBlocks.put(Blocks.interplanetaryAccelerator, new ChargedEmitter(0, 10, 380, 1800));
