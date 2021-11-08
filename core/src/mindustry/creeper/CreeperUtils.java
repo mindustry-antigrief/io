@@ -17,6 +17,7 @@ import mindustry.ui.*;
 import mindustry.world.*;
 import mindustry.world.blocks.defense.*;
 import mindustry.world.blocks.environment.*;
+import mindustry.world.blocks.storage.CoreBlock.*;
 import mindustry.world.meta.*;
 
 import java.util.*;
@@ -26,8 +27,7 @@ import static mindustry.Vars.*;
 public class CreeperUtils{
     public static float updateInterval = 0.02f; // Base update interval in seconds
     public static float transferRate = 0.2499f; // Base transfer rate NOTE: keep below 0.25f
-    public static float evaporationRate = 0f; // Base creeper evaporation
-    public static float creeperDamage = 6f; // Base creeper damage
+    public static float creeperDamage = 1f; // Base creeper damage
     public static float damageEvaporationRate = 0.95f; // Creeper percentage that will remain upon damaging something
     public static float creeperUnitDamage = 2f;
     public static float minCreeper = 0.99f; // Minimum amount of creeper required for transfer
