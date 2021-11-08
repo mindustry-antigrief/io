@@ -345,16 +345,16 @@ public class CreeperUtils{
 
     public static void applyDamage(Tile tile){
         if(tile.build != null && tile.build.team != creeperTeam && tile.creep > 1f){
-            //Core.app.post(() -> {
-            if(tile.build == null) return;
+            Core.app.post(() -> {
+                if(tile.build == null) return;
 
-            if(Mathf.chance(0.05d)){
-                Call.effect(Fx.bubble, tile.build.x, tile.build.y, 0, Color.blue);
-            }
-            tile.build.damage(creeperDamage * tile.creep);
-            tile.creep *= damageEvaporationRate;
-            tile.newCreep *= damageEvaporationRate;
-            //});
+                if(Mathf.chance(0.05d)){
+                    Call.effect(Fx.bubble, tile.build.x, tile.build.y, 0, Color.blue);
+                }
+                tile.build.damage(creeperDamage * tile.creep);
+                tile.creep *= damageEvaporationRate;
+                tile.newCreep *= damageEvaporationRate;
+            });
         }
     }
 
