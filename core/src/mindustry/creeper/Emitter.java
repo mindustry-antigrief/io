@@ -1,13 +1,14 @@
 package mindustry.creeper;
 
 import arc.graphics.*;
+import arc.math.geom.*;
 import mindustry.content.*;
 import mindustry.gen.*;
 import mindustry.world.*;
 
 import static mindustry.Vars.world;
 
-public class Emitter{
+public class Emitter implements Position{
     public int interval;
     public int amt;
     public Building build;
