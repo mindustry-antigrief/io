@@ -295,7 +295,7 @@ public class CreeperUtils{
         }
 
         // update creeper flow
-        if(++pulseOffset == 8) pulseOffset = 0;
+        if(++pulseOffset == 64) pulseOffset = 0;
         for(Tile tile : creeperableTiles){
             if(tile == null){
                 creeperableTiles.remove(tile);
@@ -307,7 +307,7 @@ public class CreeperUtils{
             // damage non creeper tiles
             applyDamage(tile);
             // Draw
-            if((closestEmitterDist(tile) + pulseOffset) % 8 == 0){
+            if((closestEmitterDist(tile) - pulseOffset) % 64 == 0){
                 drawCreeper(tile);
             }
         }
