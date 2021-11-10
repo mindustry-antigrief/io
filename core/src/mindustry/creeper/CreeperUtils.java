@@ -347,53 +347,45 @@ public class CreeperUtils{
         }
     }
 
-    public static boolean canTransfer(Tile source, Tile target){
-        boolean amountValid = source.creep > minCreeper;
-
-        if(invalidTile(target))
-            return false;
-
-        if(target.block() instanceof TreeBlock && amountValid)
-            return true;
-
-        if(target.block() instanceof StaticWall || (target.floor() != null && !target.floor().placeableOn || target.floor().isDeep() || target.block() instanceof Cliff))
-            return false;
-
-        if(source.build != null && source.build.team != creeperTeam){
-            // wall or something, decline transfer but damage the wall
-            applyDamage(source);
-            return false;
-        }
-
-        return amountValid;
-    }
-
     public static boolean invalidTile(Tile tile){
         return tile == null;
     }
 
     public static void transferCreeper(Tile source){
-        if(source.build == null) return;
+        if(source.build == null || source.creep < 1f) return;
 
         float total = 0f;
-        int init = Mathf.random(3);
-        for(int i = init; i < init + 4 ; i++){
+        for(int i = source.build.id; i < source.build.id + 4; i++){
             Tile target = source.nearby(i % 4);
-            if(target == null || target.creep >= 10 || target.creep > source.creep) continue;
+            if(cannotTransfer(source, target)) continue;
 
-            float max = Math.min(source.creep * transferRate, 10 - target.creep);
-            float delta = canTransfer(source, target) ?
-                Mathf.clamp((source.creep - target.creep) * transferRate, 0, max) :
-                0;
-
-            if (delta > 0.001f){
+            float delta = Mathf.clamp((source.creep - target.creep) * transferRate, 0, Math.min(source.creep * transferRate, 10 - target.creep));
+            if(delta > 0.001f){
                 target.creep += delta;
                 total += delta;
             }
         }
 
-        if (total > 0.001f){
+        if(total > 0.001f){
             source.creep -= total;
         }
+    }
+
+    public static boolean cannotTransfer(Tile source, Tile target){
+        if(source == null
+        || target == null
+        || target.creep >= 10
+        || source.creep <= target.creep
+        || target.block() instanceof StaticWall
+        || target.block() instanceof Cliff
+        || (target.floor() != null && (!target.floor().placeableOn || target.floor().isDeep()))){
+            return true;
+        }
+        if(source.build != null && source.build.team != creeperTeam){
+            applyDamage(source);
+            return true;
+        }
+
+        return false;
     }
 }
