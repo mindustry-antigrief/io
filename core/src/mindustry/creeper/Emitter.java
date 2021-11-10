@@ -4,9 +4,6 @@ import arc.graphics.*;
 import arc.math.geom.*;
 import mindustry.content.*;
 import mindustry.gen.*;
-import mindustry.world.*;
-
-import static mindustry.Vars.world;
 
 public class Emitter implements Position{
     public int interval;
@@ -25,25 +22,13 @@ public class Emitter implements Position{
 
         if(counter >= interval && !nullified){
             counter = 0;
-            spawnCreep();
+            build.tile.getLinkedTiles(t -> {
+                t.creep += amt;
+            });
         }
         counter++;
 
         return true;
-    }
-
-    public void spawnCreep(){
-        if(build.block == null) return;
-        Tile on = build.tile;
-        int offset = -(build.block.size - 1) / 2;
-
-        for(int dx = 0; dx < build.block.size; dx++){
-            for(int dy = 0; dy < build.block.size; dy++){
-                int wx = dx + on.x + offset, wy = dy + on.y + offset;
-                Tile tile = world.tile(wx, wy);
-                if (tile != null) tile.creep = Math.min(10, tile.creep + amt);
-            }
-        }
     }
 
     // updates every 1 second
