@@ -25,7 +25,7 @@ import static mindustry.Vars.*;
 public class CreeperUtils{
     public static float updateInterval = 0.02f; // Base update interval in seconds
     public static float transferRate = 0.2f; // Base transfer rate NOTE: keep below 0.25f
-    public static float creeperDamage = 1f; // Base creeper damage
+    public static float creeperDamage = 0.1f; // Base creeper damage
     public static float damageEvaporationRate = 0.96f; // Creeper percentage that will remain upon damaging something
     public static float creeperUnitDamage = 2f;
     public static float minCreeper = 0.99f; // Minimum amount of creeper required for transfer
@@ -318,7 +318,6 @@ public class CreeperUtils{
         return Geometry.findClosest(tile.getX(), tile.getY(), creeperEmitters);
     }
 
-    // creates appropriate blocks for creeper OR damages the tile that it wants to take
     public static void drawCreeper(Tile tile){
         Core.app.post(() -> {
             if(tile.creep < 1f){
