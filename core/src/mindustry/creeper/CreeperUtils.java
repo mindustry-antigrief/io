@@ -197,9 +197,7 @@ public class CreeperUtils{
             shields.clear();
         });
 
-        Events.on(EventType.WorldLoadEvent.class, e -> {
-            // DOES NOT SIGNIFY WORLD IS LOADED, need to wait
-            Threads.sleep(2000);
+        Events.on(EventType.PlayEvent.class, e -> {
             creeperableTiles.clear();
             creeperEmitters.clear();
 
