@@ -237,7 +237,7 @@ public class CreeperUtils{
                     if(CreeperUtils.nullifiedCount == CreeperUtils.creeperEmitters.size){
                         // gameover
                         state.gameOver = true;
-                        Events.fire(new EventType.GameOverEvent(Team.sharded));
+                        Events.fire(new EventType.GameOverEvent(state.rules.defaultTeam));
                     }
                     // failed to win, core got unsuspended
                 }, nullificationPeriod);
