@@ -66,15 +66,6 @@ public class Tile implements Position, QuadTreeObject, Displayable{
         return Point2.pack(x, y);
     }
 
-    public boolean touchingCreeper(){
-        return (
-                (world.tile(x+1, y) != null && CreeperUtils.creeperBlocks.containsValue(world.tile(x+1, y).block())) ||
-                (world.tile(x-1, y) != null && CreeperUtils.creeperBlocks.containsValue(world.tile(x-1, y).block())) ||
-                (world.tile(x, y+1) != null && CreeperUtils.creeperBlocks.containsValue(world.tile(x, y+1).block())) ||
-                (world.tile(x, y-1) != null && CreeperUtils.creeperBlocks.containsValue(world.tile(x, y-1).block()))
-        );
-    }
-
     /** @return this tile's position, packed to the world width - for use in width*height arrays. */
     public int array(){
         return x + y * world.tiles.width;
