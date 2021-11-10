@@ -26,7 +26,7 @@ public class CreeperUtils{
     public static float updateInterval = 0.02f; // Base update interval in seconds
     public static float transferRate = 0.2499f; // Base transfer rate NOTE: keep below 0.25f
     public static float creeperDamage = 1f; // Base creeper damage
-    public static float damageEvaporationRate = 0.99f; // Creeper percentage that will remain upon damaging something
+    public static float damageEvaporationRate = 0.96f; // Creeper percentage that will remain upon damaging something
     public static float creeperUnitDamage = 2f;
     public static float minCreeper = 0.99f; // Minimum amount of creeper required for transfer
 
@@ -160,9 +160,9 @@ public class CreeperUtils{
         }
 
         // max amt is 10
-        emitterBlocks.put(Blocks.coreShard, new Emitter(20, 5));
-        emitterBlocks.put(Blocks.coreFoundation, new Emitter(16, 8));
-        emitterBlocks.put(Blocks.coreNucleus, new Emitter(12, 10));
+        emitterBlocks.put(Blocks.coreShard, new Emitter(30, 3));
+        emitterBlocks.put(Blocks.coreFoundation, new Emitter(20, 5));
+        emitterBlocks.put(Blocks.coreNucleus, new Emitter(15, 7));
 
         chargedEmitterBlocks.put(Blocks.launchPad, new ChargedEmitter(1, 10, 180, 600));
         chargedEmitterBlocks.put(Blocks.interplanetaryAccelerator, new ChargedEmitter(0, 10, 380, 1800));
@@ -339,8 +339,8 @@ public class CreeperUtils{
             Core.app.post(() -> {
                 if(tile.build == null) return;
 
-                if(Mathf.chance(0.05d)){
-                    Call.effect(Fx.bubble, tile.build.x, tile.build.y, 0, Color.blue);
+                if(Mathf.chance(0.02d)){
+                    Call.effect(Fx.bubble, tile.build.x, tile.build.y, 0, creeperTeam.color);
                 }
                 tile.build.damage(creeperDamage * tile.creep);
                 tile.creep *= damageEvaporationRate;
