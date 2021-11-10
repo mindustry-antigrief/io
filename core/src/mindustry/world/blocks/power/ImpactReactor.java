@@ -18,7 +18,6 @@ import mindustry.gen.*;
 import mindustry.graphics.*;
 import mindustry.logic.*;
 import mindustry.ui.*;
-import mindustry.world.blocks.storage.CoreBlock.*;
 import mindustry.world.meta.*;
 
 import static mindustry.Vars.*;
@@ -80,21 +79,21 @@ public class ImpactReactor extends PowerGenerator{
         public float warmup;
         public int lastFx = 0;
         public int finFx = 0;
-        public CoreBuild targetEmitter;
+        public Emitter targetEmitter;
 
         @Override
         public void updateTile(){
             if(lastFx > (2f - warmup) * 50){
                 lastFx = 0;
                 if (targetEmitter == null){
-                    CoreBuild core = CreeperUtils.closestEmitter(tile);
+                    Emitter core = CreeperUtils.closestEmitter(tile);
                     if (core != null && dst(core) < nullifierRange){
                         targetEmitter = core;
                     }
                 }
 
-                if(validateEmitterTarget()){
-                    Geometry.iterateLine(0f, x, y, targetEmitter.x, targetEmitter.y, Math.max((1f - warmup) * 16f, 4f), (x, y) -> {
+                if(targetEmitter != null && targetEmitter.build != null){
+                    Geometry.iterateLine(0f, x, y, targetEmitter.getX(), targetEmitter.getY(), Math.max((1f - warmup) * 16f, 4f), (x, y) -> {
                         Timer.schedule(() -> {
                             Call.effect(Fx.lancerLaserChargeBegin, x, y, 1, Pal.accent);
                         }, dst(x, y) / tilesize / nullifierRange);
@@ -117,7 +116,7 @@ public class ImpactReactor extends PowerGenerator{
                     if(targetEmitter != null){
                         for(int i = -1; i < 2; i++){
                             for(int j = -1; j < 2; j++){
-                                float wx = targetEmitter.x + (i * 4), wy = targetEmitter.y + (j * 4);
+                                float wx = targetEmitter.getX() + (i * 4), wy = targetEmitter.getY() + (j * 4);
                                 Call.effect(Fx.mineHuge, wx, wy, 0, Pal.health);
                             }
                         }
@@ -132,13 +131,13 @@ public class ImpactReactor extends PowerGenerator{
                 if(targetEmitter != null && Mathf.equal(warmup, 1f, 0.01f)){
                     Call.effect(Fx.massiveExplosion, x, y, 2f, Pal.accentBack);
 
-                    for(Emitter e : creeperEmitters) if(e.build == targetEmitter) creeperEmitters.remove(e);
+                    creeperEmitters.remove(targetEmitter);
 
                     Call.effect(Fx.shockwave, x, y, 16f, Pal.accent);
                     Call.soundAt(Sounds.corexplode, x, y, 0.8f, 1.5f);
 
                     tile.setNet(Blocks.air); // We dont want polys rebuilding this
-                    targetEmitter.tile.setNet(Blocks.coreShard, Team.sharded, 0);
+                    targetEmitter.build.tile.setNet(Blocks.coreShard, Team.sharded, 0);
                     targetEmitter = null;
                 }
 
@@ -217,10 +216,6 @@ public class ImpactReactor extends PowerGenerator{
         public void read(Reads read, byte revision){
             super.read(read, revision);
             warmup = read.f();
-        }
-
-        public boolean validateEmitterTarget(){
-            return targetEmitter != null && targetEmitter.block != null;
         }
     }
 }
