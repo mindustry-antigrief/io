@@ -28,7 +28,7 @@ public class CreeperUtils{
     public static float updateInterval = 0.02f; // Base update interval in seconds
     public static float transferRate = 0.2499f; // Base transfer rate NOTE: keep below 0.25f
     public static float creeperDamage = 1f; // Base creeper damage
-    public static float damageEvaporationRate = 0.95f; // Creeper percentage that will remain upon damaging something
+    public static float damageEvaporationRate = 0.99f; // Creeper percentage that will remain upon damaging something
     public static float creeperUnitDamage = 2f;
     public static float minCreeper = 0.99f; // Minimum amount of creeper required for transfer
 
