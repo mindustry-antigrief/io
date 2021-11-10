@@ -219,8 +219,9 @@ public class CreeperUtils{
         });
 
         Events.on(EventType.BlockDestroyEvent.class, e -> {
-            if(CreeperUtils.creeperBlocks.containsValue(e.tile.block()))
-                onCreeperDestroy(e.tile);
+            if(CreeperUtils.creeperBlocks.containsValue(e.tile.block())){
+                e.tile.creep = 0;
+            }
         });
 
         Events.on(EventType.UnitCreateEvent.class, e -> { // Horizons can't shoot but also don't die to flood
@@ -251,13 +252,7 @@ public class CreeperUtils{
                 return;
 
             ct.creep = Math.min(ct.creep + amount, 10);
-            ct.newCreep = ct.creep;
         });
-    }
-
-    private static void onCreeperDestroy(Tile tile){
-        tile.creep = 0;
-        tile.newCreep = 0;
     }
 
     public static void fixedUpdate(){
@@ -352,7 +347,6 @@ public class CreeperUtils{
                 }
                 tile.build.damage(creeperDamage * tile.creep);
                 tile.creep *= damageEvaporationRate;
-                tile.newCreep *= damageEvaporationRate;
             });
         }
     }

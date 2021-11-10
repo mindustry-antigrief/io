@@ -11,9 +11,8 @@ import arc.struct.*;
 import arc.util.*;
 import mindustry.annotations.Annotations.*;
 import mindustry.content.*;
-import mindustry.creeper.CreeperUtils;
-import mindustry.game.*;
 import mindustry.game.EventType.*;
+import mindustry.game.*;
 import mindustry.gen.*;
 import mindustry.type.*;
 import mindustry.ui.*;
@@ -37,7 +36,6 @@ public class Tile implements Position, QuadTreeObject, Displayable{
     protected boolean changing = false;
 
     public float creep;
-    public float newCreep;
 
     public Tile(int x, int y){
         this.x = (short)x;
