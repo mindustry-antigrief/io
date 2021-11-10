@@ -323,18 +323,17 @@ public class CreeperUtils{
 
     // creates appropriate blocks for creeper OR damages the tile that it wants to take
     public static void drawCreeper(Tile tile){
+        Core.app.post(() -> {
+            if(tile.creep < 1f){
+                return;
+            }
+            int currentLvl = creeperLevels.getOrDefault(tile.block(), 11);
+            int creepLvl = Math.round(tile.creep);
 
-        // check minimum creeper to draw
-        if(tile.creep < 1f){
-            return;
-        }
-        int currentLvl = creeperLevels.getOrDefault(tile.block(), 11);
-        int creepLvl = Math.round(tile.creep);
-        Team tileTeam = tile.team();
-
-        if((tileTeam == Team.derelict || tileTeam == creeperTeam) && currentLvl <= 10 && (currentLvl < creepLvl || currentLvl > creepLvl + 2)){
-            tile.setNet(creeperBlocks.get(Mathf.clamp(Math.round(tile.creep), 0, 10)), creeperTeam, Mathf.random(0, 3));
-        }
+            if((tile.build == null || tile.build.team == creeperTeam) && currentLvl <= 10 && (currentLvl < creepLvl || currentLvl > creepLvl + 1)){
+                tile.setNet(creeperBlocks.get(Mathf.clamp(Math.round(tile.creep), 0, 10)), creeperTeam, Mathf.random(0, 3));
+            }
+        });
     }
 
     public static void applyDamage(Tile tile){
