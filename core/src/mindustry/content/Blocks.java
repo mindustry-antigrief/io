@@ -1748,14 +1748,14 @@ public class Blocks implements ContentList{
             ammo(
             Items.titanium, new ShrapnelBulletType(){{
                 length = brange;
-                damage = 3f;
+                damage = 20f;
                 ammoMultiplier = 4f;
                 width = 17f;
                 reloadMultiplier = 1.3f;
             }},
             Items.thorium, new ShrapnelBulletType(){{
                 length = brange;
-                damage = 8f;
+                damage = 40f;
                 ammoMultiplier = 5f;
                 toColor = Pal.thoriumPink;
                 shootEffect = smokeEffect = Fx.thoriumShoot;
