@@ -376,27 +376,26 @@ public class CreeperUtils{
     }
 
     public static void transferCreeper(Tile source){
-        Tile[] adjacent = new Tile[]{
-        world.tile(source.x, source.y + 1),
-        world.tile(source.x, source.y - 1),
-        world.tile(source.x + 1, source.y),
-        world.tile(source.x - 1, source.y),
-        };
+        if(source.build == null) return;
 
         float total = 0f;
-        for(Tile target : adjacent){
-            if(target == null) continue;
-            // cannot transfer more than the rate or go over the cap.
-            float max = Math.min(source.creep * transferRate, 10 - target.creep);
-            float delta = canTransfer(source, target) ? Mathf.clamp((source.creep - target.creep) * transferRate, 0, max) : 0;
+        int init = Mathf.random(3);
+        for(int i = init; i < init + 4 ; i++){
+            Tile target = source.nearby(i % 4);
+            if(target == null || target.creep >= 10 || target.creep > source.creep) continue;
 
-            if(delta > 0.001f){
+            float max = Math.min(source.creep * transferRate, 10 - target.creep);
+            float delta = canTransfer(source, target) ?
+                Mathf.clamp((source.creep - target.creep) * transferRate, 0, max) :
+                0;
+
+            if (delta > 0.001f){
                 target.creep += delta;
                 total += delta;
             }
         }
 
-        if(total > 0.001f){
+        if (total > 0.001f){
             source.creep -= total;
         }
     }
