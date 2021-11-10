@@ -300,11 +300,10 @@ public class CreeperUtils{
                 continue;
             }
 
+            // spread creep and apply damage
             transferCreeper(tile);
-
-            // damage non creeper tiles
             applyDamage(tile);
-            // Draw
+
             if((closestEmitterDist(tile) - pulseOffset) % 64 == 0){
                 drawCreeper(tile);
             }
