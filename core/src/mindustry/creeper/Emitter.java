@@ -65,4 +65,14 @@ public class Emitter{
         interval = ref.interval;
         amt = ref.amt;
     }
+
+    @Override
+    public float getX(){
+        return build.x;
+    }
+
+    @Override
+    public float getY(){
+        return build.y;
+    }
 }
