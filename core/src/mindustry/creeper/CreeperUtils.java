@@ -8,7 +8,6 @@ import arc.struct.EnumSet;
 import arc.struct.*;
 import arc.util.Timer;
 import arc.util.*;
-import arc.util.async.*;
 import mindustry.content.*;
 import mindustry.entities.bullet.*;
 import mindustry.game.*;
@@ -17,7 +16,6 @@ import mindustry.ui.*;
 import mindustry.world.*;
 import mindustry.world.blocks.defense.*;
 import mindustry.world.blocks.environment.*;
-import mindustry.world.blocks.storage.CoreBlock.*;
 import mindustry.world.meta.*;
 
 import java.util.*;
