@@ -204,10 +204,11 @@ public class CreeperUtils{
             for(Tile tile : world.tiles){
                 if(!tile.floor().isDeep() && tile.floor().placeableOn && (tile.breakable() || tile.block() == Blocks.air || tile.block() instanceof TreeBlock)){
                     creeperableTiles.add(tile);
-
-                if(tile.block() != null && emitterBlocks.containsKey(tile.block()) && tile.isCenter() && tile.build.team == creeperTeam){
-                    creeperEmitters.add(new Emitter(tile.build));
                 }
+            }
+
+            for(Building core : creeperTeam.cores()){
+                creeperEmitters.add(new Emitter(core));
             }
 
             Log.info(creeperableTiles.size + " creeperableTiles");
