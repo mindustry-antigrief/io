@@ -20,10 +20,10 @@ public class Emitter implements Position{
 
         nullified = build.nullifyTimeout > 0f;
 
-        if(counter >= interval && !nullified){
+        if (counter >= interval){
             counter = 0;
             build.tile.getLinkedTiles(t -> {
-                t.creep += amt;
+                t.creep = nullified ? Math.min(t.creep, 10) : t.creep + amt;
             });
         }
         counter++;
@@ -39,17 +39,17 @@ public class Emitter implements Position{
         }
     }
 
-    public Emitter(int _interval, int _amt){
-        interval = _interval;
-        amt = _amt;
+    public Emitter(int interval, int amt){
+        this.interval = interval;
+        this.amt = amt;
     }
 
-    public Emitter(Building _build){
-        build = _build;
+    public Emitter(Building build){
+        this.build = build;
 
         var ref = CreeperUtils.emitterBlocks.get(build.block);
-        interval = ref.interval;
-        amt = ref.amt;
+        this.interval = ref.interval;
+        this.amt = ref.amt;
     }
 
     @Override
