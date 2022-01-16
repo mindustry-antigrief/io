@@ -43,11 +43,11 @@ public class CreeperUtils{
     public static float shieldCreeperDropAmount = 7f;
     public static float shieldCreeperDropRadius = 4f;
 
-    public static float nullifierRange = 80f;
+    public static float nullifierRange = 16 * tilesize;
 
 
     public static float nullifyDamage = 1500f; // Damage that needs to be applied for the core to be suspended
-    public static float nullifyTimeout = 180f; // The amount of time a core remains suspended (resets upon enough damage applied)
+    public static float nullifyTimeout = 180f; // The amount of ticks a core remains suspended (resets upon enough damage applied)
 
     public static float nullificationPeriod = 10f; // How many seconds all cores have to be nullified (suspended) in order for the game to end
     public static int tutorialID;
