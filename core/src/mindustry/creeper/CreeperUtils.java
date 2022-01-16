@@ -315,7 +315,9 @@ public class CreeperUtils{
     }
 
     public static int closestEmitterDist(Tile tile){
-        return (int)closestEmitter(tile).dst(tile);
+        Emitter closestEmitter = closestEmitter(tile);
+        if(closestEmitter == null) return -1;
+        return (int) closestEmitter.dst(tile);
     }
 
     public static Emitter closestEmitter(Tile tile){
