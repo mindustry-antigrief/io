@@ -14,7 +14,6 @@ import mindustry.ai.types.*;
 import mindustry.annotations.Annotations.*;
 import mindustry.content.*;
 import mindustry.core.*;
-import mindustry.creeper.CreeperUtils;
 import mindustry.ctype.*;
 import mindustry.entities.*;
 import mindustry.entities.abilities.*;
@@ -30,6 +29,7 @@ import mindustry.world.blocks.environment.*;
 import mindustry.world.blocks.payloads.*;
 
 import static mindustry.Vars.*;
+import static mindustry.creeper.CreeperUtils.*;
 import static mindustry.logic.GlobalConstants.*;
 
 @Component(base = true)
@@ -475,8 +475,13 @@ abstract class UnitComp implements Healthc, Physicsc, Hitboxc, Statusc, Teamc, I
         }
 
         //damage if on creeper
-        if(team != CreeperUtils.creeperTeam && tileOn() != null && tileOn().team() == CreeperUtils.creeperTeam) {
-            damageContinuous((1f - type.creeperResistance) * CreeperUtils.creeperUnitDamage * CreeperUtils.creeperLevels.getOrDefault(tileOn().block(), 1));
+        if(team != creeperTeam && tileOn() != null && tileOn().team() == creeperTeam) {
+            int creeperLevel = creeperLevels.getOrDefault(tileOn().block(), 1);
+            if (creeperLevel > 10){
+                kill();
+            }else{
+                damageContinuous((1f-type.creeperResistance) * creeperUnitDamage * creeperLevel);
+            }
 
             if(Mathf.chance(0.1f))
                 Call.effect(Fx.bubble, x, y, 0, Color.blue);
@@ -490,9 +495,9 @@ abstract class UnitComp implements Healthc, Physicsc, Hitboxc, Statusc, Teamc, I
 
     /** Deposits creeper. **/
     public void deposit(){
-        if(team == CreeperUtils.creeperTeam && type.creeperDeposit > 0){
-            CreeperUtils.depositCreeper(world.tileWorld(x, y), type.hitSize / 2, type.creeperDeposit);
-            Call.effect(Fx.sapExplosion, x, y, 10, CreeperUtils.creeperTeam.color);
+        if(team == creeperTeam && type.creeperDeposit > 0){
+            depositCreeper(world.tileWorld(x, y), type.hitSize / 2, type.creeperDeposit);
+            Call.effect(Fx.sapExplosion, x, y, 10, creeperTeam.color);
         }
         kill();
     }
