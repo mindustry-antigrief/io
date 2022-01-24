@@ -342,6 +342,10 @@ public class CreeperUtils{
         return Geometry.findClosest(tile.getX(), tile.getY(), creeperEmitters);
     }
 
+    public static ChargedEmitter closestChargedEmitter(Tile tile){
+        return Geometry.findClosest(tile.getX(), tile.getY(), chargedEmitters);
+    }
+
     public static void drawCreeper(Tile tile){
         Core.app.post(() -> {
             if(tile.creep < 1f){
