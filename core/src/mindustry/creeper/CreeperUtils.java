@@ -233,8 +233,12 @@ public class CreeperUtils{
 
         Timer.schedule(() -> {
             if(!state.isGame()) return;
-            Call.infoPopup("\uE88B [" + getTrafficlightColor(Mathf.clamp((CreeperUtils.nullifiedCount / Math.max(1.0, creeperEmitters.size)), 0f, 1f)) + "]" + CreeperUtils.nullifiedCount + "/" + CreeperUtils.creeperEmitters.size + "[] emitters suspended", 10f, 20, 50, 20, 527, 0);
-            Call.infoPopup("\uE88B [" + (chargedEmitters.size > 0 ? "red" : "green") + "]" + chargedEmitters.size + "[] charged emitters remaining", 10f, 20, 50, 20, 547, 0);
+            Call.infoPopup(
+            Strings.format(
+                "\uE88B [@] @/@ []emitters suspended\n\uE88B [@] @ []charged emitters remaining",
+                getTrafficlightColor(Mathf.clamp((nullifiedCount / Math.max(1.0, creeperEmitters.size)), 0f, 1f)), nullifiedCount, creeperEmitters.size,
+                (chargedEmitters.size > 0 ? "red" : "green"), chargedEmitters.size
+            ), 10f, 20, 50, 20, 527, 0);
             // check for gameover
             if(CreeperUtils.nullifiedCount == CreeperUtils.creeperEmitters.size){
                 Timer.schedule(() -> {
