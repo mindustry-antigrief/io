@@ -391,8 +391,8 @@ public class CreeperUtils{
             Tile target = source.nearby(i % 4);
             if(cannotTransfer(source, target)) continue;
 
-            // creeper delta, cannot transfer more than 1/4 source creep or less than 0.001f. Target creep cannot exceed 0
-            float delta = Mathf.clamp((source.creep - target.creep) * transferRate, 0, Math.min(source.creep * transferRate, 10 - target.creep));
+            // creeper delta, cannot transfer more than 1/4 source creep or less than 0.001f. Target creep cannot exceed max creep
+            float delta = Mathf.clamp((source.creep - target.creep) * transferRate, 0, Math.min(source.creep * transferRate, maxTileCreep - target.creep));
             if(delta > 0.001f){
                 target.creep += delta;
                 total += delta;
@@ -407,7 +407,7 @@ public class CreeperUtils{
     public static boolean cannotTransfer(Tile source, Tile target){
         if(source == null
         || target == null
-        || target.creep >= 10
+        || target.creep >= maxTileCreep
         || source.creep <= target.creep
         || target.block() instanceof StaticWall
         || target.block() instanceof Cliff
