@@ -60,9 +60,6 @@ public class CreeperUtils{
     public static HashMap<Integer, Block> creeperBlocks = new HashMap<>();
     public static HashMap<Block, Integer> creeperLevels = new HashMap<>();
 
-    public static HashMap<Block, Emitter> emitterBlocks = new HashMap<>();
-    public static HashMap<Block, ChargedEmitter> chargedEmitterBlocks = new HashMap<>();
-
     public static Seq<Emitter> creeperEmitters = new Seq<>();
     public static Seq<Tile> creeperableTiles = new Seq<>();
     public static Seq<ForceProjector.ForceBuild> shields = new Seq<>();
