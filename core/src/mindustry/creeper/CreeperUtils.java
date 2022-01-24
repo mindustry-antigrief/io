@@ -158,13 +158,8 @@ public class CreeperUtils{
             creeperLevels.put(set.getValue(), set.getKey());
         }
 
-        // max amt is 10
-        emitterBlocks.put(Blocks.coreShard, new Emitter(30, 3));
-        emitterBlocks.put(Blocks.coreFoundation, new Emitter(20, 5));
-        emitterBlocks.put(Blocks.coreNucleus, new Emitter(15, 7));
-
-        chargedEmitterBlocks.put(Blocks.launchPad, new ChargedEmitter(1, 10, 180, 600));
-        chargedEmitterBlocks.put(Blocks.interplanetaryAccelerator, new ChargedEmitter(0, 10, 380, 1800));
+        Emitter.init();
+        ChargedEmitter.init();
 
         int menuID = 0;
         for(int i = tutEntries.length; --i >= 0; ){
