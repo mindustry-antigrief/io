@@ -14,8 +14,11 @@ import mindustry.game.*;
 import mindustry.gen.*;
 import mindustry.ui.*;
 import mindustry.world.*;
+import mindustry.world.blocks.campaign.Accelerator.*;
+import mindustry.world.blocks.campaign.LaunchPad.*;
 import mindustry.world.blocks.defense.*;
 import mindustry.world.blocks.environment.*;
+import mindustry.world.blocks.storage.CoreBlock.*;
 import mindustry.world.meta.*;
 
 import java.util.*;
