@@ -231,10 +231,11 @@ public class CreeperUtils{
         Timer.schedule(() -> {
             if(!state.isGame()) return;
             Call.infoPopup("\uE88B [" + getTrafficlightColor(Mathf.clamp((CreeperUtils.nullifiedCount / Math.max(1.0, creeperEmitters.size)), 0f, 1f)) + "]" + CreeperUtils.nullifiedCount + "/" + CreeperUtils.creeperEmitters.size + "[] emitters suspended", 10f, 20, 50, 20, 527, 0);
+            Call.infoPopup("\uE88B [" + (chargedEmitters.size > 0 ? "red" : "green") + "]" + chargedEmitters.size + "[] charged emitters remaining", 10f, 20, 50, 20, 547, 0);
             // check for gameover
             if(CreeperUtils.nullifiedCount == CreeperUtils.creeperEmitters.size){
                 Timer.schedule(() -> {
-                    if(CreeperUtils.nullifiedCount == CreeperUtils.creeperEmitters.size){
+                    if(CreeperUtils.nullifiedCount == CreeperUtils.creeperEmitters.size && chargedEmitters.size <= 0){
                         // gameover
                         state.gameOver = true;
                         Events.fire(new EventType.GameOverEvent(state.rules.defaultTeam));
