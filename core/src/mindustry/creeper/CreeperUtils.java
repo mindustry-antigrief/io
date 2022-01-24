@@ -61,6 +61,7 @@ public class CreeperUtils{
     public static HashMap<Block, Integer> creeperLevels = new HashMap<>();
 
     public static Seq<Emitter> creeperEmitters = new Seq<>();
+    public static Seq<ChargedEmitter> chargedEmitters = new Seq<>();
     public static Seq<Tile> creeperableTiles = new Seq<>();
     public static Seq<ForceProjector.ForceBuild> shields = new Seq<>();
 
@@ -84,7 +85,6 @@ public class CreeperUtils{
     public static String getTrafficlightColor(double value){
         return "#" + Integer.toHexString(java.awt.Color.HSBtoRGB((float)value / 3f, 1f, 1f)).substring(2);
     }
-
 
     public static float[] targetSpore(){
         float[] ret = null;
@@ -189,11 +189,13 @@ public class CreeperUtils{
 
             creeperableTiles.clear();
             creeperEmitters.clear();
+            chargedEmitters.clear();
             shields.clear();
         });
 
         Events.on(EventType.PlayEvent.class, e -> {
             creeperableTiles.clear();
+            chargedEmitters.clear();
             creeperEmitters.clear();
 
             for(Tile tile : world.tiles){
