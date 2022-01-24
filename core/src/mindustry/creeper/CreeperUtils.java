@@ -201,8 +201,13 @@ public class CreeperUtils{
                 }
             }
 
-            for(Building core : creeperTeam.cores()){
-                creeperEmitters.add(new Emitter(core));
+            for(Building build : Groups.build){
+                if(build.team != creeperTeam) continue;
+                if(build instanceof CoreBuild){
+                    creeperEmitters.add(new Emitter(build));
+                }else if(build instanceof LaunchPadBuild || build instanceof AcceleratorBuild){
+                    chargedEmitters.add(new ChargedEmitter(build));
+                }
             }
 
             Log.info(creeperableTiles.size + " creeperableTiles");
