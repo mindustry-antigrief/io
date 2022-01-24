@@ -222,7 +222,7 @@ public class CreeperUtils{
         });
 
         Events.on(EventType.BlockDestroyEvent.class, e -> {
-            if(CreeperUtils.creeperBlocks.containsValue(e.tile.block())){
+            if(creeperBlocks.containsValue(e.tile.block())){
                 e.tile.creep = 0;
             }
         });
@@ -240,9 +240,9 @@ public class CreeperUtils{
                 (chargedEmitters.size > 0 ? "red" : "green"), chargedEmitters.size
             ), 10f, 20, 50, 20, 527, 0);
             // check for gameover
-            if(CreeperUtils.nullifiedCount == CreeperUtils.creeperEmitters.size){
+            if(nullifiedCount == creeperEmitters.size){
                 Timer.schedule(() -> {
-                    if(CreeperUtils.nullifiedCount == CreeperUtils.creeperEmitters.size && chargedEmitters.size <= 0){
+                    if(nullifiedCount == creeperEmitters.size && chargedEmitters.size <= 0){
                         // gameover
                         state.gameOver = true;
                         Events.fire(new EventType.GameOverEvent(state.rules.defaultTeam));
