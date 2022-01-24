@@ -13,11 +13,11 @@ import mindustry.content.*;
 import mindustry.creeper.*;
 import mindustry.entities.*;
 import mindustry.game.EventType.*;
-import mindustry.game.*;
 import mindustry.gen.*;
 import mindustry.graphics.*;
 import mindustry.logic.*;
 import mindustry.ui.*;
+import mindustry.world.*;
 import mindustry.world.meta.*;
 
 import static mindustry.Vars.*;
@@ -114,12 +114,9 @@ public class ImpactReactor extends PowerGenerator{
                 if(finFx > (1.1f - warmup) * 50){
                     finFx = 0;
                     if(targetEmitter != null){
-                        for(int i = -1; i < 2; i++){
-                            for(int j = -1; j < 2; j++){
-                                float wx = targetEmitter.getX() + (i * 4), wy = targetEmitter.getY() + (j * 4);
-                                Call.effect(Fx.mineHuge, wx, wy, 0, Pal.health);
-                            }
-                        }
+                        targetEmitter.build.tile.getLinkedTiles(t -> {
+                            Call.effect(Fx.mineHuge, t.getX(), t.getY(), 0, Pal.health);
+                        });
                         if(Mathf.chance(warmup * 0.1f)){
                             Call.effect(Fx.cloudsmoke, x + Mathf.range(0, 36), y + Mathf.range(0, 36), 1f, Pal.gray);
                             Call.soundAt(Mathf.chance(0.7f) ? Sounds.flame2 : Sounds.flame, x, y, 0.8f, Mathf.range(0.8f, 1.5f));
@@ -136,8 +133,10 @@ public class ImpactReactor extends PowerGenerator{
                     Call.effect(Fx.shockwave, x, y, 16f, Pal.accent);
                     Call.soundAt(Sounds.corexplode, x, y, 0.8f, 1.5f);
 
+                    Tile target = targetEmitter.build.tile;
                     tile.setNet(Blocks.air); // We dont want polys rebuilding this
-                    targetEmitter.build.tile.setNet(Blocks.coreShard, Team.sharded, 0);
+                    target.setNet(Blocks.coreShard, state.rules.defaultTeam, 0);
+                    Call.effect(Fx.placeBlock, target.getX(), target.getY(), Blocks.coreShard.size, state.rules.defaultTeam.color);
                     targetEmitter = null;
                 }
 
