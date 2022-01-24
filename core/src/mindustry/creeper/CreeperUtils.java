@@ -352,10 +352,9 @@ public class CreeperUtils{
                 return;
             }
             int currentLvl = creeperLevels.getOrDefault(tile.block(), 11);
-            int creepLvl = Math.round(tile.creep);
 
-            if((tile.build == null || tile.build.team == creeperTeam) && currentLvl <= 10 && (currentLvl < creepLvl || currentLvl > creepLvl + 1)){
-                tile.setNet(creeperBlocks.get(Mathf.clamp(Math.round(tile.creep), 0, 10)), creeperTeam, Mathf.random(0, 3));
+            if((tile.build == null || tile.block().alwaysReplace || (tile.build.team == creeperTeam && currentLvl <= 10)) && (currentLvl < (int)tile.creep || currentLvl > (int)tile.creep + 0.1f)){
+                tile.setNet(creeperBlocks.get(Mathf.clamp((int)tile.creep, 0, 10)), creeperTeam, Mathf.random(0, 3));
             }
         });
     }
