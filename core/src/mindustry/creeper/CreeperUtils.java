@@ -265,6 +265,8 @@ public class CreeperUtils{
             if(emitter.nullified)
                 newcount++;
         }
+        chargedEmitters.forEach(ChargedEmitter::fixedUpdate);
+
         for(ForceProjector.ForceBuild shield : shields){
             if(shield == null || shield.dead || shield.health <= 0f || shield.healthLeft <= 0f){
                 shields.remove(shield);
@@ -293,9 +295,15 @@ public class CreeperUtils{
             if(!emitter.update())
                 creeperEmitters.remove(emitter);
         }
+        for(ChargedEmitter emitter : chargedEmitters){
+            if(!emitter.update()){
+                chargedEmitters.remove(emitter);
+            }
+        }
 
+        // no emitters so game over
         if(creeperEmitters.size == 0
-        || closestEmitter(world.tile(0,0)) == null){
+        || closestEmitter(world.tile(0, 0)) == null){
             return;
         }
 
