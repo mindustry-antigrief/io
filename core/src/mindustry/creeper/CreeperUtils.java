@@ -210,8 +210,9 @@ public class CreeperUtils{
                 }
             }
 
-            Log.info(creeperableTiles.size + " creeperableTiles");
+            Log.info(creeperableTiles.size + " creeperable tiles");
             Log.info(creeperEmitters.size + " emitters");
+            Log.info(chargedEmitters.size + " charged emitters");
 
             runner = Timer.schedule(CreeperUtils::updateCreeper, 0, updateInterval);
             fixedRunner = Timer.schedule(CreeperUtils::fixedUpdate, 0, 1);
