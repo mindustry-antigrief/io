@@ -21,6 +21,10 @@ public class Emitter implements Position{
     public static HashMap<Block, EmitterType> emitterTypes = new HashMap<>();
 
     public Emitter(Building build){
+        if (build == null) {
+            creeperEmitters.remove(this);
+            return;
+        }
         this.build = build;
         this.type = emitterTypes.get(build.block);
     }
