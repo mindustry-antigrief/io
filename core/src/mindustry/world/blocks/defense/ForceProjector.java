@@ -8,17 +8,15 @@ import arc.math.*;
 import arc.math.geom.*;
 import arc.util.*;
 import arc.util.io.*;
-import mindustry.Vars;
+import mindustry.*;
 import mindustry.annotations.Annotations.*;
 import mindustry.content.*;
-import mindustry.creeper.*;
 import mindustry.entities.*;
 import mindustry.gen.*;
 import mindustry.graphics.*;
 import mindustry.logic.*;
 import mindustry.ui.*;
 import mindustry.world.*;
-import mindustry.world.blocks.storage.CoreBlock;
 import mindustry.world.consumers.*;
 import mindustry.world.meta.*;
 
@@ -39,12 +37,13 @@ public class ForceProjector extends Block{
     public float cooldownBrokenBase = 0.35f;
     public Effect absorbEffect = Fx.absorb;
     public Effect shieldBreakEffect = Fx.shieldBreak;
-    public @Load("@-top") TextureRegion topRegion;
+    public @Load("@-top")
+    TextureRegion topRegion;
 
     static ForceBuild paramEntity;
     static Effect paramEffect;
     static final Cons<Bullet> shieldConsumer = trait -> {
-        if(trait.team != paramEntity.team && trait.type.absorbable && Intersector.isInsideHexagon(paramEntity.x, paramEntity.y, paramEntity.realRadius() * 2f, trait.x(), trait.y())){
+        if(trait.team != paramEntity.team && trait.type.absorbable && inForceField(trait)){
             trait.absorb();
             paramEffect.at(trait);
             paramEntity.hit = 1f;
@@ -53,16 +52,29 @@ public class ForceProjector extends Block{
     };
 
     private static final Cons<Tile> creeperConsumer = tile -> {
-        if(((tile.creep >= 1f && !tile.block().isStatic()) || (creeperBlocks.containsValue(tile.block()) && tile.team() == creeperTeam)) && Intersector.isInsideHexagon(paramEntity.x, paramEntity.y, paramEntity.realRadius() * 2f, tile.worldx(), tile.worldy())){
-            Call.effect(Fx.absorb, tile.worldx(), tile.worldy(), 1, Color.blue);
+        if(((tile.creep >= 1f && creeperableTiles.contains(tile))
+        || (creeperBlocks.containsValue(tile.block()) && tile.team() == creeperTeam))
+        && inForceField(tile)){
+            if (paramEntity.team != creeperTeam){
+                Call.effect(Fx.absorb, tile.worldx(), tile.worldy(), 1, Color.blue);
 
-            paramEntity.hit = 1f;
-            paramEntity.healthLeft -= creeperDamage * buildShieldDamageMultiplier * (tile.creep / 2f) * Math.max(shieldBoostProtectionMultiplier, 1f - paramEntity.phaseHeat) + (tile.block() instanceof CoreBlock && tile.team() == CreeperUtils.creeperTeam ? 2 : 0);
+                paramEntity.hit = 1f;
+                paramEntity.healthLeft -= creeperDamage * buildShieldDamageMultiplier * (tile.creep / 2f) * Math.max(shieldBoostProtectionMultiplier, 1f - paramEntity.phaseHeat) + ((closestEmitterDist(tile) < 5 * tilesize) ? 2 : 0);
 
-            if(tile.build != null && tile.build.team == creeperTeam)
-                tile.build.damage(Blocks.conveyor.health / 2f);
+                if(tile.build != null && tile.build.team == creeperTeam)
+                    tile.build.damage(Blocks.conveyor.health / 2f);
+            }else{
+                Call.effect(Fx.absorb, tile.worldx(), tile.worldy(), 1, Color.blue);
+
+                if(tile.build != null && tile.build.team == creeperTeam)
+                    tile.build.heal(Blocks.conveyor.health / 2f);
+            }
         }
     };
+
+    private static boolean inForceField(Position pos){
+        return Intersector.isInsideHexagon(paramEntity.x, paramEntity.y, paramEntity.realRadius() * 2f, pos.getX(), pos.getY());
+    }
 
     public ForceProjector(String name){
         super(name);
@@ -100,7 +112,7 @@ public class ForceProjector extends Block{
         stats.timePeriod = phaseUseTime;
         super.setStats();
         stats.add(Stat.shieldHealth, shieldHealth, StatUnit.none);
-        stats.add(Stat.cooldownTime, (int) (shieldHealth / cooldownBrokenBase / 60f), StatUnit.seconds);
+        stats.add(Stat.cooldownTime, (int)(shieldHealth / cooldownBrokenBase / 60f), StatUnit.seconds);
         stats.add(Stat.boostEffect, phaseRadiusBoost / tilesize, StatUnit.blocks);
         stats.add(Stat.boostEffect, phaseShieldBoost, StatUnit.shieldHealth);
     }
@@ -191,7 +203,7 @@ public class ForceProjector extends Block{
                 paramEffect = absorbEffect;
                 Groups.bullet.intersect(x - realRadius, y - realRadius, realRadius * 2f, realRadius * 2f, shieldConsumer);
 
-                Geometry.circle(tile.x, tile.y, (int) (((int) realRadius/ Vars.tilesize) * 3), (cx, cy) -> {
+                Geometry.circle(tile.x, tile.y, (int)(((int)realRadius / Vars.tilesize) * 3), (cx, cy) -> {
                     if(Intersector.isInsideHexagon(tile.worldx(), tile.worldy(), realRadius * 2f, cx * Vars.tilesize, cy * Vars.tilesize) && Vars.world.tile(cx, cy) != null)
                         creeperConsumer.get(Vars.world.tile(cx, cy));
                 });
@@ -200,7 +212,7 @@ public class ForceProjector extends Block{
             ConsumeLiquidFilter cons = consumes.get(ConsumeType.liquid);
             if(cons.valid(this)){
                 cons.update(this);
-                if (liquids.currentAmount() > 0f) {
+                if(liquids.currentAmount() > 0f){
                     liquids.remove(liquids.current(), 0.5f);
                     healthLeft = Math.min(healthLeft + regen * liquids.current().heatCapacity, shieldHealth);
                 }
