@@ -1017,7 +1017,7 @@ public class UnitTypes implements ContentList{
                 inaccuracy = 15f;
                 ignoreRotation = true;
                 shootSound = Sounds.none;
-                bullet = new BombBulletType(27f, 25f){{
+                bullet = new BombBulletType(0f, 25f){{
                     width = 10f;
                     height = 14f;
                     hitEffect = Fx.flakExplosion;
