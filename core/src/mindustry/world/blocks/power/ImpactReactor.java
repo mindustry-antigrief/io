@@ -87,7 +87,7 @@ public class ImpactReactor extends PowerGenerator{
                 lastFx = 0;
                 if (targetEmitter == null){
                     Emitter core = CreeperUtils.closestEmitter(tile);
-                    if (core != null && dst(core) < nullifierRange){
+                    if (core != null && within(core, nullifierRange)){
                         targetEmitter = core;
                     }
                 }
