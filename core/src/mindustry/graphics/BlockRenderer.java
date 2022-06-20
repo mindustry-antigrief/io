@@ -10,6 +10,7 @@ import arc.math.geom.*;
 import arc.struct.*;
 import arc.util.*;
 import mindustry.content.*;
+import mindustry.creeper.*;
 import mindustry.game.EventType.*;
 import mindustry.game.Teams.*;
 import mindustry.gen.*;
@@ -384,7 +385,7 @@ public class BlockRenderer{
         }
     }
 
-    static class BlockQuadtree extends QuadTree<Tile>{
+    static class BlockQuadtree extends QuadTreeMk2<Tile> {
 
         public BlockQuadtree(Rect bounds){
             super(bounds);
@@ -402,7 +403,7 @@ public class BlockRenderer{
         }
     }
 
-    static class FloorQuadtree extends QuadTree<Tile>{
+    static class FloorQuadtree extends QuadTreeMk2<Tile>{
 
         public FloorQuadtree(Rect bounds){
             super(bounds);

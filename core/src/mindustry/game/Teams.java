@@ -8,7 +8,7 @@ import arc.struct.*;
 import arc.util.*;
 import mindustry.*;
 import mindustry.ai.*;
-import mindustry.content.*;
+import mindustry.creeper.*;
 import mindustry.entities.units.*;
 import mindustry.gen.*;
 import mindustry.type.*;
@@ -303,7 +303,7 @@ public class Teams{
         }
 
         public QuadTree<Unit> tree(){
-            if(tree == null) tree = new QuadTree<>(Vars.world.getQuadBounds(new Rect()));
+            if(tree == null) tree = new QuadTreeMk2<>(Vars.world.getQuadBounds(new Rect()));
             return tree;
         }
 

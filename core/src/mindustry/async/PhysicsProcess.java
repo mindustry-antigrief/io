@@ -1,11 +1,12 @@
 package mindustry.async;
 
 import arc.math.*;
-import arc.math.geom.*;
 import arc.math.geom.QuadTree.*;
+import arc.math.geom.*;
 import arc.struct.*;
 import mindustry.*;
 import mindustry.async.PhysicsProcess.PhysicsWorld.*;
+import mindustry.creeper.*;
 import mindustry.entities.*;
 import mindustry.gen.*;
 
@@ -133,7 +134,7 @@ public class PhysicsProcess implements AsyncProcess{
 
         public PhysicsWorld(Rect bounds){
             for(int i = 0; i < layers; i++){
-                trees[i] = new QuadTree<>(new Rect(bounds));
+                trees[i] = new QuadTreeMk2<>(new Rect(bounds));
             }
         }
 

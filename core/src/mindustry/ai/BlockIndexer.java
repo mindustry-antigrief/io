@@ -7,6 +7,7 @@ import arc.math.geom.*;
 import arc.struct.*;
 import arc.util.*;
 import mindustry.content.*;
+import mindustry.creeper.*;
 import mindustry.game.EventType.*;
 import mindustry.game.*;
 import mindustry.game.Teams.*;
@@ -422,7 +423,7 @@ public class BlockIndexer{
 
             //insert the new tile into the quadtree for targeting
             if(data.buildings == null){
-                data.buildings = new QuadTree<>(new Rect(0, 0, world.unitWidth(), world.unitHeight()));
+                data.buildings = new QuadTreeMk2<>(new Rect(0, 0, world.unitWidth(), world.unitHeight()));
             }
             data.buildings.insert(tile.build);
 
