@@ -227,10 +227,6 @@ public class CreeperUtils{
             }
         });
 
-        Events.on(EventType.UnitCreateEvent.class, e -> { // Horizons can't shoot but also don't die to flood
-            if(e.unit.type == UnitTypes.horizon) e.unit.apply(StatusEffects.disarmed, Float.MAX_VALUE);
-        });
-
         Timer.schedule(() -> {
             if(!state.isGame()) return;
             Call.infoPopup(

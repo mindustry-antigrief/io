@@ -1028,7 +1028,14 @@ public class UnitTypes implements ContentList{
                     statusDuration = 60f;
                 }};
             }});
-        }};
+        }
+
+            @Override
+            public void update(Unit unit) {
+                unit.apply(StatusEffects.disarmed, Float.MAX_VALUE);
+                super.update(unit);
+            }
+        };
 
         zenith = new UnitType("zenith"){{
             health = 1400;
