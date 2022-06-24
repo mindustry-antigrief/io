@@ -11,6 +11,7 @@ import mindustry.*;
 import mindustry.annotations.Annotations.*;
 import mindustry.content.*;
 import mindustry.core.*;
+import mindustry.creeper.*;
 import mindustry.entities.*;
 import mindustry.game.EventType.*;
 import mindustry.game.*;
@@ -280,7 +281,18 @@ public class CoreBlock extends StorageBlock{
         }
 
         @Override
+        public void add(){
+            super.add();
+            if(team == CreeperUtils.creeperTeam){
+                CreeperUtils.creeperEmitters.add(new Emitter(this));
+            }
+        }
+
+        @Override
         public void onDestroyed(){
+            if(team == CreeperUtils.creeperTeam){
+                CreeperUtils.creeperEmitters.remove(e -> e.build == this);
+            }
             if(state.rules.coreCapture){
                 //just create an explosion, no fire. this prevents immediate recapture
                 Damage.dynamicExplosion(x, y, 0, 0, 0, tilesize * block.size / 2f, state.rules.damageExplosions);

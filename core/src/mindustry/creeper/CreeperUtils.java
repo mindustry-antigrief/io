@@ -364,14 +364,6 @@ public class CreeperUtils{
 
     public static void applyDamage(Tile tile){
         if(tile.build != null && tile.build.team != creeperTeam && tile.creep > 1f){
-            if(tile.build instanceof CoreBuild && tile.build.health <= tile.build.maxHealth * 0.1){
-                tile.build.tile.setNet(Blocks.coreShard, creeperTeam, 0);
-                Timer.schedule(() -> {
-                    if (tile.build == null) return;
-                    creeperEmitters.add(new Emitter(tile.build));
-                }, 1);
-                return;
-            }
             Core.app.post(() -> {
                 if(tile.build == null) return;
 
