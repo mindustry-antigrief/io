@@ -1,6 +1,5 @@
 package mindustry.world.blocks.defense;
 
-import arc.*;
 import arc.func.*;
 import arc.graphics.*;
 import arc.graphics.g2d.*;
@@ -12,6 +11,7 @@ import mindustry.*;
 import mindustry.annotations.Annotations.*;
 import mindustry.content.*;
 import mindustry.entities.*;
+import mindustry.game.*;
 import mindustry.gen.*;
 import mindustry.graphics.*;
 import mindustry.logic.*;
@@ -35,19 +35,24 @@ public class ForceProjector extends Block{
     public float cooldownNormal = 1.75f;
     public float cooldownLiquid = 1.5f;
     public float cooldownBrokenBase = 0.35f;
+    public float coolantConsumption = 0.1f;
+    public boolean consumeCoolant = true;
     public Effect absorbEffect = Fx.absorb;
     public Effect shieldBreakEffect = Fx.shieldBreak;
     public @Load("@-top")
     TextureRegion topRegion;
 
-    static ForceBuild paramEntity;
-    static Effect paramEffect;
-    static final Cons<Bullet> shieldConsumer = trait -> {
-        if(trait.team != paramEntity.team && trait.type.absorbable && inForceField(trait)){
-            trait.absorb();
-            paramEffect.at(trait);
+    //TODO json support
+    public @Nullable Consume itemConsumer, coolantConsumer;
+
+    protected static ForceBuild paramEntity;
+    protected static Effect paramEffect;
+    protected static final Cons<Bullet> shieldConsumer = bullet -> {
+        if(bullet.team != paramEntity.team && bullet.type.absorbable && inForceField(bullet)){
+            bullet.absorb();
+            paramEffect.at(bullet);
             paramEntity.hit = 1f;
-            paramEntity.buildup += trait.damage();
+            paramEntity.buildup += bullet.damage;
         }
     };
 
@@ -84,22 +89,25 @@ public class ForceProjector extends Block{
         hasPower = true;
         hasLiquids = true;
         hasItems = true;
+        envEnabled |= Env.space;
         ambientSound = Sounds.shield;
         ambientSoundVolume = 0.08f;
-        consumes.add(new ConsumeCoolant(0.1f)).boost().update(false);
-        envEnabled |= Env.space;
+
+        if(consumeCoolant){
+            consume(coolantConsumer = new ConsumeCoolant(coolantConsumption)).boost().update(false);
+        }
     }
 
     @Override
     public void init(){
-        clipSize = Math.max(clipSize, (radius + phaseRadiusBoost + 3f) * 2f);
+        updateClipRadius(radius + phaseRadiusBoost + 3f);
         super.init();
     }
 
     @Override
     public void setBars(){
         super.setBars();
-        bars.add("shield", (ForceBuild entity) -> new Bar("stat.shieldhealth", Pal.accent, () -> entity.broken ? 0f : 1f - entity.buildup / (shieldHealth + phaseShieldBoost * entity.phaseHeat)).blink(Color.white));
+        addBar("shield", (ForceBuild entity) -> new Bar("stat.shieldhealth", Pal.accent, () -> entity.broken ? 0f : 1f - entity.buildup / (shieldHealth + phaseShieldBoost * entity.phaseHeat)).blink(Color.white));
     }
 
     @Override
@@ -109,12 +117,17 @@ public class ForceProjector extends Block{
 
     @Override
     public void setStats(){
-        stats.timePeriod = phaseUseTime;
+        boolean consItems = itemConsumer != null;
+
+        if(consItems) stats.timePeriod = phaseUseTime;
         super.setStats();
         stats.add(Stat.shieldHealth, shieldHealth, StatUnit.none);
-        stats.add(Stat.cooldownTime, (int)(shieldHealth / cooldownBrokenBase / 60f), StatUnit.seconds);
-        stats.add(Stat.boostEffect, phaseRadiusBoost / tilesize, StatUnit.blocks);
-        stats.add(Stat.boostEffect, phaseShieldBoost, StatUnit.shieldHealth);
+        stats.add(Stat.cooldownTime, (int) (shieldHealth / cooldownBrokenBase / 60f), StatUnit.seconds);
+
+        if(consItems){
+            stats.add(Stat.boostEffect, phaseRadiusBoost / tilesize, StatUnit.blocks);
+            stats.add(Stat.boostEffect, phaseShieldBoost, StatUnit.shieldHealth);
+        }
     }
 
     @Override
@@ -165,12 +178,17 @@ public class ForceProjector extends Block{
         }
 
         @Override
+        public boolean inFogTo(Team viewer){
+            return false;
+        }
+
+        @Override
         public void updateTile(){
-            boolean phaseValid = consumes.get(ConsumeType.item).valid(this);
+            boolean phaseValid = itemConsumer != null && itemConsumer.efficiency(this) > 0;
 
             phaseHeat = Mathf.lerpDelta(phaseHeat, Mathf.num(phaseValid), 0.1f);
 
-            if(phaseValid && !broken && timer(timerUse, phaseUseTime) && efficiency() > 0){
+            if(phaseValid && !broken && timer(timerUse, phaseUseTime) && efficiency > 0){
                 consume();
             }
 
@@ -180,7 +198,7 @@ public class ForceProjector extends Block{
                 Fx.reactorsmoke.at(x + Mathf.range(tilesize / 2f), y + Mathf.range(tilesize / 2f));
             }
 
-            warmup = Mathf.lerpDelta(warmup, efficiency(), 0.1f);
+            warmup = Mathf.lerpDelta(warmup, efficiency, 0.1f);
 
             if(broken && buildup <= 0){
                 broken = false;
@@ -196,6 +214,10 @@ public class ForceProjector extends Block{
                 hit -= 1f / 5f * Time.delta;
             }
 
+            deflectBullets();
+        }
+
+        public void deflectBullets(){
             float realRadius = realRadius();
 
             if(realRadius > 0 && !broken){
@@ -230,7 +252,7 @@ public class ForceProjector extends Block{
 
         @Override
         public double sense(LAccess sensor){
-            if(sensor == LAccess.heat) return buildup;
+            if(sensor == LAccess.heat) return healthLeft / buildup;
             return super.sense(sensor);
         }
 
@@ -240,9 +262,11 @@ public class ForceProjector extends Block{
 
             if(buildup > 0f){
                 Draw.alpha(buildup / shieldHealth * 0.75f);
+                Draw.z(Layer.blockAdditive);
                 Draw.blend(Blending.additive);
                 Draw.rect(topRegion, x, y);
                 Draw.blend();
+                Draw.z(Layer.block);
                 Draw.reset();
             }
 
@@ -257,7 +281,7 @@ public class ForceProjector extends Block{
 
                 Draw.color(team.color, Color.white, Mathf.clamp(hit));
 
-                if(Core.settings.getBool("animatedshields")){
+                if(renderer.animateShields){
                     Fill.poly(x, y, 6, radius);
                 }else{
                     Lines.stroke(1.5f);

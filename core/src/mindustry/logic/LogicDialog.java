@@ -6,6 +6,7 @@ import arc.graphics.*;
 import arc.scene.actions.*;
 import arc.scene.ui.*;
 import arc.scene.ui.TextButton.*;
+import arc.scene.ui.layout.*;
 import arc.util.*;
 import mindustry.core.GameState.*;
 import mindustry.ctype.*;
@@ -22,6 +23,7 @@ import static mindustry.logic.LCanvas.*;
 public class LogicDialog extends BaseDialog{
     public LCanvas canvas;
     Cons<String> consumer = s -> {};
+    boolean privileged;
     @Nullable LExecutor executor;
 
     public LogicDialog(){
@@ -34,6 +36,22 @@ public class LogicDialog extends BaseDialog{
 
         addCloseListener();
 
+        shown(this::setup);
+        hidden(() -> consumer.get(canvas.save()));
+        onResize(() -> {
+            setup();
+            canvas.rebuild();
+        });
+
+        add(canvas).grow().name("canvas");
+
+        row();
+
+        add(buttons).growX().name("canvas");
+    }
+
+    private void setup(){
+        buttons.clearChildren();
         buttons.defaults().size(160f, 64f);
         buttons.button("@back", Icon.left, this::hide).name("back");
 
@@ -42,7 +60,7 @@ public class LogicDialog extends BaseDialog{
             dialog.cont.pane(p -> {
                 p.margin(10f);
                 p.table(Tex.button, t -> {
-                    TextButtonStyle style = Styles.cleart;
+                    TextButtonStyle style = Styles.flatt;
                     t.defaults().size(280f, 60f).left();
 
                     t.button("@schematic.copy", Icon.copy, style, () -> {
@@ -64,6 +82,8 @@ public class LogicDialog extends BaseDialog{
             dialog.addCloseButton();
             dialog.show();
         }).name("edit");
+
+        if(Core.graphics.isPortrait()) buttons.row();
 
         buttons.button("@variables", Icon.menu, () -> {
             BaseDialog dialog = new BaseDialog("@variables");
@@ -151,43 +171,56 @@ public class LogicDialog extends BaseDialog{
 
         buttons.button("@add", Icon.add, () -> {
             BaseDialog dialog = new BaseDialog("@add");
-            dialog.cont.pane(t -> {
-                t.background(Tex.button);
-                int i = 0;
-                for(Prov<LStatement> prov : LogicIO.allStatements){
-                    LStatement example = prov.get();
-                    if(example instanceof InvalidStatement || example.hidden()) continue;
+            dialog.cont.table(table -> {
+                table.background(Tex.button);
+                table.pane(t -> {
+                    for(Prov<LStatement> prov : LogicIO.allStatements){
+                        LStatement example = prov.get();
+                        if(example instanceof InvalidStatement || example.hidden() || (example.privileged() && !privileged) || (example.nonPrivileged() && privileged)) continue;
 
-                    TextButtonStyle style = new TextButtonStyle(Styles.cleart);
-                    style.fontColor = example.color();
-                    style.font = Fonts.outline;
+                        LCategory category = example.category();
+                        Table cat = t.find(category.name);
+                        if(cat == null){
+                            t.table(s -> {
+                                if(category.icon != null){
+                                    s.image(category.icon, Pal.darkishGray).left().size(15f).padRight(10f);
+                                }
+                                s.add(category.localized()).color(Pal.darkishGray).left().tooltip(category.description());
+                                s.image(Tex.whiteui, Pal.darkishGray).left().height(5f).growX().padLeft(10f);
+                            }).growX().pad(5f).padTop(10f);
 
-                    t.button(example.name(), style, () -> {
-                        canvas.add(prov.get());
-                        dialog.hide();
-                    }).size(140f, 50f).self(c -> tooltip(c, "lst." + example.name()));
-                    if(++i % 2 == 0) t.row();
-                }
-            });
+                            t.row();
+
+                            cat = t.table(c -> {
+                                c.top().left();
+                            }).name(category.name).top().left().growX().fillY().get();
+                            t.row();
+                        }
+
+                        TextButtonStyle style = new TextButtonStyle(Styles.flatt);
+                        style.fontColor = category.color;
+                        style.font = Fonts.outline;
+
+                        cat.button(example.name(), style, () -> {
+                            canvas.add(prov.get());
+                            dialog.hide();
+                        }).size(130f, 50f).self(c -> tooltip(c, "lst." + example.name())).top().left();
+
+                        if(cat.getChildren().size % 3 == 0) cat.row();
+                    }
+                }).grow();
+            }).fill().maxHeight(Core.graphics.getHeight() * 0.8f);
             dialog.addCloseButton();
             dialog.show();
         }).disabled(t -> canvas.statements.getChildren().size >= LExecutor.maxInstructions);
-
-        add(canvas).grow().name("canvas");
-
-        row();
-
-        add(buttons).growX().name("canvas");
-
-        hidden(() -> consumer.get(canvas.save()));
-
-        onResize(() -> canvas.rebuild());
     }
 
-    public void show(String code, LExecutor executor, Cons<String> modified){
+    public void show(String code, LExecutor executor, boolean privileged, Cons<String> modified){
         this.executor = executor;
+        this.privileged = privileged;
         canvas.statements.clearChildren();
         canvas.rebuild();
+        canvas.privileged = privileged;
         try{
             canvas.load(code);
         }catch(Throwable t){

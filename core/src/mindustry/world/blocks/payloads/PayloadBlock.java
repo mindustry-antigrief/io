@@ -1,12 +1,16 @@
 package mindustry.world.blocks.payloads;
 
+import arc.*;
 import arc.graphics.g2d.*;
 import arc.math.*;
 import arc.math.geom.*;
 import arc.util.*;
 import arc.util.io.*;
+<<<<<<< HEAD
 import mindustry.annotations.Annotations.*;
 import mindustry.creeper.*;
+=======
+>>>>>>> master
 import mindustry.gen.*;
 import mindustry.graphics.*;
 import mindustry.world.*;
@@ -17,9 +21,8 @@ import static mindustry.Vars.*;
 public class PayloadBlock extends Block{
     public float payloadSpeed = 0.7f, payloadRotateSpeed = 5f;
 
-    public @Load(value = "@-top", fallback = "factory-top-@size") TextureRegion topRegion;
-    public @Load(value = "@-out", fallback = "factory-out-@size") TextureRegion outRegion;
-    public @Load(value = "@-in", fallback = "factory-in-@size") TextureRegion inRegion;
+    public String regionSuffix = "";
+    public TextureRegion topRegion, outRegion, inRegion;
 
     public PayloadBlock(String name){
         super(name);
@@ -27,7 +30,16 @@ public class PayloadBlock extends Block{
         update = true;
         sync = true;
         group = BlockGroup.payloads;
-        envEnabled |= Env.space;
+        envEnabled |= Env.space | Env.underwater;
+    }
+
+    @Override
+    public void load(){
+        super.load();
+
+        topRegion = Core.atlas.find(name + "-top", "factory-top-" + size + regionSuffix);
+        outRegion = Core.atlas.find(name + "-out", "factory-out-" + size + regionSuffix);
+        inRegion = Core.atlas.find(name + "-in", "factory-in-" + size + regionSuffix);
     }
 
     public static boolean blends(Building build, int direction){
@@ -82,8 +94,8 @@ public class PayloadBlock extends Block{
         }
 
         @Override
-        public boolean canControlSelect(Unit player){
-            return !player.spawnedByCore && this.payload == null && acceptUnitPayload(player) && player.tileOn() != null && player.tileOn().build == this;
+        public boolean canControlSelect(Unit unit){
+            return !unit.spawnedByCore && unit.type.allowedInPayloads && this.payload == null && acceptUnitPayload(unit) && unit.tileOn() != null && unit.tileOn().build == this;
         }
 
         @Override
@@ -139,7 +151,7 @@ public class PayloadBlock extends Block{
         @Override
         public void updateTile(){
             if(payload != null){
-                payload.update(false);
+                payload.update(null, this);
             }
         }
 
@@ -165,7 +177,7 @@ public class PayloadBlock extends Block{
             updatePayload();
 
             if(rotate){
-                payRotation = Angles.moveToward(payRotation, rotate ? rotdeg() : 90f, payloadRotateSpeed * edelta());
+                payRotation = Angles.moveToward(payRotation, block.rotate ? rotdeg() : 90f, payloadRotateSpeed * delta());
             }
             payVector.approach(Vec2.ZERO, payloadSpeed * delta());
 
@@ -179,7 +191,7 @@ public class PayloadBlock extends Block{
 
             Vec2 dest = Tmp.v1.trns(rotdeg(), size * tilesize/2f);
 
-            payRotation = Angles.moveToward(payRotation, rotdeg(), payloadRotateSpeed * edelta());
+            payRotation = Angles.moveToward(payRotation, rotdeg(), payloadRotateSpeed * delta());
             payVector.approach(dest, payloadSpeed * delta());
 
             Building front = front();
