@@ -2828,13 +2828,6 @@ public class Blocks{
             researchCostMultiplier = 0.2f;
         }};
 
-        container = new StorageBlock("container"){{
-            requirements(Category.effect, with(Items.titanium, 100));
-            size = 2;
-            itemCapacity = 300;
-            scaledHealth = 55;
-        }};
-
         vault = new StorageBlock("vault"){{
             requirements(Category.effect, with(Items.titanium, 250, Items.thorium, 125));
             size = 3;
