@@ -1,6 +1,5 @@
 package mindustry.world.blocks.defense;
 
-import arc.*;
 import arc.func.*;
 import arc.graphics.*;
 import arc.graphics.g2d.*;
@@ -200,6 +199,20 @@ public class ForceProjector extends Block{
             }
 
             warmup = Mathf.lerpDelta(warmup, efficiency, 0.1f);
+
+            if(buildup > 0){
+                float scale = !broken ? cooldownNormal : cooldownBrokenBase;
+
+                //TODO I hate this system
+                if(coolantConsumer != null){
+                    if(coolantConsumer.efficiency(this) > 0){
+                        coolantConsumer.update(this);
+                        scale *= (cooldownLiquid * (1f + (liquids.current().heatCapacity - 0.4f) * 0.9f));
+                    }
+                }
+
+                buildup -= delta() * scale;
+            }
 
             if(broken && buildup <= 0){
                 broken = false;

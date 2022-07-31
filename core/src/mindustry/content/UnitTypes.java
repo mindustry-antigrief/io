@@ -606,6 +606,8 @@ public class UnitTypes{
         //region ground legs
 
         crawler = new UnitType("crawler"){{
+            aiController = SuicideAI::new;
+
 //            health = 200;
             health = 100;
 //            speed = 1f;
@@ -621,7 +623,6 @@ public class UnitTypes{
             faceTarget = false;
             circleTarget = true;
             creeperDeposit = 4f;
-            aiController = SuicideAI::new;
             mechSideSway = 0.25f;
             range = 40f;
             ammoType = new ItemAmmoType(Items.coal);

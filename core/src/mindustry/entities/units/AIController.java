@@ -185,7 +185,7 @@ public class AIController implements UnitController{
                         Call.effect(Fx.bubble, unit.x, unit.y, 1, Color.blue);
                 }
             }
-
+    
             if(mount.target == null && !shoot && !Angles.within(mount.rotation, 0f, 0.01f) && noTargetTime >= rotateBackTimer){
                 mount.rotate = true;
                 Tmp.v1.trns(unit.rotation, 5f);

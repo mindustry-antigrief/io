@@ -156,7 +156,7 @@ public class Blocks{
 
     //payloads
     payloadConveyor, payloadRouter, reinforcedPayloadConveyor, reinforcedPayloadRouter, payloadMassDriver, payloadPropulsionTower, smallDeconstructor, deconstructor, constructor, largeConstructor, payloadLoader, payloadUnloader,
-
+    
     //logic
     message, switchBlock, microProcessor, logicProcessor, hyperProcessor, largeLogicDisplay, logicDisplay, memoryCell, memoryBank,
     canvas,
@@ -1549,6 +1549,7 @@ public class Blocks{
             health = 300 * wallHealthMultiplier;
             lightningChance = 0f;
             envDisabled |= Env.scorching;
+            envDisabled |= Env.scorching;
         }};
 
         surgeWallLarge = new Wall("surge-wall-large"){{
@@ -1556,6 +1557,7 @@ public class Blocks{
             health = 230 * 4 * wallHealthMultiplier;
             size = 2;
             lightningChance = 0f;
+            envDisabled |= Env.scorching;
             envDisabled |= Env.scorching;
         }};
 
@@ -2826,6 +2828,13 @@ public class Blocks{
             researchCostMultiplier = 0.2f;
         }};
 
+        container = new StorageBlock("container"){{
+            requirements(Category.effect, with(Items.titanium, 100));
+            size = 2;
+            itemCapacity = 300;
+            scaledHealth = 55;
+        }};
+
         vault = new StorageBlock("vault"){{
             requirements(Category.effect, with(Items.titanium, 250, Items.thorium, 125));
             size = 3;
@@ -3126,6 +3135,8 @@ public class Blocks{
 
             consumePower(6f);
 
+            consumePower(6f);
+
             shootType = new LaserBulletType(10){{
                 colors = new Color[]{Pal.lancerLaser.cpy().a(0.4f), Pal.lancerLaser, Color.white};
                 //TODO merge
@@ -3243,9 +3254,11 @@ public class Blocks{
             );
 
             shoot = new ShootAlternate(){{
+//                shots = 4;
                 shots = 5;
                 barrels = 3;
                 spread = 3.5f;
+//                shotDelay = 5f;
                 shotDelay = 4f;
             }};
 
@@ -3338,7 +3351,9 @@ public class Blocks{
             consumePower(8f);
             size = 2;
             shootLength = 5f;
+//            bulletDamage = 30f;
             bulletDamage = 25f;
+//            reload = 8f;
             reload = 9f;
             envEnabled |= Env.space;
         }};
@@ -3392,6 +3407,7 @@ public class Blocks{
                 }}
             );
             size = 3;
+//            reload = 3f;
             reload = 2f;
             shoot.shots = 2;
             velocityRnd = 0.1f;

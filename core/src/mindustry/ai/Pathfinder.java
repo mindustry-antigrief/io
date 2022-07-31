@@ -149,6 +149,35 @@ public class Pathfinder implements Runnable{
                 }
             }
         });
+
+        //remove nearSolid flag for tiles
+        Events.on(TilePreChangeEvent.class, event -> {
+            Tile tile = event.tile;
+
+            if(tile.solid()){
+                for(int i = 0; i < 4; i++){
+                    Tile other = tile.nearby(i);
+                    if(other != null){
+                        //other tile needs to update its nearSolid to be false if it's not solid and this tile just got un-solidified
+                        if(!other.solid()){
+                            boolean otherNearSolid = false;
+                            for(int j = 0; j < 4; j++){
+                                Tile othernear = other.nearby(i);
+                                if(othernear != null && othernear.solid()){
+                                    otherNearSolid = true;
+                                    break;
+                                }
+                            }
+                            int arr = other.array();
+                            //the other tile is no longer near solid, remove the solid bit
+                            if(!otherNearSolid && tiles.length > arr){
+                                tiles[arr] &= ~(PathTile.bitMaskNearSolid);
+                            }
+                        }
+                    }
+                }
+            }
+        });
     }
 
     private void clearCache(){

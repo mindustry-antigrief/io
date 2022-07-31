@@ -2,7 +2,7 @@ package mindustry.entities.comp;
 
 // FINISHME: Clean up unused imports
 import arc.*;
-import arc.func.*;
+import arc.graphics.*;
 import arc.graphics.Color;
 import arc.graphics.*;
 import arc.graphics.g2d.*;

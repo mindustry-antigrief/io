@@ -1253,7 +1253,6 @@ abstract class BuildingComp implements Posc, Teamc, Healthc, Buildingc, Timerc, 
         if(value instanceof Block) type = Block.class;
         if(value instanceof Liquid) type = Liquid.class;
         if(value instanceof UnitType) type = UnitType.class;
-
         if(builder != null && builder.isPlayer()){
             lastAccessed = builder.getPlayer().coloredName();
         }
