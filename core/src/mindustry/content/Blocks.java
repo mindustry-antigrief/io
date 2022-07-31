@@ -3125,9 +3125,6 @@ public class Blocks{
             accurateDelay = false;
             shootSound = Sounds.laser;
             coolant = consumeCoolant(0.2f);
-
-            consumePower(6f);
-
             consumePower(6f);
 
             shootType = new LaserBulletType(10){{
