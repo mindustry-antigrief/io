@@ -33,7 +33,15 @@ public class CreeperUtils{
     public static final float creeperUnitDamage = 2f;
     public static final float maxTileCreep = 10.5f;
 
-    public static BulletType sporeType = Bullets.artilleryDense;
+    public static BulletType sporeType = new ArtilleryBulletType(3f, 20, "shell") {{
+        hitEffect = Fx.flakExplosion;
+        knockback = 0.8f;
+        lifetime = 80f;
+        width = height = 11f;
+        collidesTiles = false;
+        splashDamageRadius = 25f * 0.75f;
+        splashDamage = 33f;
+    }};
     public static float sporeMaxRangeMultiplier = 30f;
     public static float sporeAmount = 20f;
     public static float sporeRadius = 5f;
@@ -151,9 +159,9 @@ public class CreeperUtils{
         creeperBlocks.put(100, Blocks.interplanetaryAccelerator);
 
         for(var set : creeperBlocks.entrySet()){
-            BlockFlag[] newFlags = new BlockFlag[set.getValue().flags.size() + 1];
+            BlockFlag[] newFlags = new BlockFlag[set.getValue().flags.size + 1];
             int i = 0;
-            for(BlockFlag flag : set.getValue().flags){
+            for(BlockFlag flag : set.getValue().flags.array){
                 newFlags[i++] = flag;
             }
             newFlags[i] = BlockFlag.generator;

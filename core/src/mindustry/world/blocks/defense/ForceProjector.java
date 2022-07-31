@@ -1,5 +1,6 @@
 package mindustry.world.blocks.defense;
 
+import arc.*;
 import arc.func.*;
 import arc.graphics.*;
 import arc.graphics.g2d.*;
@@ -231,9 +232,8 @@ public class ForceProjector extends Block{
                 });
             }
 
-            ConsumeLiquidFilter cons = consumes.get(ConsumeType.liquid);
-            if(cons.valid(this)){
-                cons.update(this);
+            if(coolantConsumer != null && coolantConsumer.efficiency(this) > 0 && efficiency > 0){
+                coolantConsumer.update(this);
                 if(liquids.currentAmount() > 0f){
                     liquids.remove(liquids.current(), 0.5f);
                     healthLeft = Math.min(healthLeft + regen * liquids.current().heatCapacity, shieldHealth);

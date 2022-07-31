@@ -1749,7 +1749,7 @@ public class Blocks{
 
             itemConsumer = consumeItem(Items.phaseFabric).boost();
             consumePower(4f);
-            liquidCnsumer = consumes.add(new ConsumeLiquidFilter(liquid -> liquid.temperature <= 0.5f && liquid.flammability < 0.1f, 0.5f));
+            coolantConsumer = consumeCoolant(0.1f);
         }};
 
         shockMine = new ShockMine("shock-mine"){{
@@ -2824,13 +2824,6 @@ public class Blocks{
             unitCapModifier = 15;
             researchCostMultipliers.put(Items.silicon, 0.3f);
             researchCostMultiplier = 0.2f;
-        }};
-
-        container = new StorageBlock("container"){{
-            requirements(Category.effect, with(Items.titanium, 100));
-            size = 2;
-            itemCapacity = 300;
-            scaledHealth = 55;
         }};
 
         vault = new StorageBlock("vault"){{

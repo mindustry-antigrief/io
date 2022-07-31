@@ -96,7 +96,7 @@ public class ImpactReactor extends PowerGenerator{
             }
 
             if(efficiency >= 0.9999f && power.status >= 0.99f){
-                boolean prevOut = getPowerProduction() <= consumes.getPower().requestedPower(this);
+                boolean prevOut = getPowerProduction() <= consPower.requestedPower(this);
 
                 warmup = Mathf.lerpDelta(warmup, 1f, warmupSpeed * timeScale);
                 if(Mathf.equal(warmup, 1f, 0.001f)){
@@ -110,7 +110,7 @@ public class ImpactReactor extends PowerGenerator{
                             Call.effect(Fx.mineHuge, t.getX(), t.getY(), 0, Pal.health);
                         });
                         if(Mathf.chance(warmup * 0.1f)){
-                            Call.effect(Fx.cloudsmoke, x + Mathf.range(0, 36), y + Mathf.range(0, 36), 1f, Pal.gray);
+                            Call.effect(Fx.smokeCloud, x + Mathf.range(0, 36), y + Mathf.range(0, 36), 1f, Pal.gray);
                             Call.soundAt(Mathf.chance(0.7f) ? Sounds.flame2 : Sounds.flame, x, y, 0.8f, Mathf.range(0.8f, 1.5f));
                         }
                     }
