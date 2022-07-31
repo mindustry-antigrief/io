@@ -8,11 +8,8 @@ import arc.struct.*;
 import arc.util.*;
 import mindustry.*;
 import mindustry.ai.*;
-<<<<<<< HEAD
 import mindustry.creeper.*;
 import mindustry.entities.units.*;
-=======
->>>>>>> master
 import mindustry.gen.*;
 import mindustry.type.*;
 import mindustry.world.*;
@@ -376,13 +373,8 @@ public class Teams{
         }
 
         public QuadTree<Unit> tree(){
-<<<<<<< HEAD
-            if(tree == null) tree = new QuadTree<>(Vars.world.getQuadBounds(new Rect()));
-            return tree;
-=======
             if(unitTree == null) unitTree = new QuadTree<>(Vars.world.getQuadBounds(new Rect()));
             return unitTree;
->>>>>>> master
         }
 
         public int countType(UnitType type){

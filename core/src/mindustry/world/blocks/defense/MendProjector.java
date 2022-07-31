@@ -93,16 +93,14 @@ public class MendProjector extends Block{
                 float realRange = range + phaseHeat * phaseRangeBoost;
                 charge = 0f;
 
-<<<<<<< HEAD
-                indexer.eachBlock(this, realRange, Building::damaged, other -> {
-                    other.heal(healAmount * phaseHeat * phaseBoost * efficiency());
-                    Fx.healBlockFull.at(other.x, other.y, other.block.size, baseColor);
-=======
+                // FINISHME: Looks like mend projectors were nerfed
+//                indexer.eachBlock(this, realRange, Building::damaged, other -> {
+//                    other.heal(healAmount * phaseHeat * phaseBoost * efficiency());
+//                    Fx.healBlockFull.at(other.x, other.y, other.block.size, baseColor);
                 indexer.eachBlock(this, realRange, b -> b.damaged() && !b.isHealSuppressed(), other -> {
                     other.heal(other.maxHealth() * (healPercent + phaseHeat * phaseBoost) / 100f * efficiency);
                     other.recentlyHealed();
                     Fx.healBlockFull.at(other.x, other.y, other.block.size, baseColor, other.block);
->>>>>>> master
                 });
             }
         }

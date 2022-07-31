@@ -5,12 +5,9 @@ import arc.math.Mathf;
 import arc.math.geom.*;
 import mindustry.*;
 import mindustry.ai.*;
-<<<<<<< HEAD
 import mindustry.content.Fx;
 import mindustry.creeper.CreeperUtils;
-=======
 import mindustry.core.*;
->>>>>>> master
 import mindustry.entities.*;
 import mindustry.gen.*;
 import mindustry.world.*;

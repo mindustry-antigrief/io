@@ -6,11 +6,8 @@ import arc.math.*;
 import arc.math.geom.*;
 import arc.util.*;
 import arc.util.io.*;
-<<<<<<< HEAD
 import mindustry.annotations.Annotations.*;
 import mindustry.creeper.*;
-=======
->>>>>>> master
 import mindustry.gen.*;
 import mindustry.graphics.*;
 import mindustry.world.*;

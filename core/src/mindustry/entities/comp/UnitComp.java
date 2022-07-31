@@ -1,12 +1,10 @@
 package mindustry.entities.comp;
 
+// FINISHME: Clean up unused imports
 import arc.*;
-<<<<<<< HEAD
 import arc.func.*;
 import arc.graphics.Color;
-=======
 import arc.graphics.*;
->>>>>>> master
 import arc.graphics.g2d.*;
 import arc.math.*;
 import arc.math.geom.*;
@@ -33,12 +31,8 @@ import mindustry.world.blocks.environment.*;
 import mindustry.world.blocks.payloads.*;
 
 import static mindustry.Vars.*;
-<<<<<<< HEAD
 import static mindustry.creeper.CreeperUtils.*;
-import static mindustry.logic.GlobalConstants.*;
-=======
 import static mindustry.logic.GlobalVars.*;
->>>>>>> master
 
 @Component(base = true)
 abstract class UnitComp implements Healthc, Physicsc, Hitboxc, Statusc, Teamc, Itemsc, Rotc, Unitc, Weaponsc, Drawc, Boundedc, Syncc, Shieldc, Displayable, Senseable, Ranged, Minerc, Builderc{

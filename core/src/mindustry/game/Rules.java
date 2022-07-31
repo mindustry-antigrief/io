@@ -148,13 +148,9 @@ public class Rules{
     /** color of clouds that is displayed when the player is landing */
     public Color cloudColor = new Color(0f, 0f, 0f, 0f);
     /** name of the custom mode that this ruleset describes, or null. */
-<<<<<<< HEAD
     public @Nullable String modeName = "Flood";
-=======
-    public @Nullable String modeName;
     /** Mission string displayed instead of wave/core counter. Null to disable. */
-    public @Nullable String mission;
->>>>>>> master
+    public @Nullable String mission; // is this needed in flood?
     /** Whether cores incinerate items when full, just like in the campaign. */
     public boolean coreIncinerates = false;
     /** If false, borders fade out into darkness. Only use with custom backgrounds!*/

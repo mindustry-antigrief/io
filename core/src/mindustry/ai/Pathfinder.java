@@ -115,12 +115,11 @@ public class Pathfinder implements Runnable{
 
         Events.on(ResetEvent.class, event -> stop());
 
-<<<<<<< HEAD
         Events.on(TileChangeEvent.class, event -> {
             if (event.tile.team() != CreeperUtils.creeperTeam) {
                 updateTile(event.tile);
-=======
-        Events.on(TileChangeEvent.class, event -> updateTile(event.tile));
+            }
+        });
 
         //remove nearSolid flag for tiles
         Events.on(TilePreChangeEvent.class, event -> {
@@ -148,7 +147,6 @@ public class Pathfinder implements Runnable{
                         }
                     }
                 }
->>>>>>> master
             }
         });
     }

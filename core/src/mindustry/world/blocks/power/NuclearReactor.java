@@ -1,11 +1,8 @@
 package mindustry.world.blocks.power;
 
 import arc.*;
-<<<<<<< HEAD
 import arc.func.Cons;
-=======
 import arc.audio.*;
->>>>>>> master
 import arc.graphics.*;
 import arc.graphics.g2d.*;
 import arc.math.*;
@@ -23,11 +20,8 @@ import mindustry.graphics.*;
 import mindustry.logic.*;
 import mindustry.type.*;
 import mindustry.ui.*;
-<<<<<<< HEAD
 import mindustry.world.Tile;
 import mindustry.world.consumers.*;
-=======
->>>>>>> master
 import mindustry.world.meta.*;
 
 import static mindustry.Vars.*;

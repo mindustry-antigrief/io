@@ -95,6 +95,9 @@ public class UnitTypes{
 
     public static void load(){
         //region ground attack
+        
+        // TODO: Im not sure whether some of these changes are deliberately done for flood or not
+        //  so in the meantime I have left the erekir branch's values commented out
 
         dagger = new UnitType("dagger"){{
             speed = 0.5f;
@@ -537,10 +540,6 @@ public class UnitTypes{
             rotateSpeed = 1.5f;
             drownTimeMultiplier = 6f;
 
-<<<<<<< HEAD
-
-=======
->>>>>>> master
             legCount = 4;
             legLength = 14f;
             legBaseOffset = 11f;
@@ -607,12 +606,14 @@ public class UnitTypes{
         //region ground legs
 
         crawler = new UnitType("crawler"){{
-<<<<<<< HEAD
+//            health = 200;
             health = 100;
+//            speed = 1f;
             speed = 1.5f;
             accel = 0.08f;
             drag = 0.016f;
             flying = true;
+//            hitSize = 8f;
             hitSize = 6f;
             targetAir = false;
             engineOffset = 7.8f;
@@ -620,15 +621,9 @@ public class UnitTypes{
             faceTarget = false;
             circleTarget = true;
             creeperDeposit = 4f;
-=======
             aiController = SuicideAI::new;
-
-            speed = 1f;
-            hitSize = 8f;
-            health = 200;
             mechSideSway = 0.25f;
             range = 40f;
->>>>>>> master
             ammoType = new ItemAmmoType(Items.coal);
 
             weapons.add(new Weapon(){{
@@ -637,7 +632,9 @@ public class UnitTypes{
                 shootCone = 180f;
                 ejectEffect = Fx.none;
                 shootSound = Sounds.explosion;
-<<<<<<< HEAD
+                x = shootY = 0f;
+                mirror = false;
+//                bullet = new BulletType(){{
                 bullet = new ArtilleryBulletType(25f, 0f, "clear"){{
                     isCreeper = true;
                     hitEffect = Fx.pulverize;
@@ -646,10 +643,6 @@ public class UnitTypes{
                     splashDamageRadius = 70f;
                     instantDisappear = false;
                     splashDamage = 80f;
-=======
-                x = shootY = 0f;
-                mirror = false;
-                bullet = new BulletType(){{
                     collidesTiles = false;
                     collides = false;
                     hitSound = Sounds.explosion;
@@ -660,7 +653,6 @@ public class UnitTypes{
                     splashDamageRadius = 55f;
                     instantDisappear = true;
                     splashDamage = 90f;
->>>>>>> master
                     killShooter = true;
                     hittable = false;
                     collidesAir = true;
@@ -669,13 +661,10 @@ public class UnitTypes{
         }};
 
         atrax = new UnitType("atrax"){{
-<<<<<<< HEAD
-            defaultController = SuicideAI::new;
+            aiController = SuicideAI::new;
 
+//            speed = 0.6f;
             speed = 0.5f;
-=======
-            speed = 0.6f;
->>>>>>> master
             drag = 0.4f;
             hitSize = 13f;
             rotateSpeed = 3f;
@@ -716,13 +705,10 @@ public class UnitTypes{
         }};
 
         spiroct = new UnitType("spiroct"){{
-<<<<<<< HEAD
-            defaultController = SuicideAI::new;
+            aiController = SuicideAI::new;
 
+//            speed = 0.54f;
             speed = 0.4f;
-=======
-            speed = 0.54f;
->>>>>>> master
             drag = 0.4f;
             hitSize = 12f;
             creeperDeposit = 7f;
@@ -787,7 +773,7 @@ public class UnitTypes{
         }};
 
         arkyid = new UnitType("arkyid"){{
-            defaultController = SuicideAI::new;
+            aiController = SuicideAI::new;
 
             drag = 0.1f;
             speed = 0.5f;
@@ -892,8 +878,7 @@ public class UnitTypes{
         }};
 
         toxopid = new UnitType("toxopid"){{
-            defaultController = SuicideAI::new;
-
+            aiController = SuicideAI::new;
 
             drag = 0.1f;
             speed = 0.5f;
@@ -1031,25 +1016,21 @@ public class UnitTypes{
             accel = 0.08f;
             drag = 0.04f;
             flying = true;
-<<<<<<< HEAD
+//            health = 70;
             health = 275;
+//            engineOffset = 5.75f;
             engineOffset = 5.5f;
             range = 140f;
             targetAir = false;
             //as default AI, flares are not very useful in core rushes, they attack nothing in the way
-            playerTargetFlags = new BlockFlag[]{null};
+            //targetAir = false;
             targetFlags = new BlockFlag[]{BlockFlag.generator, null};
             circleTarget = true;
             creeperResistance = 0.2f;
-=======
-            health = 70;
-            engineOffset = 5.75f;
-            //TODO balance
-            //targetAir = false;
-            targetFlags = new BlockFlag[]{BlockFlag.generator, null};
+            
+            // new stuff
             hitSize = 9;
             itemCapacity = 10;
->>>>>>> master
 
             weapons.add(new Weapon(){{
                 y = 0f;
@@ -1069,7 +1050,7 @@ public class UnitTypes{
         }};
 
         horizon = new UnitType("horizon"){{
-            defaultController = BuilderAI::new;
+            aiController = BuilderAI::new;
             health = 440;
             speed = 1.7f;
             accel = 0.08f;

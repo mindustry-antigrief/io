@@ -48,32 +48,17 @@ public class UnitType extends UnlockableContent{
     public int envRequired = 0;
     /** The environment flags that this unit can function in. If the env matches any of these, it will be enabled. */
     public int envEnabled = Env.terrestrial;
-<<<<<<< HEAD
     /** The environment flags that this unit *cannot* function in. If the env matches any of these, it will be *disabled*. */
-    public int envDisabled = 0;
 
-    public float speed = 1.1f, boostMultiplier = 1f, rotateSpeed = 5f, baseRotateSpeed = 5f;
-    public float drag = 0.3f, accel = 0.5f, landShake = 0f, rippleScale = 1f, riseSpeed = 0.08f, fallSpeed = 0.018f;
-    public float health = 200f, range = -1, miningRange = 70f, armor = 0f, maxRange = -1f;
-    public float crashDamageMultiplier = 1f;
-    public boolean targetAir = true, targetGround = true;
-    public boolean faceTarget = true, rotateShooting = true, isCounted = true, lowAltitude = false, circleTarget = false;
-    public boolean canBoost = false;
+    public float landShake = 0f; // FINISHME: Some of these seem no longer used. Perhaps remove these?
+    public float miningRange = 70f;
+    public boolean rotateShooting = true, isCounted = true;
     public boolean destructibleWreck = true;
-    public float groundLayer = Layer.groundUnit;
-    public float payloadCapacity = 8;
-    public float aimDst = -1f;
-    public float buildBeamOffset = 3.8f;
-    public int commandLimit = 24;
-    public float commandRadius = 150f;
+    // Old command system replaced with rts
+//    public int commandLimit = 24;
+//    public float commandRadius = 150f;
     public float visualElevation = -1f;
-    /** If true and this is a legged unit, this unit can walk over blocks. */
-    public boolean allowLegStep = false;
-    /** If true, this unit cannot drown, and will not be affected by the floor under it. */
-    public boolean hovering = false;
-    public boolean omniMovement = true;
     public boolean showHeal = true;
-=======
     /** The environment flags that this unit *cannot* function in. If the env matches any of these, it will explode or be disabled. */
     public int envDisabled = Env.scorching;
 
@@ -267,7 +252,6 @@ public class UnitType extends UnlockableContent{
     public ObjectSet<StatusEffect> immunities = new ObjectSet<>();
 
     /** color that this unit flashes when getting healed (if healFlash is true) */
->>>>>>> master
     public Color healColor = Pal.heal;
     /** Color of light that this unit produces when lighting is enabled in the map. */
     public Color lightColor = Pal.powerLight;
@@ -311,27 +295,13 @@ public class UnitType extends UnlockableContent{
     /** if false, no sprite outlines are generated */
     public boolean outlines = true;
 
-<<<<<<< HEAD
     /** damage resistance to creeper */
     public float creeperResistance = 0.1f;
 
     /** how much creeper this unit deposits upon death */
     public float creeperDeposit = 0f;
 
-    public int legCount = 4, legGroupSize = 2;
-    public float legLength = 10f, legSpeed = 0.1f, legTrns = 1f, legBaseOffset = 0f, legMoveSpace = 1f, legExtension = 0, legPairOffset = 0, legLengthScl = 1f, kinematicScl = 1f, maxStretch = 1.75f;
-    public float legSplashDamage = 0f, legSplashRange = 5;
-    public boolean flipBackLegs = true;
-
-    public float mechSideSway = 0.54f, mechFrontSway = 0.1f;
-    public float mechStride = -1f;
-    public float mechStepShake = -1f;
-    public boolean mechStepParticles = false;
-    public Color mechLegColor = Pal.darkMetal;
-
-=======
     /** amount of items this unit can carry; <0 to determine based on hitSize. */
->>>>>>> master
     public int itemCapacity = -1;
     /** amount of ammo this unit can hold (if the rule is enabled); <0 to determine based on weapon fire rate. */
     public int ammoCapacity = -1;
